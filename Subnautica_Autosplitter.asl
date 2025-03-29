@@ -51,10 +51,7 @@ startup
     settings.Add("Cure", true, "Split on Cure");
     settings.Add("Gun", true, "Split on Gun deactivation");
     settings.Add("Rocket", true, "Split on Rocket launch");
-}
 
-init 
-{
     vars.StartedBefore = 0;
     vars.CuredBefore = 0;
     vars.GunedBefore = 0;
@@ -62,6 +59,23 @@ init
     vars.waitingFor1 = false;
     vars.waitingFor0 = false;
 
+    vars.IsWithinBoundsFunc = (Func<float, float, float, float, float, float, float, float, float, bool>)((X1, X2, Y1, Y2, Z1, Z2, x, y, z) =>
+    {
+        if (x >= Math.Min(X1, X2) && x <= Math.Max(X1, X2) &&
+            y >= Math.Min(Y1, Y2) && y <= Math.Max(Y1, Y2) &&
+            z >= Math.Min(Z1, Z2) && z <= Math.Max(Z1, Z2))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }); 
+}
+
+init 
+{
     int firstModuleSize = modules.First().ModuleMemorySize;
     print(firstModuleSize.ToString());
     switch (firstModuleSize)
@@ -69,10 +83,6 @@ init
         case 23801856:
             version = "September 2018";
             print("Version is sept 2018");
-            break;
-        case 671744:
-            version = "December 2021";
-            print("Version is dec 2021");
             break;
         case 675840:
             version = "March 2023";
@@ -95,7 +105,7 @@ onStart
 
 update
 {
-    print(""+current.IsRocketGo);
+    //print(""+current.IsAnimationPlaying);
     if(current.NotMainMenu == 0)
     {
         vars.CuredBefore = 0;
@@ -107,7 +117,7 @@ start
 {
     if(vars.StartedBefore == 0 && current.NotMainMenu == 1)
     {
-        if(settings["Moved"] && (current.IsMovingX != 0 && old.IsMovingX == 0) || (current.IsMovingZ != 0 && old.IsMovingZ == 0))
+        if(settings["Moved"] && (current.IsMovingX != 0 && old.IsMovingX == 0 || current.IsMovingZ != 0 && old.IsMovingZ == 0))
         {
             vars.StartedBefore = 1;
             return true;
@@ -131,67 +141,53 @@ split
 {   
     if(settings["PCF"] && current.IsAnimationPlaying == 1 && current.IsAnimationPlaying != old.IsAnimationPlaying)
     {
-        if(current.XCoord > 216 && current.XCoord < 224)
-        {   
-            if(current.YCoord < -1445 && current.YCoord > -1452)
-            {
-                if(current.ZCoord < -267 && current.ZCoord > -276)
-                print("PCF split");
-                {
-                    return true;
-                }               
-            }  
+        var IsWithinBounds = vars.IsWithinBoundsFunc(216, 224, -1445, -1452, -267, -276, current.XCoord, current.YCoord, current.ZCoord);
+        if(IsWithinBounds)
+        {
+            print("PCF split");
+            return true;
+        }        
+    }
+    if(settings["Portal"] && current.IsPortalLoading != old.IsPortalLoading)    
+    {
+        var IsWithinBounds = vars.IsWithinBoundsFunc(240, 250, -1580, -1590, -2000, 2000, current.XCoord, current.YCoord, current.ZCoord);
+        if(IsWithinBounds)
+        {
+            print("Portal split");
+            return true;
+        }        
+    }  
+
+    if(settings["Cure"] && current.IsCured != old.IsCured && vars.CuredBefore == 0)
+    {
+        if(current.IsCured == 1059857727 || current.IsCured == 1)
+        {
+            print("Cure split");
+            vars.CuredBefore = 1;
+            return true;
+        }          
+    }
+
+    if(settings["Gun"] && current.IsAnimationPlaying == 1 && current.IsAnimationPlaying != old.IsAnimationPlaying && vars.GunedBefore == 0)
+    {        
+        var IsWithinBounds = vars.IsWithinBoundsFunc(359, 365, -66, -75, 1079, 1085, current.XCoord, current.YCoord, current.ZCoord);     
+        if(IsWithinBounds)
+        {                  
+            print("Gun split");
+            vars.GunedBefore = 1;
+            return true;
         }            
     }
-        if(settings["Portal"] && current.IsPortalLoading != old.IsPortalLoading)    
-        {
-            if(current.IsPortalLoading == 1)
-            {      
-                if(current.XCoord > 240 && current.XCoord < 250)
-                {
-                    if(current.YCoord < -1580 && current.YCoord > -1590)
-                    {
-                        print("Portal split");
-                        return true;
-                    }  
-                }      
-            }         
-        }  
 
-        if(settings["Cure"] && current.IsCured != old.IsCured && vars.CuredBefore == 0)
+    if(settings["Rocket"] && current.IsRocketGo != old.IsRocketGo)
+    {
+       
+        if(current.IsRocketGo == 1 || current.IsRocketGo == 256 || current.IsRocketGo == 244)
         {
-            if(current.IsCured == 1059857727 || current.IsCured == 1)
-            {
-                print("Cure split");
-                vars.CuredBefore = 1;
-                return true;
-            }          
-        }
-
-        if(settings["Gun"] && current.IsAnimationPlaying == 1 && current.IsAnimationPlaying != old.IsAnimationPlaying && vars.GunedBefore == 0)
-        {
-            if(current.XCoord > 359 && current.XCoord < 365)
-            {   
-                if(current.YCoord < -66 && current.YCoord > -75)
-                {
-                    if(current.ZCoord > 1079 && current.ZCoord < 1085)
-                    {
-                        print("Gun split");
-                        vars.GunedBefore = 1;
-                        return true;
-                    }               
-                }  
-            }            
-        }
-
-        if(settings["Rocket"] && current.IsRocketGo != old.IsRocketGo)
-        {
-            if(current.IsRocketGo == 1 || current.IsRocketGo == 256 || current.IsRocketGo == 244)
-            {
-                print("Rocket split");
-                return true;
-            }           
-        }
+            print("Rocket split");
+            return true;
+        }           
+    }
 }
 
 reset
@@ -219,49 +215,52 @@ isLoading
     }
     else
     {
-    if (current.IsPortalLoading == 1 && old.IsPortalLoading == 0)
-    {
-        if(current.IsPortalLoading == 1)
-            {      
-                if(current.XCoord > 240 && current.XCoord < 250)
-                {
-                    if(current.YCoord < -1580 && current.YCoord > -1590)
-                    {
-                        vars.waitingFor1 = true;
-                        vars.waitingFor0 = false;
-                        vars.counter = 31;
-                    }
-                }
-            }
-    }
-    else if (current.IsPortalLoading == 0 && old.IsPortalLoading == 1)
-    {
-        vars.waitingFor0 = true;
-        vars.waitingFor1 = false;
-        if(version == "September 2018")
+        if (current.IsPortalLoading == 1 && old.IsPortalLoading == 0)
         {
-            vars.counter = 20;
+            var IsWithinBounds = vars.IsWithinBoundsFunc(240, 250, -1580, -1590, -2000, 2000, current.XCoord, current.YCoord, current.ZCoord);
+            if(IsWithinBounds)
+            {
+                vars.waitingFor1 = true;
+                vars.waitingFor0 = false;
+                if(version == "September 2018")
+                {
+                    vars.counter = 31;
+                }
+                else
+                {
+                    vars.counter = 34;
+                }
+                
+            }        
+        }
+        else if (current.IsPortalLoading == 0 && old.IsPortalLoading == 1)
+        {
+            vars.waitingFor0 = true;
+            vars.waitingFor1 = false;
+            if(version == "September 2018")
+            {
+                vars.counter = 20;
+            }
+            else
+            {
+                vars.counter = 0;
+            }
+        }
+
+        if (vars.counter > 0)
+        {
+            vars.counter--;
         }
         else
         {
-            vars.counter = 0;
+            if (vars.waitingFor1)
+            {
+                return true;
+            }
+            else if (vars.waitingFor0)
+            {
+                return false;
+            }
         }
-    }
-
-    if (vars.counter > 0)
-    {
-        vars.counter--;
-    }
-    else
-    {
-        if (vars.waitingFor1)
-        {
-            return true;
-        }
-        else if (vars.waitingFor0)
-        {
-            return false;
-        }
-    }
     }   
 }
