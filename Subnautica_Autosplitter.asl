@@ -1,22 +1,24 @@
 state("Subnautica", "September 2018")
 {
-    //int GameMode:                      0x149E490, 0x28, 0x0, 0x10, 0xA0, 0x350, 0x20; //0-3, in menu it's 0 and also randomly changes to 0 when loading
-    bool introCinematicActive:           0x142B908, 0x188, 0x150, 0xD0, 0x18, 0x1E8, 0x28, 0x86;
-    bool NotMainMenu:        "mono.dll", 0x262A68, 0x80, 0xED8;
-    bool IsLoadingScreen:    "mono.dll", 0x266180, 0x50, 0x2C0, 0x0, 0x30, 0x8, 0x18, 0x20, 0x10, 0x44;
-    bool IsAnimationPlaying:             0x142B908, 0x180, 0x128, 0x80, 0x1D0, 0x8, 0x248, 0x240;
-    bool IsPortalLoading:    "mono.dll", 0x296BC8, 0x20, 0x2A0, 0x0, 0xE8;
-    int IsFabiMenu:          "mono.dll", 0x296BC8, 0x20, 0xA58, 0x20; // 2 means that the esc menu is open
-    int IsPDAOpen:           "mono.dll", 0x2655E0, 0x40, 0x18, 0xA0, 0x920, 0x64; // true = 1051931443, false = 1056964608  
-    int IsCured:                         0x142B710, 0x38, 0x418, 0xE8, 0x20, 0x10, 0x10, 0xD8, 0x28, 0xA58;//1059857727 = true
-    int IsRocketGo:          "mono.dll", 0x27EAD8, 0x40, 0x70, 0x50, 0x90, 0x30, 0x8, 0x80;
-    int IsMovingX:                       0x13940D8, 0x840; //0 = false
-    int IsMovingZ:                       0x1443878, 0x8, 0x358, 0x3A8, 0x280, 0x2A8; //false = 0
-    float XCoord:                        0x142B8C8, 0x180, 0x40, 0xA8, 0x7C0; // 0 in menu
-    float YCoord:                        0x142B8C8, 0x180, 0x40, 0xA8, 0x7C4; //1.75 in menu
-    float ZCoord:                        0x142B8C8, 0x180, 0x40, 0xA8, 0x7C8; // 0 in menu
-    bool died:                           0x13B0650, 0x358, 0x8, 0x38, 0x0, 0x0, 0x108, 0x14;
-    string128 biome:                     0x142b908, 0x180, 0x128, 0x80, 0x1d0, 0x8, 0x248, 0x1d0, 0x14;
+    //int GameMode:                        0x149E490, 0x28, 0x0, 0x10, 0xA0, 0x350, 0x20; //0-3, in menu it's 0 and also randomly changes to 0 when loading
+    bool introCinematicActive:             0x142B908, 0x188, 0x150, 0xD0, 0x18, 0x1E8, 0x28, 0x86;
+    bool NotMainMenu:          "mono.dll", 0x262A68, 0x80, 0xED8;
+    bool IsLoadingScreen:      "mono.dll", 0x266180, 0x50, 0x2C0, 0x0, 0x30, 0x8, 0x18, 0x20, 0x10, 0x44;
+    bool IsAnimationPlaying:               0x142B908, 0x180, 0x128, 0x80, 0x1D0, 0x8, 0x248, 0x240;
+    bool IsPortalLoading:                   0x142B740, 0x8, 0x10, 0x30, 0x1F8 0x28, 0x28;
+    bool IsEggsHatching: "fmodstudio.dll", 0x304A30, 0x88, 0x18, 0x158, 0x498, 0x108;
+    bool IsNotInWater:                     0x14BC6A0, 0x7C;
+    int IsFabiMenu:            "mono.dll", 0x296BC8, 0x20, 0xA58, 0x20; // 2 means that the esc menu is open
+    int IsPDAOpen:             "mono.dll", 0x2655E0, 0x40, 0x18, 0xA0, 0x920, 0x64; // true = 1051931443, false = 1056964608  
+    int IsCured:                           0x142B710, 0x38, 0x418, 0xE8, 0x20, 0x10, 0x10, 0xD8, 0x28, 0xA58;//1059857727 = true
+    int IsRocketGo:            "mono.dll", 0x27EAD8, 0x40, 0x70, 0x50, 0x90, 0x30, 0x8, 0x80;
+    int IsMovingX:                         0x13940D8, 0x840; //0 = false
+    int IsMovingZ:                         0x1443878, 0x8, 0x358, 0x3A8, 0x280, 0x2A8; //false = 0
+    float XCoord:                          0x142B8C8, 0x180, 0x40, 0xA8, 0x7C0; // 0 in menu
+    float YCoord:                          0x142B8C8, 0x180, 0x40, 0xA8, 0x7C4; //1.75 in menu
+    float ZCoord:                          0x142B8C8, 0x180, 0x40, 0xA8, 0x7C8; // 0 in menu
+    bool died:                             0x13B0650, 0x358, 0x8, 0x38, 0x0, 0x0, 0x108, 0x14;
+    string128 biome:                       0x142b908, 0x180, 0x128, 0x80, 0x1d0, 0x8, 0x248, 0x1d0, 0x14;
 } 
 
 state("Subnautica", "March 2023")
@@ -26,6 +28,8 @@ state("Subnautica", "March 2023")
     bool IsLoadingScreen:      "UnityPlayer.dll", 0x18AB2E0, 0x430, 0x8, 0x10, 0x48, 0x30, 0x7AC;
     bool IsAnimationPlaying:   "UnityPlayer.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x58, 0x28, 0x284;
     bool IsPortalLoading:      "UnityPlayer.dll", 0x17FBE70, 0x10, 0x10, 0x30, 0x1F8, 0x28, 0x28;
+    bool IsEggsHatching:        "fmodstudio.dll", 0x2CED70, 0x78, 0x18, 0x190, 0x4D8, 0xB0, 0x20, 0x28;
+    bool IsNotInWater:         "UnityPlayer.dll", 0x183AAD8, 0x5C0;
     int IsFabiMenu:         "mono-2.0-bdwgc.dll", 0x499C40, 0xE84;
     int IsPDAOpen:          "mono-2.0-bdwgc.dll", 0x499C40, 0xE84; // true = 1051931443, false = 1056964608    
     int IsCured:                "fmodstudio.dll", 0x2CED70, 0x78, 0x18, 0x190, 0x550, 0xB8, 0x20, 0x58;   
@@ -65,7 +69,6 @@ startup
     settings.CurrentDefaultParent = "GeneralSplits";
     settings.Add("HatchSplit", true, "Split on hatching eggs");
     settings.Add("CureSplit", true, "Split on Cure");
-    settings.Add("GunSplit", true, "Split on Gun deactivation");
     settings.Add("RocketSplit", true, "Split on Rocket launch");
 
     settings.CurrentDefaultParent = "Split";
@@ -73,31 +76,40 @@ startup
     settings.CurrentDefaultParent = "CreativeSplits";
     settings.Add("PCFSplit", true, "Split on PCF entrence tablet insert");
     settings.Add("PortalSplit", true, "Split on Portal entry");
+    settings.Add("GunSplit", true, "Split on Gun deactivation");
 
     settings.CurrentDefaultParent = "Split";
     settings.Add("SurvivalSplits", false, "Survival splits");
     settings.CurrentDefaultParent = "SurvivalSplits";
-    settings.Add("BaseSplit", true, "Split Base"); 
+    settings.Add("Glitched", false, "Glitched");
+    settings.CurrentDefaultParent = "Glitched";
+    settings.Add("SGBaseSplit", true, "Split Base"); 
     settings.Add("AuroraSplit", true, "Split Aurora");
     settings.Add("MountainSplit", true, "Split Mountain");
     settings.Add("ATPSplit", true, "Split Ion BP");
     settings.Add("GunDeathSplit", true, "Split Gun Death");
     settings.Add("SparseSplit", true, "Split Sparse");
+    settings.CurrentDefaultParent = "SurvivalSplits";
+    settings.Add("Glitchless", false, "Glitchless");
+    settings.CurrentDefaultParent = "Glitchless";
+    settings.Add("SGLBaseSplit", false, "Split Base");
 
     settings.SetToolTip("reset", "Resets when you come back to the main menu\nBoth reset check boxes have to be checked for the reset to work");
     settings.SetToolTip("load", "This will add time to the actual load times to match the IGT shown on Speedrun.com (can be up to 0.1s inaccurate)");
     settings.SetToolTip("FabricatorStart", "Only works on old patch for now");
-    settings.SetToolTip("BaseSplit", "Split when you die next to your main base(includes clip A and C)");
+    settings.SetToolTip("SGBaseSplit", "Split when you die next to your main base(includes clip A and C)");
     settings.SetToolTip("AuroraSplit", "Split when you die in the Aurora");
     settings.SetToolTip("MountainSplit", "Split when you descend under the arch after getting out of bounds");
     settings.SetToolTip("ATPSplit", "Split when you die in the Alien Thermal Plant");
     settings.SetToolTip("GunDeathSplit", "Split when you die in the Alien Gun Room");
     settings.SetToolTip("SparseSplit", "Split when you die in the biomes: Sea Treader Path or Sparse Reef");
+    settings.SetToolTip("SGLBaseSplit", "Split when you enter your main base near the seaglide wreck for the first time");
 
     vars.StartedBefore = 0;
     vars.CuredBefore = 0;
     vars.GunedBefore = 0;
     vars.DescendedBefore = 0;
+    vars.EnteredBaseBefore = 0;
     vars.counter = 0;
     vars.waitingFor1 = false;
     vars.waitingFor0 = false;
@@ -142,6 +154,7 @@ onStart
     vars.CuredBefore = 0;
     vars.GunedBefore = 0;
     vars.DescendedBefore = 0;
+    vars.EnteredBaseBefore = 0;
     vars.counter = 0;
     vars.waitingFor1 = false;
     vars.waitingFor0 = false;
@@ -149,7 +162,7 @@ onStart
 
 update
 {
-    //print(""+current.IsCured);
+    //print(""+current.IsPortalLoading);
     if(!current.NotMainMenu)
     {
         vars.CuredBefore = 0;
@@ -208,10 +221,10 @@ split
         }        
     }  
 
-    /*if(settings["HatchSplit"] && current.Hatched && current.Hatched != old.Hatched)
+    if(settings["HatchSplit"] && current.IsEggsHatching && current.IsEggsHatching != old.IsEggsHatching)
     {   
         return true;
-    }*/
+    }
 
     if(settings["CureSplit"] && current.IsCured != old.IsCured && vars.CuredBefore == 0)
     {
@@ -244,10 +257,10 @@ split
     }
 
 
-    if(settings["BaseSplit"] && current.died && current.died != old.died)
+    if(settings["SGBaseSplit"] && current.died && current.died != old.died)
     {
         var IsWithinBoundsClipC = vars.IsWithinBoundsFunc(-155, -133, -20, -10, 96, 73, current.XCoord, current.YCoord, current.ZCoord);
-        var IsWithinBoundsClipA = vars.IsWithinBoundsFunc(33, 65, -20, -8, 106, 101.5f, current.XCoord, current.YCoord, current.ZCoord);
+        var IsWithinBoundsClipA = vars.IsWithinBoundsFunc(33, 65, -20, -8, 118, 96, current.XCoord, current.YCoord, current.ZCoord);
         if(IsWithinBoundsClipC || IsWithinBoundsClipA)
         {
             return true;
@@ -287,6 +300,16 @@ split
     {
         return true;
     }
+
+    if(settings["SGLBaseSplit"] && current.IsNotInWater && current.IsNotInWater != old.IsNotInWater && vars.EnteredBaseBefore == 0)
+    {
+        var IsWithinBounds = vars.IsWithinBoundsFunc(20, 80, -45, -17, 290, 360, current.XCoord, current.YCoord, current.ZCoord);
+        if(IsWithinBounds)
+        {
+            vars.EnteredBaseBefore = 1;
+            return true;
+        }
+    }
 }
 
 reset
@@ -316,9 +339,9 @@ isLoading
     {
         if (current.IsPortalLoading && !old.IsPortalLoading)
         {
-            //var IsWithinBounds = vars.IsWithinBoundsFunc(240, 250, -1580, -1590, -2000, 2000, current.XCoord, current.YCoord, current.ZCoord);
-            //if(IsWithinBounds)
-            //{
+            var IsWithinBounds = vars.IsWithinBoundsFunc(240, 250, -1580, -1590, -2000, 2000, current.XCoord, current.YCoord, current.ZCoord);
+            if(IsWithinBounds)
+            {
                 vars.waitingFor1 = true;
                 vars.waitingFor0 = false;
                 if(version == "September 2018")
@@ -330,7 +353,7 @@ isLoading
                     vars.counter = 34;
                 }
                 
-            //}        
+            }        
         }
         else if (!current.IsPortalLoading && old.IsPortalLoading)
         {
