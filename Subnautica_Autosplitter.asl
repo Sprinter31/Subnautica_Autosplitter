@@ -8,7 +8,6 @@ state("Subnautica", "September 2018")
     bool IsPortalLoading:                  0x142B740, 0x8, 0x10, 0x30, 0x1F8, 0x28, 0x28;
     bool IsEggsHatching: "fmodstudio.dll", 0x304A30, 0x88, 0x18, 0x158, 0x498, 0x108;
     bool IsNotInWater:                     0x14BC6A0, 0x7C;
-    bool Ingame:         "fmodstudio.dll", 0x304A30, 0x50, 0x18, 0x158, 0x88, 0xF8; // 11 = true
     int IsFabiMenu:            "mono.dll", 0x296BC8, 0x20, 0xA58, 0x20; // 2 means that the esc menu is open
     int IsPDAOpen:             "mono.dll", 0x2655E0, 0x40, 0x18, 0xA0, 0x920, 0x64; // true = 1051931443, false = 1056964608  
     int IsCured:                           0x1445E08, 0xA8, 0x58, 0x110, 0x180, 0x160, 0x190, 0x20, 0xA58;//1059857727 = true //alt: 0x1445DF8, 0xA8, 0x58, 0x110, 0x180, 0x160, 0x190, 0x20, 0xA58;
@@ -36,6 +35,7 @@ state("Subnautica", "March 2023")
     int IsPDAOpen:          "mono-2.0-bdwgc.dll", 0x499C40, 0xE84; // true = 1051931443, false = 1056964608    
     int IsCured:                "fmodstudio.dll", 0x2CED70, 0x78, 0x18, 0x190, 0x550, 0xB8, 0x20, 0x58;   
     int IsRocketGo:            "UnityPlayer.dll", 0x17FC238, 0x10, 0x3C; //256 = true
+    int Oxygen:                "UnityPlayer.dll", 0x184DDD0, 0x60, 0x0, 0x0, 0x8, 0x38, 0x20, 0x30, 0x70;
     int IsMovingX:             "UnityPlayer.dll", 0x17FBC28, 0x30, 0x98; //false = 0
     int IsMovingZ:             "UnityPlayer.dll", 0x17FBC28, 0x30, 0x150; //false = 0
     float XCoord:              "UnityPlayer.dll", 0x17F2E30, 0x150, 0xA58; // 0 in menu
@@ -110,6 +110,7 @@ startup
     settings.SetToolTip("SparseSplit", "Split when you die in the biomes: Sea Treader Path or Sparse Reef");
     settings.SetToolTip("SGLBaseSplit", "Split when you enter your main base near the seaglide wreck for the first time");
 
+    vars.StartedOxygenBefore = 0;
     vars.StartedBefore = 0;
     vars.CuredBefore = 0;
     vars.GunedBefore = 0;
@@ -167,13 +168,10 @@ onStart
 
 update
 {
-    if(current.Ingame != old.Ingame)
-    {
-        print("woz"+current.Ingame);
-    }
-    //print(""+current.IsAnimationPlaying);
+    //print(""+current.Oxygen);
     if(!current.NotMainMenu)
     {
+        vars.StartedOxygenBefore = 0;
         vars.CuredBefore = 0;
         vars.StartedBefore = 0;
     }
@@ -185,8 +183,9 @@ start
     {
         return true;
     }
-    if(settings["OxygenStart"] && current.Oxygen == 45 && old.Oxygen != current.Oxygen && current.Biome == "Lifepod")
+    if(settings["OxygenStart"] && current.Oxygen == 45 && old.Oxygen != current.Oxygen && current.Biome == "Lifepod" && vars.StartedOxygenBefore == 0)
     {
+        vars.StartedOxygenBefore = 1;
         return true;
     }
 
