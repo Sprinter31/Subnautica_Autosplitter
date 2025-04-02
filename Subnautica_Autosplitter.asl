@@ -179,7 +179,7 @@ update
 
 start
 {
-    if(settings["IntroStart"] && current.introCinematicActive && !old.introCinematicActive)
+    if(settings["IntroStart"] && !current.introCinematicActive && old.introCinematicActive)
     {
         return true;
     }
