@@ -4,21 +4,23 @@ state("Subnautica", "September 2018")
     bool introCinematicActive:             0x142B908, 0x188, 0x150, 0xD0, 0x18, 0x1E8, 0x28, 0x86;
     bool NotMainMenu:          "mono.dll", 0x262A68, 0x80, 0xED8;
     bool IsLoadingScreen:      "mono.dll", 0x266180, 0x50, 0x2C0, 0x0, 0x30, 0x8, 0x18, 0x20, 0x10, 0x44;
-    bool IsAnimationPlaying:               0x142B908, 0x180, 0x128, 0x80, 0x1D0, 0x8, 0x248, 0x240;
+    bool IsAnimationPlaying:               0x142B740, 0x8, 0x8, 0x10, 0x30, 0xD8, 0x28, 0x6C;
     bool IsPortalLoading:                  0x142B740, 0x8, 0x10, 0x30, 0x1F8, 0x28, 0x28;
     bool IsEggsHatching: "fmodstudio.dll", 0x304A30, 0x88, 0x18, 0x158, 0x498, 0x108;
     bool IsNotInWater:                     0x14BC6A0, 0x7C;
+    bool Ingame:         "fmodstudio.dll", 0x304A30, 0x50, 0x18, 0x158, 0x88, 0xF8; // 11 = true
     int IsFabiMenu:            "mono.dll", 0x296BC8, 0x20, 0xA58, 0x20; // 2 means that the esc menu is open
     int IsPDAOpen:             "mono.dll", 0x2655E0, 0x40, 0x18, 0xA0, 0x920, 0x64; // true = 1051931443, false = 1056964608  
-    int IsCured:                           0x142B710, 0x38, 0x418, 0xE8, 0x20, 0x10, 0x10, 0xD8, 0x28, 0xA58;//1059857727 = true
+    int IsCured:                           0x1445E08, 0xA8, 0x58, 0x110, 0x180, 0x160, 0x190, 0x20, 0xA58;//1059857727 = true //alt: 0x1445DF8, 0xA8, 0x58, 0x110, 0x180, 0x160, 0x190, 0x20, 0xA58;
     int IsRocketGo:            "mono.dll", 0x27EAD8, 0x40, 0x70, 0x50, 0x90, 0x30, 0x8, 0x80;
+    int Oxygen:                            0x142ADA8, 0x8, 0x10, 0x30, 0x30, 0x18, 0x28, 0x70;
     int IsMovingX:                         0x13940D8, 0x840; //0 = false
     int IsMovingZ:                         0x1443878, 0x8, 0x358, 0x3A8, 0x280, 0x2A8; //false = 0
     float XCoord:                          0x142B8C8, 0x180, 0x40, 0xA8, 0x7C0; // 0 in menu
     float YCoord:                          0x142B8C8, 0x180, 0x40, 0xA8, 0x7C4; //1.75 in menu
     float ZCoord:                          0x142B8C8, 0x180, 0x40, 0xA8, 0x7C8; // 0 in menu
     bool died:                             0x13B0650, 0x358, 0x8, 0x38, 0x0, 0x0, 0x108, 0x14;
-    string128 biome:                       0x142b908, 0x180, 0x128, 0x80, 0x1d0, 0x8, 0x248, 0x1d0, 0x14;
+    string128 Biome:                       0x142b908, 0x180, 0x128, 0x80, 0x1d0, 0x8, 0x248, 0x1d0, 0x14;
 } 
 
 state("Subnautica", "March 2023")
@@ -50,33 +52,34 @@ startup
     
     settings.Add("Start");
     settings.CurrentDefaultParent = "Start";
-    settings.Add("CreativeStarts", true, "Creative starts");
+    settings.Add("CreativeStarts", false, "Creative starts");
     settings.CurrentDefaultParent = "CreativeStarts";
-    settings.Add("MovedStart", true, "Start when you move");
-    settings.Add("FabricatorStart", true, "Start when you interact with the fabricator");
-    settings.Add("PDAStart", true, "Start when you open your PDA");
+    settings.Add("MovedStart", false, "Start when you move");
+    settings.Add("FabricatorStart", false, "Start when you interact with the fabricator");
+    settings.Add("PDAStart", false, "Start when you open your PDA");
 
     settings.CurrentDefaultParent = "Start";
-    settings.Add("SurvivalStarts", true, "Survival starts");
+    settings.Add("SurvivalStarts", false, "Survival starts");
     settings.CurrentDefaultParent = "SurvivalStarts";
-    settings.Add("IntroStart", true, "Start after the intro animation");
+    settings.Add("IntroStart", false, "Start after the intro animation");
+    settings.Add("OxygenStart", true, "Start when your oxygen sets to 45");
     
     settings.CurrentDefaultParent = null;
     settings.Add("Split");
     settings.CurrentDefaultParent = "Split";
-    settings.Add("GeneralSplits", true, "General splits");
+    settings.Add("GeneralSplits", false, "General splits");
 
     settings.CurrentDefaultParent = "GeneralSplits";
-    settings.Add("HatchSplit", true, "Split on hatching eggs");
-    settings.Add("CureSplit", true, "Split on Cure");
+    settings.Add("HatchSplit", false, "Split on hatching eggs");
+    settings.Add("CureSplit", false, "Split on Cure");
     settings.Add("RocketSplit", true, "Split on Rocket launch");
 
     settings.CurrentDefaultParent = "Split";
-    settings.Add("CreativeSplits", true, "Creative splits");
+    settings.Add("CreativeSplits", false, "Creative splits");
     settings.CurrentDefaultParent = "CreativeSplits";
-    settings.Add("PCFSplit", true, "Split on PCF entrence tablet insert");
-    settings.Add("PortalSplit", true, "Split on Portal entry");
-    settings.Add("GunSplit", true, "Split on Gun deactivation");
+    settings.Add("PCFSplit", false, "Split on PCF entrence tablet insert");
+    settings.Add("PortalSplit", false, "Split on Portal entry");
+    settings.Add("GunSplit", false, "Split on Gun deactivation");
 
     settings.CurrentDefaultParent = "Split";
     settings.Add("SurvivalSplits", false, "Survival splits");
@@ -97,6 +100,8 @@ startup
     settings.SetToolTip("reset", "Resets when you come back to the main menu\nBoth reset check boxes have to be checked for the reset to work");
     settings.SetToolTip("load", "This will add time to the actual load times to match the IGT shown on Speedrun.com (can be up to 0.1s inaccurate)");
     settings.SetToolTip("FabricatorStart", "Only works on old patch for now");
+    settings.SetToolTip("IntroStart", "The intro needs to start for this to work so start by oxygen is better");
+    settings.SetToolTip("OxygenStart", "Only in lifepod");
     settings.SetToolTip("SGBaseSplit", "Split when you die next to your main base(includes clip A and C)");
     settings.SetToolTip("AuroraSplit", "Split when you die in the Aurora");
     settings.SetToolTip("MountainSplit", "Split when you descend under the arch after getting out of bounds");
@@ -162,7 +167,11 @@ onStart
 
 update
 {
-    //print(""+current.IsPortalLoading);
+    if(current.Ingame != old.Ingame)
+    {
+        print("woz"+current.Ingame);
+    }
+    //print(""+current.IsAnimationPlaying);
     if(!current.NotMainMenu)
     {
         vars.CuredBefore = 0;
@@ -172,31 +181,38 @@ update
 
 start
 {
-    if(settings["IntroStart"] && old.introCinematicActive && !current.introCinematicActive)
+    if(settings["IntroStart"] && current.introCinematicActive && !old.introCinematicActive)
+    {
+        return true;
+    }
+    if(settings["OxygenStart"] && current.Oxygen == 45 && old.Oxygen != current.Oxygen && current.Biome == "Lifepod")
     {
         return true;
     }
 
-    if(vars.StartedBefore == 0 && current.NotMainMenu)
+    if(!current.IsLoadingScreen && current.NotMainMenu)
     {
         if(settings["MovedStart"] && (current.IsMovingX != 0 && old.IsMovingX == 0 || current.IsMovingZ != 0 && old.IsMovingZ == 0))
         {
+            print("start of move");
             vars.StartedBefore = 1;
             return true;
         }
-    }
 
-    if(settings["FabricatorStart"] && current.IsFabiMenu == 1 && current.IsFabiMenu != old.IsFabiMenu)
-    {
-        vars.StartedBefore = 1;
-        return true;
-    }
+        if(settings["FabricatorStart"] && current.IsFabiMenu == 1 && current.IsFabiMenu != old.IsFabiMenu)
+        {
+            print("start of fabbi");
+            vars.StartedBefore = 1;
+            return true;
+        }
 
-    if(settings["PDAStart"] && current.IsPDAOpen == 1051931443 && current.IsPDAOpen != old.IsPDAOpen && !current.IsLoadingScreen)
-    {
-        vars.StartedBefore = 1;
-        return true;
-    }
+        if(settings["PDAStart"] && current.IsPDAOpen == 1051931443 && current.IsPDAOpen != old.IsPDAOpen)
+        {
+            print("start of pda");
+            vars.StartedBefore = 1;
+            return true;
+        }
+    } 
 }   
 
 
@@ -267,7 +283,7 @@ split
         }
     }
 
-    if(settings["AuroraSplit"] && current.died && current.died != old.died && current.biome == "crashedShip")
+    if(settings["AuroraSplit"] && current.died && current.died != old.died && current.Biome == "crashedShip")
     {
         return true;
     }
@@ -285,18 +301,18 @@ split
     }
 
     if(settings["ATPSplit"] && current.died && current.died != old.died && 
-      (new[] { "Precursor_LavaCastleBase", "ILZCastleChamber", "PrecursorThermalRoom" }.Contains((string)current.biome)))
+      (new[] { "Precursor_LavaCastleBase", "ILZCastleChamber", "PrecursorThermalRoom" }.Contains((string)current.Biome)))
     {
         return true;
     }
 
-    if(settings["GunDeathSplit"] && current.died && current.died != old.died && current.biome == "Precursor_Gun_ControlRoom")
+    if(settings["GunDeathSplit"] && current.died && current.died != old.died && current.Biome == "Precursor_Gun_ControlRoom")
     {
         return true;    
     }
 
     if(settings["SparseSplit"] && current.died && current.died != old.died &&
-    (new[] { "sparseReef", "seaTreaderPath", "seaTreaderPath_wreck" }.Contains((string)current.biome)))
+    (new[] { "sparseReef", "seaTreaderPath", "seaTreaderPath_wreck" }.Contains((string)current.Biome)))
     {
         return true;
     }
@@ -346,7 +362,7 @@ isLoading
                 vars.waitingFor0 = false;
                 if(version == "September 2018")
                 {
-                    vars.counter = 31;
+                    vars.counter = 29;
                 }
                 else
                 {
@@ -361,7 +377,7 @@ isLoading
             vars.waitingFor1 = false;
             if(version == "September 2018")
             {
-                vars.counter = 20;
+                vars.counter = 22;
             }
             else
             {
