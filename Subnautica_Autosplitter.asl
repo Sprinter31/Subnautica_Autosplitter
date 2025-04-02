@@ -143,14 +143,14 @@ init
     {
         case 23801856:
             version = "September 2018";
-            print("Version is sept 2018");
+            print("[Autosplitter] Version is sept 2018");
             break;
         case 675840:
             version = "March 2023";
-            print("Version is mar 2023");
+            print("[Autosplitter] Version is mar 2023");
             break;
         default:
-            print("No valid version found");
+            print("[Autosplitter] No valid version found");
             break;
     }
 }
@@ -168,7 +168,9 @@ onStart
 
 update
 {
-    //print(""+current.Oxygen);
+    if(current.Oxygen != old.Oxygen)
+    print("oxygen: "+current.Oxygen + " StartedOxygenBefore: " + vars.StartedOxygenBefore + "\n" + "biome: "+current.Biome + "\n" + "NotMainMenu: " + current.NotMainMenu + "\n" + "");
+
     if(!current.NotMainMenu)
     {
         vars.StartedOxygenBefore = 0;
@@ -181,10 +183,12 @@ start
 {
     if(settings["IntroStart"] && !current.introCinematicActive && old.introCinematicActive)
     {
+        print("[Autosplitter] start of intro");
         return true;
     }
-    if(settings["OxygenStart"] && current.Oxygen == 45 && old.Oxygen != current.Oxygen && current.Biome == "Lifepod" && vars.StartedOxygenBefore == 0)
+    if(settings["OxygenStart"] && current.Oxygen == 45 && old.Oxygen != current.Oxygen && vars.StartedOxygenBefore == 0)
     {
+        print("[Autosplitter] start of oxygen");
         vars.StartedOxygenBefore = 1;
         return true;
     }
@@ -193,21 +197,21 @@ start
     {
         if(settings["MovedStart"] && (current.IsMovingX != 0 && old.IsMovingX == 0 || current.IsMovingZ != 0 && old.IsMovingZ == 0))
         {
-            print("start of move");
+            print("[Autosplitter] start of move");
             vars.StartedBefore = 1;
             return true;
         }
 
         if(settings["FabricatorStart"] && current.IsFabiMenu == 1 && current.IsFabiMenu != old.IsFabiMenu)
         {
-            print("start of fabbi");
+            print("[Autosplitter] start of fabbi");
             vars.StartedBefore = 1;
             return true;
         }
 
         if(settings["PDAStart"] && current.IsPDAOpen == 1051931443 && current.IsPDAOpen != old.IsPDAOpen)
         {
-            print("start of pda");
+            print("[Autosplitter] start of pda");
             vars.StartedBefore = 1;
             return true;
         }
@@ -222,7 +226,7 @@ split
         var IsWithinBounds = vars.IsWithinBoundsFunc(216, 224, -1445, -1452, -267, -276, current.XCoord, current.YCoord, current.ZCoord);
         if(IsWithinBounds)
         {
-            print("PCF split");
+            print("[Autosplitter] PCF split");
             return true;
         }        
     }
@@ -231,13 +235,14 @@ split
         var IsWithinBounds = vars.IsWithinBoundsFunc(240, 250, -1580, -1590, -2000, 2000, current.XCoord, current.YCoord, current.ZCoord);
         if(IsWithinBounds)
         {
-            print("Portal split");
+            print("[Autosplitter] Portal split");
             return true;
         }        
     }  
 
     if(settings["HatchSplit"] && current.IsEggsHatching && current.IsEggsHatching != old.IsEggsHatching)
     {   
+        print("[Autosplitter] Hatch split");
         return true;
     }
 
@@ -245,7 +250,7 @@ split
     {
         if(current.IsCured == 1059857727 || current.IsCured == 1)
         {
-            print("Cure split");
+            print("[Autosplitter] Cure split");
             vars.CuredBefore = 1;
             return true;
         }          
@@ -256,7 +261,7 @@ split
         var IsWithinBounds = vars.IsWithinBoundsFunc(359, 365, -66, -75, 1079, 1085, current.XCoord, current.YCoord, current.ZCoord);     
         if(IsWithinBounds)
         {                  
-            print("Gun split");
+            print("[Autosplitter] Gun split");
             vars.GunedBefore = 1;
             return true;
         }            
@@ -266,7 +271,7 @@ split
     {    
         if(current.IsRocketGo == 1 || current.IsRocketGo == 256 || current.IsRocketGo == 244)
         {
-            print("Rocket split");
+            print("[Autosplitter] Rocket split");
             return true;
         }           
     }
@@ -278,6 +283,7 @@ split
         var IsWithinBoundsClipA = vars.IsWithinBoundsFunc(33, 65, -20, -8, 118, 96, current.XCoord, current.YCoord, current.ZCoord);
         if(IsWithinBoundsClipC || IsWithinBoundsClipA)
         {
+            print("[Autosplitter] Base split 2023");
             return true;
         }
     }
