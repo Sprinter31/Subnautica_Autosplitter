@@ -47,69 +47,135 @@ state("Subnautica", "March 2023")
 
 startup
 {   
+    var categoryName = timer.Run.CategoryName.ToString();
+
     settings.Add("reset", false, "Reset");
     settings.Add("load", true, "SRC loadtimes");
-    
-    settings.Add("Start");
-    settings.CurrentDefaultParent = "Start";
-    settings.Add("CreativeStarts", false, "Creative starts");
-    settings.CurrentDefaultParent = "CreativeStarts";
-    settings.Add("MovedStart", false, "Start when you move");
-    settings.Add("FabricatorStart", false, "Start when you interact with the fabricator");
-    settings.Add("PDAStart", false, "Start when you open your PDA");
-
-    settings.CurrentDefaultParent = "Start";
-    settings.Add("SurvivalStarts", false, "Survival starts");
-    settings.CurrentDefaultParent = "SurvivalStarts";
-    settings.Add("IntroStart", false, "Start after the intro animation");
-    settings.Add("OxygenStart", true, "Start when your oxygen sets to 45");
-    
-    settings.CurrentDefaultParent = null;
-    settings.Add("Split");
-    settings.CurrentDefaultParent = "Split";
-    settings.Add("GeneralSplits", false, "General splits");
-
-    settings.CurrentDefaultParent = "GeneralSplits";
-    settings.Add("HatchSplit", false, "Split on hatching eggs");
-    settings.Add("CureSplit", false, "Split on Cure");
-    settings.Add("RocketSplit", true, "Split on Rocket launch");
-
-    settings.CurrentDefaultParent = "Split";
-    settings.Add("CreativeSplits", false, "Creative splits");
-    settings.CurrentDefaultParent = "CreativeSplits";
-    settings.Add("PCFSplit", false, "Split on PCF entrence tablet insert");
-    settings.Add("PortalSplit", false, "Split on Portal entry");
-    settings.Add("GunSplit", false, "Split on Gun deactivation");
-
-    settings.CurrentDefaultParent = "Split";
-    settings.Add("SurvivalSplits", false, "Survival splits");
-    settings.CurrentDefaultParent = "SurvivalSplits";
-    settings.Add("Glitched", false, "Glitched");
-    settings.CurrentDefaultParent = "Glitched";
-    settings.Add("SGBaseSplit", true, "Split Base"); 
-    settings.Add("AuroraSplit", true, "Split Aurora");
-    settings.Add("MountainSplit", true, "Split Mountain");
-    settings.Add("ATPSplit", true, "Split Ion BP");
-    settings.Add("GunDeathSplit", true, "Split Gun Death");
-    settings.Add("SparseSplit", true, "Split Sparse");
-    settings.CurrentDefaultParent = "SurvivalSplits";
-    settings.Add("Glitchless", false, "Glitchless");
-    settings.CurrentDefaultParent = "Glitchless";
-    settings.Add("SGLBaseSplit", false, "Split Base");
-
     settings.SetToolTip("reset", "Resets when you come back to the main menu\nBoth reset check boxes have to be checked for the reset to work");
     settings.SetToolTip("load", "This will add time to the actual load times to match the IGT shown on Speedrun.com (can be up to 0.1s inaccurate)");
-    settings.SetToolTip("FabricatorStart", "Only works on old patch for now");
-    settings.SetToolTip("IntroStart", "The intro needs to start for this to work so start by oxygen is better");
-    settings.SetToolTip("OxygenStart", "Only in lifepod");
-    settings.SetToolTip("SGBaseSplit", "Split when you die next to your main base(includes clip A and C)");
-    settings.SetToolTip("AuroraSplit", "Split when you die in the Aurora");
-    settings.SetToolTip("MountainSplit", "Split when you descend under the arch after getting out of bounds");
-    settings.SetToolTip("ATPSplit", "Split when you die in the Alien Thermal Plant");
-    settings.SetToolTip("GunDeathSplit", "Split when you die in the Alien Gun Room");
-    settings.SetToolTip("SparseSplit", "Split when you die in the biomes: Sea Treader Path or Sparse Reef");
-    settings.SetToolTip("SGLBaseSplit", "Split when you enter your main base near the seaglide wreck for the first time");
+    
+    if(categoryName.IndexOf("Creative", StringComparison.OrdinalIgnoreCase) >= 0 &&
+       categoryName.IndexOf("Any%", StringComparison.OrdinalIgnoreCase) >= 0)
+       {
+            settings.Add("Start");
+            settings.CurrentDefaultParent = "Start";
+            settings.Add("MovedStart", true, "Start when you move");
+            settings.Add("FabricatorStart", true, "Start when you interact with the fabricator");
+            settings.SetToolTip("FabricatorStart", "Only works on old patch for now");
+            settings.Add("PDAStart", true, "Start when you open your PDA");
 
+            settings.CurrentDefaultParent = null;
+            settings.Add("Split");
+            settings.CurrentDefaultParent = "Split";
+            settings.Add("PCFSplit", true, "Split on PCF entrence tablet insert");
+            settings.Add("PortalSplit", true, "Split on Portal entry");
+            settings.Add("HatchSplit", false, "Split on hatching eggs");
+            settings.Add("CureSplit", true, "Split on Cure");     
+            settings.Add("GunSplit", true, "Split on Gun deactivation");
+            settings.Add("RocketSplit", true, "Split on Rocket launch");
+       }
+       else if(categoryName.IndexOf("Survival", StringComparison.OrdinalIgnoreCase) >= 0 &&
+               categoryName.IndexOf("Any%", StringComparison.OrdinalIgnoreCase) >= 0)
+       {
+            settings.Add("Start");
+            settings.CurrentDefaultParent = "Start";
+            settings.Add("IntroStart", false, "Start after the intro animation");
+            settings.Add("OxygenStart", true, "Start when your oxygen sets to 45");
+            settings.SetToolTip("IntroStart", "The intro needs to start for this to work so start by oxygen is better");
+            settings.SetToolTip("OxygenStart", "Only in lifepod");
+
+            settings.CurrentDefaultParent = null;
+            settings.Add("Split");
+            settings.CurrentDefaultParent = "Split";
+            settings.Add("RocketSplit", true, "Split on Rocket launch");
+            settings.Add("Glitched", false, "Glitched");
+            settings.CurrentDefaultParent = "Glitched";
+            settings.Add("SGBaseSplit", true, "Split Base"); 
+            settings.Add("AuroraSplit", true, "Split Aurora");
+            settings.Add("MountainSplit", true, "Split Mountain");
+            settings.Add("ATPSplit", true, "Split Ion BP");
+            settings.Add("HatchSplit", false, "Split on hatching eggs");
+            settings.Add("GunDeathSplit", true, "Split Gun Death");
+            settings.Add("SGSparseSplit", true, "Split Sparse");
+            settings.SetToolTip("SGBaseSplit", "Split when you die next to your main base(includes clip A and C)");
+            settings.SetToolTip("AuroraSplit", "Split when you die in the Aurora");
+            settings.SetToolTip("MountainSplit", "Split when you descend under the arch after getting out of bounds");
+            settings.SetToolTip("ATPSplit", "Split when you die in the Alien Thermal Plant");
+            settings.SetToolTip("GunDeathSplit", "Split when you die in the Alien Gun Room");
+            settings.SetToolTip("SGSparseSplit", "Split when you die in the biomes: Sea Treader Path or Sparse Reef");
+
+            settings.CurrentDefaultParent = "Split";
+            settings.Add("Glitchless", false, "Glitchless");
+            settings.CurrentDefaultParent = "Glitchless";
+            settings.Add("SGLBaseSplit", true, "Split Base");
+            settings.SetToolTip("SGLBaseSplit", "Split when you enter your main base near the seaglide wreck for the first time");
+            settings.Add("SGLSparseSplit", true, "Split Sparse");
+       }
+       else
+       {
+        settings.Add("Start");
+        settings.CurrentDefaultParent = "Start";
+        settings.Add("CreativeStarts", false, "Creative starts");
+        settings.CurrentDefaultParent = "CreativeStarts";
+        settings.Add("MovedStart", true, "Start when you move");
+        settings.Add("FabricatorStart", true, "Start when you interact with the fabricator");
+        settings.Add("PDAStart", true, "Start when you open your PDA");
+
+        settings.CurrentDefaultParent = "Start";
+        settings.Add("SurvivalStarts", false, "Survival starts");
+        settings.CurrentDefaultParent = "SurvivalStarts";
+        settings.Add("IntroStart", false, "Start after the intro animation");
+        settings.Add("OxygenStart", true, "Start when your oxygen sets to 45");
+    
+        settings.CurrentDefaultParent = null;
+        settings.Add("Split");
+        settings.CurrentDefaultParent = "Split";
+        settings.Add("GeneralSplits", true, "General splits");
+
+        settings.CurrentDefaultParent = "GeneralSplits";
+        settings.Add("HatchSplit", false, "Split on hatching eggs");
+        settings.Add("CureSplit", false, "Split on Cure");
+        settings.Add("RocketSplit", true, "Split on Rocket launch");
+        settings.Add("DeathSplit", false, "Split on death");
+
+        settings.CurrentDefaultParent = "Split";
+        settings.Add("CreativeSplits", false, "Creative splits");
+        settings.CurrentDefaultParent = "CreativeSplits";
+        settings.Add("PCFSplit", true, "Split on PCF entrence tablet insert");
+        settings.Add("PortalSplit", true, "Split on Portal entry");
+        settings.Add("GunSplit", true, "Split on Gun deactivation");
+
+        settings.CurrentDefaultParent = "Split";
+        settings.Add("SurvivalSplits", true, "Survival splits");
+        settings.CurrentDefaultParent = "SurvivalSplits";
+        settings.Add("Glitched", false, "Glitched");
+        settings.CurrentDefaultParent = "Glitched";
+        settings.Add("SGBaseSplit", true, "Split Base"); 
+        settings.Add("AuroraSplit", true, "Split Aurora");
+        settings.Add("MountainSplit", true, "Split Mountain");
+        settings.Add("ATPSplit", true, "Split Ion BP");
+        settings.Add("GunDeathSplit", true, "Split Gun Death");
+        settings.Add("SGSparseSplit", true, "Split Sparse");
+        settings.CurrentDefaultParent = "SurvivalSplits";
+        settings.Add("Glitchless", false, "Glitchless");
+        settings.CurrentDefaultParent = "Glitchless";
+        settings.Add("SGLBaseSplit", true, "Split Base");
+        settings.Add("SGLSparseSplit", true, "Split Sparse");
+
+        settings.SetToolTip("reset", "Resets when you come back to the main menu\nBoth reset check boxes have to be checked for the reset to work");
+        settings.SetToolTip("load", "This will add time to the actual load times to match the IGT shown on Speedrun.com (can be up to 0.1s inaccurate)");
+        settings.SetToolTip("FabricatorStart", "Only works on old patch for now");
+        settings.SetToolTip("IntroStart", "The intro needs to start for this to work so start by oxygen is better");
+        settings.SetToolTip("OxygenStart", "Only in lifepod");
+        settings.SetToolTip("SGBaseSplit", "Split when you die next to your main base(includes clip A and C)");
+        settings.SetToolTip("AuroraSplit", "Split when you die in the Aurora");
+        settings.SetToolTip("MountainSplit", "Split when you descend under the arch after getting out of bounds");
+        settings.SetToolTip("ATPSplit", "Split when you die in the Alien Thermal Plant");
+        settings.SetToolTip("GunDeathSplit", "Split when you die in the Alien Gun Room");
+        settings.SetToolTip("SGSparseSplit", "Split when you die in the biomes: Sea Treader Path or Sparse Reef");
+        settings.SetToolTip("SGLBaseSplit", "Split when you enter your main base near the seaglide wreck for the first time");
+        }
+        
     vars.StartedOxygenBefore = 0;
     vars.StartedBefore = 0;
     vars.CuredBefore = 0;
@@ -168,9 +234,12 @@ onStart
 
 update
 {
-    if(current.Oxygen != old.Oxygen)
-    print("oxygen: "+current.Oxygen + " StartedOxygenBefore: " + vars.StartedOxygenBefore + "\n" + "biome: "+current.Biome + "\n" + "NotMainMenu: " + current.NotMainMenu + "\n" + "");
-
+    //if(current.Oxygen != old.Oxygen)
+    //print("oxygen: "+current.Oxygen + " StartedOxygenBefore: " + vars.StartedOxygenBefore + "\n" + "biome: "+current.Biome + "\n" + "NotMainMenu: " + current.NotMainMenu + "\n" + "");
+    if(current.Biome != old.Biome){
+        print(""+current.Biome);
+    }
+    
     if(!current.NotMainMenu)
     {
         vars.StartedOxygenBefore = 0;
@@ -276,6 +345,12 @@ split
         }           
     }
 
+    if(settings["DeathSplit"] && current.died && !old.died)
+    {        
+        print("[Autosplitter] death split");
+        return true;
+    }
+
 
     if(settings["SGBaseSplit"] && current.died && current.died != old.died)
     {
@@ -283,13 +358,14 @@ split
         var IsWithinBoundsClipA = vars.IsWithinBoundsFunc(33, 65, -20, -8, 118, 96, current.XCoord, current.YCoord, current.ZCoord);
         if(IsWithinBoundsClipC || IsWithinBoundsClipA)
         {
-            print("[Autosplitter] Base split 2023");
+            print("[Autosplitter] Base split");
             return true;
         }
     }
 
     if(settings["AuroraSplit"] && current.died && current.died != old.died && current.Biome == "crashedShip")
     {
+        print("[Autosplitter] Aurora split");
         return true;
     }
 
@@ -299,6 +375,7 @@ split
         var IsWithinBounds = vars.IsWithinBoundsFunc(521, 534, -190.6f, -210, 764.3f, 796.4f, current.XCoord, current.YCoord, current.ZCoord);
         if(IsWithinBounds)
         {
+            print("[Autosplitter] Mountain split");
             vars.DescendedBefore = 1;
             return true;
         }
@@ -308,17 +385,20 @@ split
     if(settings["ATPSplit"] && current.died && current.died != old.died && 
       (new[] { "Precursor_LavaCastleBase", "ILZCastleChamber", "PrecursorThermalRoom" }.Contains((string)current.Biome)))
     {
+        print("[Autosplitter] ATP split split");
         return true;
     }
 
     if(settings["GunDeathSplit"] && current.died && current.died != old.died && current.Biome == "Precursor_Gun_ControlRoom")
     {
+        print("[Autosplitter] GunDeath split");
         return true;    
     }
 
-    if(settings["SparseSplit"] && current.died && current.died != old.died &&
+    if(settings["SGSparseSplit"] && current.died && current.died != old.died &&
     (new[] { "sparseReef", "seaTreaderPath", "seaTreaderPath_wreck" }.Contains((string)current.Biome)))
     {
+        print("[Autosplitter] sparse split");
         return true;
     }
 
@@ -327,9 +407,18 @@ split
         var IsWithinBounds = vars.IsWithinBoundsFunc(20, 80, -45, -17, 290, 360, current.XCoord, current.YCoord, current.ZCoord);
         if(IsWithinBounds)
         {
+            print("[Autosplitter] Base split 2023");
             vars.EnteredBaseBefore = 1;
             return true;
         }
+    }
+
+    if(settings["SGLSparseSplit"] && 
+      (new[] { "sparseReef", "seaTreaderPath", "seaTreaderPath_wreck" }.Contains((string)old.Biome) && 
+      (new[] { "safeShallows", "kelpForest" }.Contains((string)current.Biome))))
+    {
+        print("[Autosplitter] Sparse split 2023");
+        return true;
     }
 }
 
