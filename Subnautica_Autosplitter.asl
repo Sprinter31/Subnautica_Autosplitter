@@ -55,7 +55,7 @@ startup
     settings.SetToolTip("load", "This will add time to the actual load times to match the IGT shown on Speedrun.com (can be up to 0.1s inaccurate)");
     
     if(vars.categoryName.IndexOf("Creative", StringComparison.OrdinalIgnoreCase) >= 0 &&
-       vars.ategoryName.IndexOf("Any%", StringComparison.OrdinalIgnoreCase) >= 0)
+       vars.categoryName.IndexOf("Any%", StringComparison.OrdinalIgnoreCase) >= 0)
        {
             settings.Add("Start");
             settings.CurrentDefaultParent = "Start";
