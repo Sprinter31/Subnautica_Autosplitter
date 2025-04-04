@@ -111,6 +111,7 @@ startup
             settings.Add("SGLBaseSplit", true, "Split Base");
             settings.SetToolTip("SGLBaseSplit", "Split when you enter your main base near the seaglide wreck for the first time");
             settings.Add("SGLSparseSplit", true, "Split Sparse");
+            settings.Add("SGLAuroraSplit", true, "Split Aurora");
        }
        else
        {
@@ -162,6 +163,7 @@ startup
         settings.CurrentDefaultParent = "Glitchless";
         settings.Add("SGLBaseSplit", true, "Split Base");
         settings.Add("SGLSparseSplit", true, "Split Sparse");
+        settings.Add("SGLAuroraSplit", true, "Split Aurora");
 
         settings.SetToolTip("reset", "Resets when you come back to the main menu\nBoth reset check boxes have to be checked for the reset to work");
         settings.SetToolTip("load", "This will add time to the actual load times to match the IGT shown on Speedrun.com (can be up to 0.1s inaccurate)");
@@ -240,7 +242,7 @@ update
     if(current.Biome != old.Biome){
         print(""+current.Biome);
     }
-    
+    //print(""+current.IsRocketGo);
     if(!current.NotMainMenu)
     {
         vars.StartedOxygenBefore = 0;
@@ -338,7 +340,7 @@ split
     if(vars.categoryName.IndexOf("Creative", StringComparison.OrdinalIgnoreCase) >= 0 &&
        vars.categoryName.IndexOf("Any%", StringComparison.OrdinalIgnoreCase) >= 0)
     {
-    if(settings["PCFSplit"] && current.IsAnimationPlaying && current.IsAnimationPlaying != old.IsAnimationPlaying)
+    if(settings["PCFSplit"] && current.IsAnimationPlaying && !old.IsAnimationPlaying)
     {
         var IsWithinBounds = vars.IsWithinBoundsFunc(216, 224, -1445, -1452, -267, -276, current.XCoord, current.YCoord, current.ZCoord);
         if(IsWithinBounds)
@@ -486,6 +488,16 @@ split
         print("[Autosplitter] Sparse split 2023");
         return true;
     }
+
+    if(settings["RocketSplit"] && current.IsRocketGo != old.IsRocketGo)
+    {    
+        if(current.IsRocketGo == 1 || current.IsRocketGo == 256 || current.IsRocketGo == 244)
+        {
+            print("[Autosplitter] Rocket split");
+            return true;
+        }           
+    }
+
     }
     else
     {
@@ -617,6 +629,13 @@ split
       (new[] { "safeShallows", "kelpForest" }.Contains((string)current.Biome))))
     {
         print("[Autosplitter] Sparse split 2023");
+        return true;
+    }
+    if(settings["SGLAuroraSplit"] && 
+      (old.Biome.Contains("crashedShip")) && 
+      (new[] { "safeShallows", "kelpForest" }.Contains((string)current.Biome)))
+    {
+        print("[Autosplitter] Aurora split 2023");
         return true;
     }
     }
