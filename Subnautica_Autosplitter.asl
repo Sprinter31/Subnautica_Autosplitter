@@ -51,7 +51,7 @@ startup
 
     settings.Add("reset", false, "Reset");
     settings.Add("load", true, "SRC loadtimes");
-    settings.SetToolTip("reset", "Resets when you come back to the main menu\nBoth reset check boxes have to be checked for the reset to work");
+    settings.SetToolTip("reset", "Resets when you come back to the main menu and might randomly reset when you drop a lead?(needs more testing)\nBoth reset check boxes have to be checked for the reset to work");
     settings.SetToolTip("load", "This will add time to the actual load times to match the IGT shown on Speedrun.com (can be up to 0.1s inaccurate)");
     
     if(vars.categoryName.IndexOf("Creative", StringComparison.OrdinalIgnoreCase) >= 0 &&
@@ -114,6 +114,8 @@ startup
             settings.SetToolTip("SGLBaseSplit", "Split when you enter your main base near the seaglide wreck for the first time");
             settings.Add("SGLSparseSplit", true, "Split Sparse");
             settings.Add("SGLAuroraSplit", true, "Split Aurora");
+            settings.SetToolTip("SGLSparseSplit", "Split when the current biome changes from Sparse to shallows or kelp forest");
+            settings.SetToolTip("SGLAuroraSplit", "Split when the current biome changes from Aurora to shallows or kelp forest");
        }
        else
        {
@@ -155,6 +157,7 @@ startup
         settings.Add("Glitched", false, "Glitched");
         settings.CurrentDefaultParent = "Glitched";
         settings.Add("SGBaseSplit", true, "Split Base"); 
+        settings.Add("SGTeethSplit", true, "Split Teeth"); 
         settings.Add("SGAuroraSplit", true, "Split Aurora");
         settings.Add("MountainSplit", true, "Split Mountain");
         settings.Add("ATPSplit", true, "Split Ion BP");
@@ -173,6 +176,7 @@ startup
         settings.SetToolTip("IntroStart", "The intro needs to start for this to work so start by oxygen is better");
         settings.SetToolTip("OxygenStart", "Only in lifepod");
         settings.SetToolTip("SGBaseSplit", "Split when you die next to your main base(includes clip A and C)");
+        settings.SetToolTip("SGTeethSplit", "Split when you leave the Kelp Forest with 1 or more Creepvine samples");
         settings.SetToolTip("SGAuroraSplit", "Split when you die in the Aurora");
         settings.SetToolTip("MountainSplit", "Split when you descend under the arch after getting out of bounds");
         settings.SetToolTip("ATPSplit", "Split when you die in the Alien Thermal Plant");
@@ -247,9 +251,12 @@ update
     //if(current.Oxygen != old.Oxygen)
     //print("oxygen: "+current.Oxygen + " StartedOxygenBefore: " + vars.StartedOxygenBefore + "\n" + "biome: "+current.Biome + "\n" + "NotMainMenu: " + current.NotMainMenu + "\n" + "");
     if(current.Biome != old.Biome){
-        print(""+current.Biome);
+        print("[Autosplitter] "+current.Biome);
     }
-    //print(""+current.IsRocketGo);
+    print("[Autosplitter] "+current.IsAnimationPlaying);
+    print("[Autosplitter] "+current.XCoord);
+    print("[Autosplitter] "+current.YCoord);
+    print("[Autosplitter] "+current.ZCoord);
     if(!current.NotMainMenu)
     {
         vars.StartedOxygenBefore = 0;
