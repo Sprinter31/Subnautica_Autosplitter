@@ -79,7 +79,7 @@ startup
        {
             settings.Add("Start");
             settings.CurrentDefaultParent = "Start";
-            settings.Add("IntroStart", false, "Start after the intro animation");
+            settings.Add("IntroStart", true, "Start after the intro animation");
             settings.Add("OxygenStart", true, "Start when your oxygen sets to 45");
             settings.SetToolTip("IntroStart", "The intro needs to start for this to work so start by oxygen is better");
             settings.SetToolTip("OxygenStart", "Only in lifepod");
@@ -90,8 +90,9 @@ startup
             settings.Add("RocketSplit", true, "Split on Rocket launch");
             settings.Add("Glitched", false, "Glitched");
             settings.CurrentDefaultParent = "Glitched";
-            settings.Add("SGBaseSplit", true, "Split Base"); 
-            settings.Add("AuroraSplit", true, "Split Aurora");
+            settings.Add("SGBaseSplit", true, "Split Base");
+            settings.Add("SGTeethSplit", true, "Split Teeth"); 
+            settings.Add("SGAuroraSplit", true, "Split Aurora");
             settings.Add("MountainSplit", true, "Split Mountain");
             settings.Add("ATPSplit", true, "Split Ion BP");
             settings.Add("HatchSplit", false, "Split on hatching eggs");
@@ -99,7 +100,8 @@ startup
             settings.Add("GunDeathSplit", true, "Split Gun Death");
             settings.Add("SGSparseSplit", true, "Split Sparse");
             settings.SetToolTip("SGBaseSplit", "Split when you die next to your main base(includes clip A and C)");
-            settings.SetToolTip("AuroraSplit", "Split when you die in the Aurora");
+            settings.SetToolTip("SGTeethSplit", "Split when you leave the Kelp Forest with 1 or more Creepvine samples");
+            settings.SetToolTip("SGAuroraSplit", "Split when you die in the Aurora");
             settings.SetToolTip("MountainSplit", "Split when you descend under the arch after getting out of bounds");
             settings.SetToolTip("ATPSplit", "Split when you die in the Alien Thermal Plant");
             settings.SetToolTip("GunDeathSplit", "Split when you die in the Alien Gun Room");
@@ -153,7 +155,7 @@ startup
         settings.Add("Glitched", false, "Glitched");
         settings.CurrentDefaultParent = "Glitched";
         settings.Add("SGBaseSplit", true, "Split Base"); 
-        settings.Add("AuroraSplit", true, "Split Aurora");
+        settings.Add("SGAuroraSplit", true, "Split Aurora");
         settings.Add("MountainSplit", true, "Split Mountain");
         settings.Add("ATPSplit", true, "Split Ion BP");
         settings.Add("GunDeathSplit", true, "Split Gun Death");
@@ -165,18 +167,20 @@ startup
         settings.Add("SGLSparseSplit", true, "Split Sparse");
         settings.Add("SGLAuroraSplit", true, "Split Aurora");
 
-        settings.SetToolTip("reset", "Resets when you come back to the main menu\nBoth reset check boxes have to be checked for the reset to work");
+        settings.SetToolTip("reset", "Resets when you come back to the main menu and might randomly reset when you drop a lead?(needs more testing)\nBoth reset check boxes have to be checked for the reset to work");
         settings.SetToolTip("load", "This will add time to the actual load times to match the IGT shown on Speedrun.com (can be up to 0.1s inaccurate)");
         settings.SetToolTip("FabricatorStart", "Only works on old patch for now");
         settings.SetToolTip("IntroStart", "The intro needs to start for this to work so start by oxygen is better");
         settings.SetToolTip("OxygenStart", "Only in lifepod");
         settings.SetToolTip("SGBaseSplit", "Split when you die next to your main base(includes clip A and C)");
-        settings.SetToolTip("AuroraSplit", "Split when you die in the Aurora");
+        settings.SetToolTip("SGAuroraSplit", "Split when you die in the Aurora");
         settings.SetToolTip("MountainSplit", "Split when you descend under the arch after getting out of bounds");
         settings.SetToolTip("ATPSplit", "Split when you die in the Alien Thermal Plant");
         settings.SetToolTip("GunDeathSplit", "Split when you die in the Alien Gun Room");
         settings.SetToolTip("SGSparseSplit", "Split when you die in the biomes: Sea Treader Path or Sparse Reef");
         settings.SetToolTip("SGLBaseSplit", "Split when you enter your main base near the seaglide wreck for the first time");
+        settings.SetToolTip("SGLSparseSplit", "Split when the current biome changes from sparse to shallows or kelp forest");
+        settings.SetToolTip("SGLAuroraSplit", "Split when the current biome changes from aurora to shallows or kelp forest");
         }
         
     vars.StartedOxygenBefore = 0;
@@ -185,7 +189,9 @@ startup
     vars.GunedBefore = 0;
     vars.DescendedBefore = 0;
     vars.EnteredBaseBefore = 0;
+    vars.TeethBefore = 0;
     vars.counter = 0;
+    
     vars.waitingFor1 = false;
     vars.waitingFor0 = false;
 
@@ -230,6 +236,7 @@ onStart
     vars.GunedBefore = 0;
     vars.DescendedBefore = 0;
     vars.EnteredBaseBefore = 0;
+    vars.TeethBefore = 0;
     vars.counter = 0;
     vars.waitingFor1 = false;
     vars.waitingFor0 = false;
@@ -253,9 +260,17 @@ update
 
 start
 {
-    if(vars.categoryName.IndexOf("Creative", StringComparison.OrdinalIgnoreCase) >= 0 &&
-       vars.categoryName.IndexOf("Any%", StringComparison.OrdinalIgnoreCase) >= 0)
+    if(settings["IntroStart"] && !current.introCinematicActive && old.introCinematicActive)
     {
+        print("[Autosplitter] start of intro");
+        return true;
+    }
+    if(settings["OxygenStart"] && current.Oxygen == 45 && old.Oxygen != current.Oxygen && vars.StartedOxygenBefore == 0)
+    {
+        print("[Autosplitter] start of oxygen");
+        vars.StartedOxygenBefore = 1;
+        return true;
+    }
 
     if(!current.IsLoadingScreen && current.NotMainMenu)
     {
@@ -279,229 +294,41 @@ start
             vars.StartedBefore = 1;
             return true;
         }
-    }
-    }
-    else if(vars.categoryName.IndexOf("Survival", StringComparison.OrdinalIgnoreCase) >= 0 &&
-            vars.categoryName.IndexOf("Any%", StringComparison.OrdinalIgnoreCase) >= 0)
-    {
-        if(settings["IntroStart"] && !current.introCinematicActive && old.introCinematicActive)
-        {
-            print("[Autosplitter] start of intro");
-            return true;
-        }
-        if(settings["OxygenStart"] && current.Oxygen == 45 && old.Oxygen != current.Oxygen && vars.StartedOxygenBefore == 0)
-        {
-            print("[Autosplitter] start of oxygen");
-            vars.StartedOxygenBefore = 1;
-            return true;
-        }
-    }
-    else
-    {
-        if(settings["MovedStart"] && (current.IsMovingX != 0 && old.IsMovingX == 0 || current.IsMovingZ != 0 && old.IsMovingZ == 0))
-        {
-            print("[Autosplitter] start of move");
-            vars.StartedBefore = 1;
-            return true;
-        }
-
-        if(settings["FabricatorStart"] && current.IsFabiMenu == 1 && current.IsFabiMenu != old.IsFabiMenu)
-        {
-            print("[Autosplitter] start of fabbi");
-            vars.StartedBefore = 1;
-            return true;
-        }
-
-        if(settings["PDAStart"] && current.IsPDAOpen == 1051931443 && current.IsPDAOpen != old.IsPDAOpen)
-        {
-            print("[Autosplitter] start of pda");
-            vars.StartedBefore = 1;
-            return true;
-        }
-
-        if(settings["IntroStart"] && !current.introCinematicActive && old.introCinematicActive)
-        {
-            print("[Autosplitter] start of intro");
-            return true;
-        }
-        if(settings["OxygenStart"] && current.Oxygen == 45 && old.Oxygen != current.Oxygen && vars.StartedOxygenBefore == 0)
-        {
-            print("[Autosplitter] start of oxygen");
-            vars.StartedOxygenBefore = 1;
-            return true;
-        }
-    }
-
+    } 
 }   
 
 
 split
-{   
-    if(vars.categoryName.IndexOf("Creative", StringComparison.OrdinalIgnoreCase) >= 0 &&
-       vars.categoryName.IndexOf("Any%", StringComparison.OrdinalIgnoreCase) >= 0)
+{
+    if(settings["SGTeethSplit"] && vars.TeethBefore == 0)
     {
-    if(settings["PCFSplit"] && current.IsAnimationPlaying && !old.IsAnimationPlaying)
-    {
-        var IsWithinBounds = vars.IsWithinBoundsFunc(216, 224, -1445, -1452, -267, -276, current.XCoord, current.YCoord, current.ZCoord);
+        var IsWithinBounds = vars.IsWithinBoundsFunc(-212, 27, -100, 100, 159, 177, current.XCoord, current.YCoord, current.ZCoord);
         if(IsWithinBounds)
         {
-            print("[Autosplitter] PCF split");
-            return true;
-        }        
-    }
-    if(settings["PortalSplit"] && current.IsPortalLoading != old.IsPortalLoading && current.IsPortalLoading)
-    {
-        var IsWithinBounds = vars.IsWithinBoundsFunc(240, 250, -1580, -1590, -2000, 2000, current.XCoord, current.YCoord, current.ZCoord);
-        if(IsWithinBounds)
+        var baseAddr = modules.First(m => m.ModuleName == "mono.dll").BaseAddress;
+        IntPtr ptr1 = memory.ReadPointer((IntPtr)(baseAddr + 0x296BC8));
+        IntPtr ptr2 = memory.ReadPointer((IntPtr)(ptr1 + 0x20));
+        IntPtr ptr3 = memory.ReadPointer((IntPtr)(ptr2 + 0xA40));
+        IntPtr ptr4 = memory.ReadPointer((IntPtr)(ptr3 + 0x0));
+        IntPtr ptr5 = memory.ReadPointer((IntPtr)(ptr4 + 0x40));
+        IntPtr ptr6 = memory.ReadPointer((IntPtr)(ptr5 + 0x58));
+        IntPtr ptr7 = memory.ReadPointer((IntPtr)(ptr6 + 0x20));
+        IntPtr finalAddr = (IntPtr)(ptr7 + 0x18);//address of mercuryOre, 0x8 begins the inventory
+        IntPtr startAddr = (IntPtr)(finalAddr + 0x8);//inventory begins here and each item takes up 0x4 after
+
+        for (int i = 0; i < 48; i++)
         {
-            print("[Autosplitter] Portal split");
-            return true;
-        }        
-    }  
-
-    if(settings["HatchSplit"] && current.IsEggsHatching && current.IsEggsHatching != old.IsEggsHatching)
-    {   
-        print("[Autosplitter] Hatch split");
-        return true;
-    }
-
-    if(settings["CureSplit"] && current.IsCured != old.IsCured && vars.CuredBefore == 0)
-    {
-        if(current.IsCured == 1059857727 || current.IsCured == 1)
-        {
-            print("[Autosplitter] Cure split");
-            vars.CuredBefore = 1;
-            return true;
-        }          
-    }
-
-    if(settings["GunSplit"] && current.IsAnimationPlaying && current.IsAnimationPlaying != old.IsAnimationPlaying && vars.GunedBefore == 0)
-    {        
-        var IsWithinBounds = vars.IsWithinBoundsFunc(359, 365, -66, -75, 1079, 1085, current.XCoord, current.YCoord, current.ZCoord);     
-        if(IsWithinBounds)
-        {                  
-            print("[Autosplitter] Gun split");
-            vars.GunedBefore = 1;
-            return true;
-        }            
-    }
-
-    if(settings["RocketSplit"] && current.IsRocketGo != old.IsRocketGo)
-    {    
-        if(current.IsRocketGo == 1 || current.IsRocketGo == 256 || current.IsRocketGo == 244)
-        {
-            print("[Autosplitter] Rocket split");
-            return true;
-        }           
-    }
-
-    if(settings["DeathSplit"] && current.died && !old.died)
-    {        
-        print("[Autosplitter] death split");
-        return true;
-    }
-    }
-    else if(vars.categoryName.IndexOf("Survival", StringComparison.OrdinalIgnoreCase) >= 0 &&
-            vars.categoryName.IndexOf("Any%", StringComparison.OrdinalIgnoreCase) >= 0)
-    {
-    if(settings["SGBaseSplit"] && current.died && current.died != old.died)
-    {
-        var IsWithinBoundsClipC = vars.IsWithinBoundsFunc(-155, -133, -20, -10, 96, 73, current.XCoord, current.YCoord, current.ZCoord);
-        var IsWithinBoundsClipA = vars.IsWithinBoundsFunc(33, 65, -20, -8, 118, 96, current.XCoord, current.YCoord, current.ZCoord);
-        if(IsWithinBoundsClipC || IsWithinBoundsClipA)
-        {
-            print("[Autosplitter] Base split");
-            return true;
+            int itemID = memory.ReadValue<int>((IntPtr)startAddr + 0x4*i);
+            print("[Autosplitter] itemID " + i + ".: "+ itemID);
+            if(itemID == 2529)//id for creepvine sample
+            {
+                vars.TeethBefore = 1;
+                return true;
+            }
+        }
         }
     }
-
-    if(settings["AuroraSplit"] && current.died && current.died != old.died && current.Biome == "crashedShip")
-    {
-        print("[Autosplitter] Aurora split");
-        return true;
-    }
-
-    
-    if(settings["MountainSplit"] && vars.DescendedBefore == 0)
-    {
-        var IsWithinBounds = vars.IsWithinBoundsFunc(521, 534, -190.6f, -210, 764.3f, 796.4f, current.XCoord, current.YCoord, current.ZCoord);
-        if(IsWithinBounds)
-        {
-            print("[Autosplitter] Mountain split");
-            vars.DescendedBefore = 1;
-            return true;
-        }
-
-    }
-
-    if(settings["ATPSplit"] && current.died && current.died != old.died && 
-      (new[] { "Precursor_LavaCastleBase", "ILZCastleChamber", "PrecursorThermalRoom" }.Contains((string)current.Biome)))
-    {
-        print("[Autosplitter] ATP split split");
-        return true;
-    }
-
-    if(settings["HatchSplit"] && current.IsEggsHatching && current.IsEggsHatching != old.IsEggsHatching)
-    {   
-        print("[Autosplitter] Hatch split");
-        return true;
-    }
-
-    if(settings["CureSplit"] && current.IsCured != old.IsCured && vars.CuredBefore == 0)
-    {
-        if(current.IsCured == 1059857727 || current.IsCured == 1)
-        {
-            print("[Autosplitter] Cure split");
-            vars.CuredBefore = 1;
-            return true;
-        }          
-    }
-
-    if(settings["GunDeathSplit"] && current.died && current.died != old.died && current.Biome == "Precursor_Gun_ControlRoom")
-    {
-        print("[Autosplitter] GunDeath split");
-        return true;    
-    }
-
-    if(settings["SGSparseSplit"] && current.died && current.died != old.died &&
-    (new[] { "sparseReef", "seaTreaderPath", "seaTreaderPath_wreck" }.Contains((string)current.Biome)))
-    {
-        print("[Autosplitter] sparse split");
-        return true;
-    }
-
-    if(settings["SGLBaseSplit"] && current.IsNotInWater && current.IsNotInWater != old.IsNotInWater && vars.EnteredBaseBefore == 0)
-    {
-        var IsWithinBounds = vars.IsWithinBoundsFunc(20, 80, -45, -17, 290, 360, current.XCoord, current.YCoord, current.ZCoord);
-        if(IsWithinBounds)
-        {
-            print("[Autosplitter] Base split 2023");
-            vars.EnteredBaseBefore = 1;
-            return true;
-        }
-    }
-
-    if(settings["SGLSparseSplit"] && 
-      (new[] { "sparseReef", "seaTreaderPath", "seaTreaderPath_wreck" }.Contains((string)old.Biome) && 
-      (new[] { "safeShallows", "kelpForest" }.Contains((string)current.Biome))))
-    {
-        print("[Autosplitter] Sparse split 2023");
-        return true;
-    }
-
-    if(settings["RocketSplit"] && current.IsRocketGo != old.IsRocketGo)
-    {    
-        if(current.IsRocketGo == 1 || current.IsRocketGo == 256 || current.IsRocketGo == 244)
-        {
-            print("[Autosplitter] Rocket split");
-            return true;
-        }           
-    }
-
-    }
-    else
-    {
-        if(settings["PCFSplit"] && current.IsAnimationPlaying && current.IsAnimationPlaying != old.IsAnimationPlaying)
+    if(settings["PCFSplit"] && current.IsAnimationPlaying && current.IsAnimationPlaying != old.IsAnimationPlaying)
     {
         var IsWithinBounds = vars.IsWithinBoundsFunc(216, 224, -1445, -1452, -267, -276, current.XCoord, current.YCoord, current.ZCoord);
         if(IsWithinBounds)
@@ -569,14 +396,14 @@ split
         var IsWithinBoundsClipA = vars.IsWithinBoundsFunc(33, 65, -20, -8, 118, 96, current.XCoord, current.YCoord, current.ZCoord);
         if(IsWithinBoundsClipC || IsWithinBoundsClipA)
         {
-            print("[Autosplitter] Base split");
+            print("[Autosplitter] Base split 2018");
             return true;
         }
     }
 
-    if(settings["AuroraSplit"] && current.died && current.died != old.died && current.Biome == "crashedShip")
+    if(settings["SGAuroraSplit"] && current.died && current.died != old.died && current.Biome == "crashedShip")
     {
-        print("[Autosplitter] Aurora split");
+        print("[Autosplitter] Aurora split 2018");
         return true;
     }
 
@@ -609,7 +436,7 @@ split
     if(settings["SGSparseSplit"] && current.died && current.died != old.died &&
     (new[] { "sparseReef", "seaTreaderPath", "seaTreaderPath_wreck" }.Contains((string)current.Biome)))
     {
-        print("[Autosplitter] sparse split");
+        print("[Autosplitter] Sparse split 2018");
         return true;
     }
 
@@ -631,19 +458,17 @@ split
         print("[Autosplitter] Sparse split 2023");
         return true;
     }
-    if(settings["SGLAuroraSplit"] && 
-      (old.Biome.Contains("crashedShip")) && 
-      (new[] { "safeShallows", "kelpForest" }.Contains((string)current.Biome)))
+    if(settings["SGLAuroraSplit"] && old.Biome == "crashedShip" &&
+       (new[] { "safeShallows", "kelpForest" }.Contains((string)current.Biome)))
     {
         print("[Autosplitter] Aurora split 2023");
         return true;
-    }
     }
 }
 
 reset
 {
-    if(settings["reset"] && settings.StartEnabled == true && !current.NotMainMenu && current.NotMainMenu != old.NotMainMenu)
+    if(settings["reset"] && !current.NotMainMenu && old.NotMainMenu && current.IsPDAOpen == old.IsPDAOpen)
     {
         return true;
     } 
