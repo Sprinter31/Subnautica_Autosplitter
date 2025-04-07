@@ -13,6 +13,7 @@ state("Subnautica", "September 2018")
     int IsCured:                           0x1445E08, 0xA8, 0x58, 0x110, 0x180, 0x160, 0x190, 0x20, 0xA58;//1059857727 = true //alt: 0x1445DF8, 0xA8, 0x58, 0x110, 0x180, 0x160, 0x190, 0x20, 0xA58;
     int IsRocketGo:            "mono.dll", 0x27EAD8, 0x40, 0x70, 0x50, 0x90, 0x30, 0x8, 0x80;
     int RocketStage:                       0x142B930, 0x468, 0x380, 0x38, 0x10, 0x30, 0x30, 0x18, 0x28, 0x98;
+    int InventoryItemCount:    "mono.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x1A8, 0x28, 0x28, 0x144;//not working
     int Oxygen:                            0x142ADA8, 0x8, 0x10, 0x30, 0x30, 0x18, 0x28, 0x70;
     int IsMovingX:                         0x13940D8, 0x840; //0 = false
     int IsMovingZ:                         0x1443878, 0x8, 0x358, 0x3A8, 0x280, 0x2A8; //false = 0
@@ -37,6 +38,7 @@ state("Subnautica", "March 2023")
     int IsCured:                "fmodstudio.dll", 0x2CED70, 0x78, 0x18, 0x190, 0x550, 0xB8, 0x20, 0x58;   
     int IsRocketGo:            "UnityPlayer.dll", 0x17FC238, 0x10, 0x3C; //256 = true
     int RocketStage:           "UnityPlayer.dll", 0x17DB500, 0x8, 0x8, 0x30, 0x30, 0x38, 0x28, 0xE0, 0x98;
+    int InventoryItemCount:    "UnityPlayer.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x1A8, 0x28, 0x28, 0x144;//not working
     int Oxygen:                "UnityPlayer.dll", 0x184DDD0, 0x60, 0x0, 0x0, 0x8, 0x38, 0x20, 0x30, 0x70;
     int IsMovingX:             "UnityPlayer.dll", 0x17FBC28, 0x30, 0x98; //false = 0
     int IsMovingZ:             "UnityPlayer.dll", 0x17FBC28, 0x30, 0x150; //false = 0
@@ -116,11 +118,20 @@ startup
             settings.CurrentDefaultParent = "Glitchless";
             settings.Add("SGLBaseSplit", true, "Split Base");
             settings.Add("SGLShallowsSplit", true, "Split Shallows");
-            settings.Add("PCFSplit", true, "Split on PCF entrence tablet insert");
+            settings.Add("SGLUpperTabletSplit", true, "Split Upper Tablet");
+            settings.Add("SGLIonSplit", true, "Split Ion BP");
+            settings.Add("PCFSplits", true, "Split PCF");
+            settings.CurrentDefaultParent = "PCFSplits";
+            settings.Add("PCFTabletSplit", true, "Split on PCF entrence tablet insert");
+            settings.Add("PCFPoolSplit", false, "Split when entering the aquarium from moonpool");
+            settings.CurrentDefaultParent = "Glitchless";
+            settings.Add("GunSplit", true, "Split on Gun deactivation");
             settings.Add("SGLSparseSplit", true, "Split Sparse");
             settings.Add("SGLAuroraSplit", true, "Split Aurora");
             settings.SetToolTip("SGLBaseSplit", "Split when you enter your main base near the seaglide wreck for the first time");
             settings.SetToolTip("SGLShallowsSplit", "Split when you leave your main base with an extra O2 tank in your inv");
+            settings.SetToolTip("SGLUpperTabletSplit", "WARNING: Is not working consistantly right now\nSplit when you pick up the upper purple tablet that lies next to the gun entrence");
+            settings.SetToolTip("SGLIonSplit", "Split when you unstuck in the Ion BP room");
             settings.SetToolTip("SGLSparseSplit", "Split when the current biome changes from Sparse to shallows or kelp forest");
             settings.SetToolTip("SGLAuroraSplit", "Split when the current biome changes from Aurora to shallows or kelp forest");
        }
@@ -137,7 +148,7 @@ startup
         settings.CurrentDefaultParent = "Start";
         settings.Add("SurvivalStarts", false, "Survival starts");
         settings.CurrentDefaultParent = "SurvivalStarts";
-        settings.Add("IntroStart", false, "Start after the intro animation");
+        settings.Add("IntroStart", true, "Start after the intro animation");
         settings.Add("OxygenStart", true, "Start when your oxygen sets to 45");
     
         settings.CurrentDefaultParent = null;
@@ -145,6 +156,11 @@ startup
         settings.CurrentDefaultParent = "Split";
         settings.Add("GeneralSplits", true, "General splits");
 
+        settings.CurrentDefaultParent = "GeneralSplits";
+        settings.Add("PCFSplits", true, "Split PCF");
+        settings.CurrentDefaultParent = "PCFSplits";
+        settings.Add("PCFTabletSplit", true, "Split on PCF entrence tablet insert");
+        settings.Add("PCFPoolSplit", false, "Split when entering the aquarium from moonpool");
         settings.CurrentDefaultParent = "GeneralSplits";
         settings.Add("HatchSplit", false, "Split on hatching eggs");
         settings.Add("CureSplit", false, "Split on Cure");
@@ -154,7 +170,6 @@ startup
         settings.CurrentDefaultParent = "Split";
         settings.Add("CreativeSplits", false, "Creative splits");
         settings.CurrentDefaultParent = "CreativeSplits";
-        settings.Add("PCFSplit", true, "Split on PCF entrence tablet insert");
         settings.Add("PortalSplit", true, "Split on Portal entry");
         settings.Add("BoostersSplit", false, "Split on Boosters");
         settings.Add("FuelreserveSplit", false, "Split on Fuel Reserve");
@@ -177,6 +192,8 @@ startup
         settings.CurrentDefaultParent = "Glitchless";
         settings.Add("SGLBaseSplit", true, "Split Base");
         settings.Add("SGLShallowsSplit", true, "Split Shallows");
+        settings.Add("SGLUpperTabletSplit", true, "Split Upper Tablet");
+        settings.Add("SGLIonSplit", true, "Split Ion BP");
         settings.Add("SGLSparseSplit", true, "Split Sparse");
         settings.Add("SGLAuroraSplit", true, "Split Aurora");
 
@@ -194,6 +211,8 @@ startup
         settings.SetToolTip("SGSparseSplit", "Split when you die in the biomes: Sea Treader Path or Sparse Reef");
         settings.SetToolTip("SGLBaseSplit", "Split when you enter your main base near the seaglide wreck for the first time");
         settings.SetToolTip("SGLShallowsSplit", "Split when you leave your main base with an extra O2 tank in your inv");
+        settings.SetToolTip("SGLUpperTabletSplit", "WARNING: Is not working consistantly right now\nSplit when you pick up the upper purple tablet that lies next to the gun entrence");
+        settings.SetToolTip("SGLIonSplit", "Split when you unstuck in the Ion BP room");
         settings.SetToolTip("SGLSparseSplit", "Split when the current biome changes from sparse to shallows or kelp forest");
         settings.SetToolTip("SGLAuroraSplit", "Split when the current biome changes from aurora to shallows or kelp forest");
         }
@@ -266,7 +285,7 @@ update
     if(current.Biome != old.Biome){
         print("[Autosplitter] "+current.Biome);
     }
-    //print("[Autosplitter] "+current.IsAnimationPlaying);
+     //print("[Autosplitter] "+current.IsAnimationPlaying);
     //print("[Autosplitter] "+current.XCoord);
     //print("[Autosplitter] "+current.YCoord);
     //print("[Autosplitter] "+current.ZCoord);
@@ -342,6 +361,7 @@ split
             print("[Autosplitter] itemID " + i + ".: "+ itemID);
             if(itemID == 2529)//id for creepvine sample
             {
+                print("[Autosplitter] Teeth split");
                 vars.TeethBefore = 1;
                 return true;
             }
@@ -369,20 +389,27 @@ split
             print("[Autosplitter] itemID " + i + ".: "+ itemID);
             if(itemID == 503 || itemID == 528)//id for standard and double o2 tank
             {
+                print("[Autosplitter] Shallows split");
                 vars.ShallowsBefore = 1;
                 return true;
             }
         }
     }
 
-    if(settings["PCFSplit"] && current.IsAnimationPlaying && current.IsAnimationPlaying != old.IsAnimationPlaying)
+    
+    if(settings["PCFTabletSplit"] && current.IsAnimationPlaying && !old.IsAnimationPlaying)
     {
         var IsWithinBounds = vars.IsWithinBoundsFunc(216, 224, -1445, -1452, -267, -276, current.XCoord, current.YCoord, current.ZCoord);
         if(IsWithinBounds)
         {
-            print("[Autosplitter] PCF split");
+            print("[Autosplitter] PCF Tablet split");
             return true;
         }        
+    }
+    if(settings["PCFPoolSplit"] && current.Biome == "Prison_Aquarium_Upper" && old.Biome == "Prison_Moonpool")
+    {
+        print("[Autosplitter] PCF Pool split");
+        return true;
     }
     if(settings["PortalSplit"] && current.IsPortalLoading != old.IsPortalLoading && current.IsPortalLoading)
     {
@@ -412,11 +439,13 @@ split
 
     if(settings["BoostersSplit"] && current.RocketStage == 3 && old.RocketStage == 2)
     {
+        print("[Autosplitter] Boosters split");
         return true;
     }
 
     if(settings["FuelreserveSplit"] && current.RocketStage == 4 && old.RocketStage == 3)
     {
+        print("[Autosplitter] Fuel reserve split");
         return true;
     }
 
@@ -507,7 +536,20 @@ split
             return true;
         }
     }
-
+    if(settings["SGLUpperTabletSplit"] && current.InventoryItemCount > old.InventoryItemCount)
+    {
+        var IsWithinBounds = vars.IsWithinBoundsFunc(380, 386, 10, 30, 1084, 1090, current.XCoord, current.YCoord, current.ZCoord);
+        if(IsWithinBounds)
+        {
+            print("[Autosplitter] Upper Tablet split");
+            return true;
+        }  
+    }
+    if(settings["SGLIonSplit"] && current.Biome == "PrecursorThermalRoom" && current.IsAnimationPlaying && !old.IsAnimationPlaying)
+    {
+        print("[Autosplitter] Ion split 2023");
+        return true;
+    }
     if(settings["SGLSparseSplit"] && 
       (new[] { "sparseReef", "seaTreaderPath", "seaTreaderPath_wreck" }.Contains((string)old.Biome) && 
       (new[] { "safeShallows", "kelpForest" }.Contains((string)current.Biome))))
@@ -515,12 +557,14 @@ split
         print("[Autosplitter] Sparse split 2023");
         return true;
     }
-    if(settings["SGLAuroraSplit"] && old.Biome == "crashedShip" &&
-       (new[] { "safeShallows", "kelpForest" }.Contains((string)current.Biome)))
+    if(settings["SGLAuroraSplit"] && 
+      (new[] { "crashedShip", "generatorRoom" }.Contains((string)old.Biome) &&
+      (new[] { "safeShallows", "kelpForest" }.Contains((string)current.Biome))))
     {
         print("[Autosplitter] Aurora split 2023");
         return true;
     }
+    
 }
 
 reset
