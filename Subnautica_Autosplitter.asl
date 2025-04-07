@@ -116,6 +116,7 @@ startup
             settings.CurrentDefaultParent = "Glitchless";
             settings.Add("SGLBaseSplit", true, "Split Base");
             settings.Add("SGLShallowsSplit", true, "Split Shallows");
+            settings.Add("PCFSplit", true, "Split on PCF entrence tablet insert");
             settings.Add("SGLSparseSplit", true, "Split Sparse");
             settings.Add("SGLAuroraSplit", true, "Split Aurora");
             settings.SetToolTip("SGLBaseSplit", "Split when you enter your main base near the seaglide wreck for the first time");
