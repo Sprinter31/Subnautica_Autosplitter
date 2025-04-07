@@ -96,7 +96,7 @@ startup
             settings.Add("MountainSplit", true, "Split Mountain");
             settings.Add("ATPSplit", true, "Split Ion BP");
             settings.Add("HatchSplit", false, "Split on hatching eggs");
-            settings.Add("CureSplit", true, "Split on Cure"); 
+            settings.Add("CureSplit", false, "Split on Cure"); 
             settings.Add("GunDeathSplit", true, "Split Gun Death");
             settings.Add("SGSparseSplit", true, "Split Sparse");
             settings.SetToolTip("SGBaseSplit", "Split when you die next to your main base(includes clip A and C)");
@@ -111,9 +111,11 @@ startup
             settings.Add("Glitchless", false, "Glitchless");
             settings.CurrentDefaultParent = "Glitchless";
             settings.Add("SGLBaseSplit", true, "Split Base");
-            settings.SetToolTip("SGLBaseSplit", "Split when you enter your main base near the seaglide wreck for the first time");
+            settings.Add("SGLShallowsSplit", true, "Split Shallows");
             settings.Add("SGLSparseSplit", true, "Split Sparse");
             settings.Add("SGLAuroraSplit", true, "Split Aurora");
+            settings.SetToolTip("SGLBaseSplit", "Split when you enter your main base near the seaglide wreck for the first time");
+            settings.SetToolTip("SGLShallowsSplit", "Split when you leave your main base with an extra O2 tank in your inv");
             settings.SetToolTip("SGLSparseSplit", "Split when the current biome changes from Sparse to shallows or kelp forest");
             settings.SetToolTip("SGLAuroraSplit", "Split when the current biome changes from Aurora to shallows or kelp forest");
        }
@@ -167,6 +169,7 @@ startup
         settings.Add("Glitchless", false, "Glitchless");
         settings.CurrentDefaultParent = "Glitchless";
         settings.Add("SGLBaseSplit", true, "Split Base");
+        settings.Add("SGLShallowsSplit", true, "Split Shallows");
         settings.Add("SGLSparseSplit", true, "Split Sparse");
         settings.Add("SGLAuroraSplit", true, "Split Aurora");
 
@@ -183,6 +186,7 @@ startup
         settings.SetToolTip("GunDeathSplit", "Split when you die in the Alien Gun Room");
         settings.SetToolTip("SGSparseSplit", "Split when you die in the biomes: Sea Treader Path or Sparse Reef");
         settings.SetToolTip("SGLBaseSplit", "Split when you enter your main base near the seaglide wreck for the first time");
+        settings.SetToolTip("SGLShallowsSplit", "Split when you leave your main base with an extra O2 tank in your inv");
         settings.SetToolTip("SGLSparseSplit", "Split when the current biome changes from sparse to shallows or kelp forest");
         settings.SetToolTip("SGLAuroraSplit", "Split when the current biome changes from aurora to shallows or kelp forest");
         }
@@ -194,6 +198,7 @@ startup
     vars.DescendedBefore = 0;
     vars.EnteredBaseBefore = 0;
     vars.TeethBefore = 0;
+    vars.ShallowsBefore = 0;
     vars.counter = 0;
     
     vars.waitingFor1 = false;
@@ -241,6 +246,7 @@ onStart
     vars.DescendedBefore = 0;
     vars.EnteredBaseBefore = 0;
     vars.TeethBefore = 0;
+    vars.ShallowsBefore = 0;
     vars.counter = 0;
     vars.waitingFor1 = false;
     vars.waitingFor0 = false;
@@ -253,10 +259,10 @@ update
     if(current.Biome != old.Biome){
         print("[Autosplitter] "+current.Biome);
     }
-    print("[Autosplitter] "+current.IsAnimationPlaying);
-    print("[Autosplitter] "+current.XCoord);
-    print("[Autosplitter] "+current.YCoord);
-    print("[Autosplitter] "+current.ZCoord);
+    //print("[Autosplitter] "+current.IsAnimationPlaying);
+    //print("[Autosplitter] "+current.XCoord);
+    //print("[Autosplitter] "+current.YCoord);
+    //print("[Autosplitter] "+current.ZCoord);
     if(!current.NotMainMenu)
     {
         vars.StartedOxygenBefore = 0;
@@ -335,6 +341,33 @@ split
         }
         }
     }
+    if(settings["SGLShallowsSplit"] && vars.ShallowsBefore == 0 && !current.IsNotInWater && old.IsNotInWater)
+    {
+        var baseAddr = modules.First(m => m.ModuleName == "UnityPlayer.dll").BaseAddress;
+        IntPtr ptr1 = memory.ReadPointer((IntPtr)(baseAddr + 0x17FBE70));
+        IntPtr ptr2 = memory.ReadPointer((IntPtr)(ptr1 + 0x8));
+        IntPtr ptr3 = memory.ReadPointer((IntPtr)(ptr2 + 0x10));
+        IntPtr ptr4 = memory.ReadPointer((IntPtr)(ptr3 + 0x30));
+        IntPtr ptr5 = memory.ReadPointer((IntPtr)(ptr4 + 0x1A8));
+        IntPtr ptr6 = memory.ReadPointer((IntPtr)(ptr5 + 0x28));
+        IntPtr ptr7 = memory.ReadPointer((IntPtr)(ptr6 + 0x38));
+        IntPtr ptr8 = memory.ReadPointer((IntPtr)(ptr7 + 0x58));
+        IntPtr ptr9 = memory.ReadPointer((IntPtr)(ptr8 + 0x18));
+        IntPtr finalAddr = (IntPtr)(ptr9 + 0x18);//address of mercuryOre 0x8 begins the inventory
+        IntPtr startAddr = (IntPtr)(finalAddr + 0x8);//inventory begins here and each item takes up 0x18 after
+
+        for (int i = 0; i < 48; i++)
+        {
+            int itemID = memory.ReadValue<int>((IntPtr)startAddr + 0x18*i);
+            print("[Autosplitter] itemID " + i + ".: "+ itemID);
+            if(itemID == 503 || itemID == 528)//id for standard and double o2 tank
+            {
+                vars.ShallowsBefore = 1;
+                return true;
+            }
+        }
+    }
+
     if(settings["PCFSplit"] && current.IsAnimationPlaying && current.IsAnimationPlaying != old.IsAnimationPlaying)
     {
         var IsWithinBounds = vars.IsWithinBoundsFunc(216, 224, -1445, -1452, -267, -276, current.XCoord, current.YCoord, current.ZCoord);
