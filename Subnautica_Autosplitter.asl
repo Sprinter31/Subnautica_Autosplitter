@@ -392,7 +392,7 @@ split
         {
             int itemID = memory.ReadValue<int>((IntPtr)startAddr + 0x18*i);
             print("[Autosplitter] itemID " + i + ".: "+ itemID);
-            if(itemID == 503 || itemID == 528)//id for standard and double o2 tank
+            if(itemID == 528)//id for standard and double o2 tank
             {
                 print("[Autosplitter] Shallows split");
                 vars.ShallowsBefore = 1;
