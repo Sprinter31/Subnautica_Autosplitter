@@ -77,8 +77,11 @@ startup
             settings.Add("CureSplit", true, "Split on Cure");
             settings.Add("BoostersSplit", false, "Split on Boosters");
             settings.Add("FuelreserveSplit", false, "Split on Fuel Reserve");
+            settings.SetToolTip("BoostersSplit", "WARNING: not consistant");
+            settings.SetToolTip("FuelreserveSplit", "WARNING: not consistant");
             settings.Add("GunSplit", true, "Split on Gun deactivation");
             settings.Add("RocketSplit", true, "Split on Rocket launch");
+            settings.SetToolTip("CureSplit", "WARNING: not consistant");
        }
        else if((vars.categoryName.IndexOf("Survival", StringComparison.OrdinalIgnoreCase) >= 0 &&
                vars.categoryName.IndexOf("Any%", StringComparison.OrdinalIgnoreCase) >= 0) || vars.categoryName == "LoadingScreen%" || vars.categoryName == "Any%")
@@ -105,6 +108,7 @@ startup
             settings.Add("CureSplit", false, "Split on Cure"); 
             settings.Add("GunDeathSplit", true, "Split Gun Death");
             settings.Add("SGSparseSplit", true, "Split Sparse");
+            settings.SetToolTip("CureSplit", "WARNING: not consistant");
             settings.SetToolTip("SGBaseSplit", "Split when you die next to your main base(includes clip A and C)");
             settings.SetToolTip("SGTeethSplit", "Split when you leave the Kelp Forest with 1 or more Creepvine samples");
             settings.SetToolTip("SGAuroraSplit", "Split when you die in the Aurora");
@@ -215,6 +219,7 @@ startup
         settings.SetToolTip("SGLIonSplit", "Split when you unstuck in the Ion BP room");
         settings.SetToolTip("SGLSparseSplit", "Split when the current biome changes from sparse to shallows or kelp forest");
         settings.SetToolTip("SGLAuroraSplit", "Split when the current biome changes from aurora to shallows or kelp forest");
+        settings.SetToolTip("CureSplit", "WARNING: not consistant");
         }
         
     vars.StartedOxygenBefore = 0;
@@ -285,8 +290,8 @@ update
     if(current.Biome != old.Biome){
         print("[Autosplitter] "+current.Biome);
     }
-     //print("[Autosplitter] "+current.IsAnimationPlaying);
-    //print("[Autosplitter] "+current.XCoord);
+    //print("[Autosplitter] "+current.RocketStage);
+    //print("[Autosplitter] "+current.IsCured);
     //print("[Autosplitter] "+current.YCoord);
     //print("[Autosplitter] "+current.ZCoord);
     if(!current.NotMainMenu)
