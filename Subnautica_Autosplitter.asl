@@ -71,7 +71,7 @@ startup
             settings.CurrentDefaultParent = null;
             settings.Add("Split");
             settings.CurrentDefaultParent = "Split";
-            settings.Add("PCFSplit", true, "Split on PCF entrence tablet insert");
+            settings.Add("PCFTabletSplit", true, "Split on PCF entrence tablet insert");
             settings.Add("PortalSplit", true, "Split on Portal entry");
             settings.Add("HatchSplit", false, "Split on hatching eggs");
             settings.Add("CureSplit", true, "Split on Cure");
@@ -399,7 +399,7 @@ split
     
     if(settings["PCFTabletSplit"] && current.IsAnimationPlaying && !old.IsAnimationPlaying)
     {
-        var IsWithinBounds = vars.IsWithinBoundsFunc(216, 224, -1445, -1452, -267, -276, current.XCoord, current.YCoord, current.ZCoord);
+        var IsWithinBounds = vars.IsWithinBoundsFunc(216, 224, -1445, -1453, -267, -276, current.XCoord, current.YCoord, current.ZCoord);
         if(IsWithinBounds)
         {
             print("[Autosplitter] PCF Tablet split");
