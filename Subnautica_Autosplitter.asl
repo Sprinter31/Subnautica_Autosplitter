@@ -83,10 +83,10 @@ startup
        else if((vars.categoryName.IndexOf("Survival", StringComparison.OrdinalIgnoreCase) >= 0 &&
                vars.categoryName.IndexOf("Any%", StringComparison.OrdinalIgnoreCase) >= 0) || vars.categoryName == "LoadingScreen%" || vars.categoryName == "Any%")
        {
-            settings.Add("Start");
-            settings.CurrentDefaultParent = "Start";
+            //settings.Add("Start");
+            //settings.CurrentDefaultParent = "Start";
             settings.Add("IntroStart", true, "Start after the intro animation");
-            settings.Add("OxygenStart", true, "Start when your oxygen sets to 45");
+            //settings.Add("OxygenStart", true, "Start when your oxygen sets to 45");
             //settings.SetToolTip("IntroStart", "The intro needs to start for this to work so start by oxygen is better");
             //settings.SetToolTip("OxygenStart", "Only in lifepod");
 
@@ -149,7 +149,7 @@ startup
         settings.Add("SurvivalStarts", false, "Survival starts");
         settings.CurrentDefaultParent = "SurvivalStarts";
         settings.Add("IntroStart", true, "Start after the intro animation");
-        settings.Add("OxygenStart", true, "Start when your oxygen sets to 45");
+        //settings.Add("OxygenStart", true, "Start when your oxygen sets to 45");
     
         settings.CurrentDefaultParent = null;
         settings.Add("Split");
@@ -299,17 +299,17 @@ update
 
 start
 {
-    if(settings["IntroStart"] && !current.introCinematicActive && old.introCinematicActive)
+    if(settings["IntroStart"] && ((!current.introCinematicActive && old.introCinematicActive) || (current.Oxygen == 45 && old.Oxygen != 45)))
     {
         print("[Autosplitter] start of intro");
         return true;
     }
-    if(settings["OxygenStart"] && current.Oxygen == 45 && old.Oxygen != current.Oxygen && vars.StartedOxygenBefore == 0)
+    /*if(settings["OxygenStart"] && current.Oxygen == 45 && old.Oxygen != current.Oxygen && vars.StartedOxygenBefore == 0)
     {
         print("[Autosplitter] start of oxygen");
         vars.StartedOxygenBefore = 1;
         return true;
-    }
+    }*/
 
     if(!current.IsLoadingScreen && current.NotMainMenu)
     {
