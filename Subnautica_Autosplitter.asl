@@ -13,7 +13,7 @@ state("Subnautica", "September 2018")
     int IsCured:                           0x1445E08, 0xA8, 0x58, 0x110, 0x180, 0x160, 0x190, 0x20, 0xA58;//1059857727 = true //alt: 0x1445DF8, 0xA8, 0x58, 0x110, 0x180, 0x160, 0x190, 0x20, 0xA58;
     int IsRocketGo:            "mono.dll", 0x27EAD8, 0x40, 0x70, 0x50, 0x90, 0x30, 0x8, 0x80;
     int RocketStage:                       0x142B930, 0x468, 0x380, 0x38, 0x10, 0x30, 0x30, 0x18, 0x28, 0x98;
-    int InventoryItemCount:    "mono.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x1A8, 0x28, 0x28, 0x144;//not working
+    int InventoryItemCount:    "mono.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x1A8, 0x28, 0x38, 0x94;//not working
     int Oxygen:                            0x142ADA8, 0x8, 0x10, 0x30, 0x30, 0x18, 0x28, 0x70;
     int IsMovingX:                         0x13940D8, 0x840; //0 = false
     int IsMovingZ:                         0x1443878, 0x8, 0x358, 0x3A8, 0x280, 0x2A8; //false = 0
@@ -38,7 +38,7 @@ state("Subnautica", "March 2023")
     int IsCured:                "fmodstudio.dll", 0x2CED70, 0x78, 0x18, 0x190, 0x550, 0xB8, 0x20, 0x58;   
     int IsRocketGo:            "UnityPlayer.dll", 0x17FC238, 0x10, 0x3C; //256 = true
     int RocketStage:           "UnityPlayer.dll", 0x17DB500, 0x8, 0x8, 0x30, 0x30, 0x38, 0x28, 0xE0, 0x98;
-    int InventoryItemCount:    "UnityPlayer.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x1A8, 0x28, 0x28, 0x144;//not working
+    int InventoryItemCount:    "UnityPlayer.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x1A8, 0x28, 0x38, 0x94;
     int Oxygen:                "UnityPlayer.dll", 0x184DDD0, 0x60, 0x0, 0x0, 0x8, 0x38, 0x20, 0x30, 0x70;
     int IsMovingX:             "UnityPlayer.dll", 0x17FBC28, 0x30, 0x98; //false = 0
     int IsMovingZ:             "UnityPlayer.dll", 0x17FBC28, 0x30, 0x150; //false = 0
@@ -80,8 +80,8 @@ startup
             settings.Add("GunSplit", true, "Split on Gun deactivation");
             settings.Add("RocketSplit", true, "Split on Rocket launch");
        }
-       else if(vars.categoryName.IndexOf("Survival", StringComparison.OrdinalIgnoreCase) >= 0 &&
-               vars.categoryName.IndexOf("Any%", StringComparison.OrdinalIgnoreCase) >= 0)
+       else if((vars.categoryName.IndexOf("Survival", StringComparison.OrdinalIgnoreCase) >= 0 &&
+               vars.categoryName.IndexOf("Any%", StringComparison.OrdinalIgnoreCase) >= 0) || vars.categoryName == "LoadingScreen%" || vars.categoryName == "Any%")
        {
             settings.Add("Start");
             settings.CurrentDefaultParent = "Start";
@@ -130,7 +130,7 @@ startup
             settings.Add("SGLAuroraSplit", true, "Split Aurora");
             settings.SetToolTip("SGLBaseSplit", "Split when you enter your main base near the seaglide wreck for the first time");
             settings.SetToolTip("SGLShallowsSplit", "Split when you leave your main base with an extra O2 tank in your inv");
-            settings.SetToolTip("SGLUpperTabletSplit", "WARNING: Is not working consistantly right now\nSplit when you pick up the upper purple tablet that lies next to the gun entrence");
+            settings.SetToolTip("SGLUpperTabletSplit", "Split when you pick up the upper purple tablet that lies next to the gun entrence");
             settings.SetToolTip("SGLIonSplit", "Split when you unstuck in the Ion BP room");
             settings.SetToolTip("SGLSparseSplit", "Split when the current biome changes from Sparse to shallows or kelp forest");
             settings.SetToolTip("SGLAuroraSplit", "Split when the current biome changes from Aurora to shallows or kelp forest");
@@ -211,7 +211,7 @@ startup
         settings.SetToolTip("SGSparseSplit", "Split when you die in the biomes: Sea Treader Path or Sparse Reef");
         settings.SetToolTip("SGLBaseSplit", "Split when you enter your main base near the seaglide wreck for the first time");
         settings.SetToolTip("SGLShallowsSplit", "Split when you leave your main base with an extra O2 tank in your inv");
-        settings.SetToolTip("SGLUpperTabletSplit", "WARNING: Is not working consistantly right now\nSplit when you pick up the upper purple tablet that lies next to the gun entrence");
+        settings.SetToolTip("SGLUpperTabletSplit", "Split when you pick up the upper purple tablet that lies next to the gun entrence");
         settings.SetToolTip("SGLIonSplit", "Split when you unstuck in the Ion BP room");
         settings.SetToolTip("SGLSparseSplit", "Split when the current biome changes from sparse to shallows or kelp forest");
         settings.SetToolTip("SGLAuroraSplit", "Split when the current biome changes from aurora to shallows or kelp forest");
