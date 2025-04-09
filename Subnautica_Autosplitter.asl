@@ -552,12 +552,10 @@ split
 
 reset
 {
-    if(settings["reset"] && current.XCoord == 0 && old.XCoord != 0 
-                         && current.YCoord == 1.75f && old.YCoord != 1.75f 
-                         && current.ZCoord == 0 && old.ZCoord != 0)
+    if(settings["reset"] !current.NotMainMenu && old.NotMainMenu && current.IsPDAOpen == old.IsPDAOpen)
     {
         return true;
-    } 
+    }
 }
 
 
