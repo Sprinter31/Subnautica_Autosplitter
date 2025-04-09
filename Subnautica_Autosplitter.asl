@@ -55,7 +55,7 @@ startup
 
     settings.Add("reset", false, "Reset");
     settings.Add("load", true, "SRC loadtimes");
-    settings.SetToolTip("reset", "Resets when you come back to the main menu and might randomly reset when you drop a lead?(needs more testing)\nBoth reset check boxes have to be checked for the reset to work");
+    settings.SetToolTip("reset", "Resets when you come back to the main menu\nBoth reset check boxes have to be checked for the reset to work");
     settings.SetToolTip("load", "This will add time to the actual load times to match the IGT shown on Speedrun.com (can be up to 0.1s inaccurate)");
     
     if(vars.categoryName.IndexOf("Creative", StringComparison.OrdinalIgnoreCase) >= 0 &&
@@ -86,12 +86,7 @@ startup
        else if((vars.categoryName.IndexOf("Survival", StringComparison.OrdinalIgnoreCase) >= 0 &&
                vars.categoryName.IndexOf("Any%", StringComparison.OrdinalIgnoreCase) >= 0) || vars.categoryName == "LoadingScreen%" || vars.categoryName == "Any%")
        {
-            //settings.Add("Start");
-            //settings.CurrentDefaultParent = "Start";
             settings.Add("IntroStart", true, "Start after the intro animation");
-            //settings.Add("OxygenStart", true, "Start when your oxygen sets to 45");
-            //settings.SetToolTip("IntroStart", "The intro needs to start for this to work so start by oxygen is better");
-            //settings.SetToolTip("OxygenStart", "Only in lifepod");
 
             settings.CurrentDefaultParent = null;
             settings.Add("Split");
@@ -153,7 +148,6 @@ startup
         settings.Add("SurvivalStarts", false, "Survival starts");
         settings.CurrentDefaultParent = "SurvivalStarts";
         settings.Add("IntroStart", true, "Start after the intro animation");
-        //settings.Add("OxygenStart", true, "Start when your oxygen sets to 45");
     
         settings.CurrentDefaultParent = null;
         settings.Add("Split");
@@ -201,11 +195,7 @@ startup
         settings.Add("SGLSparseSplit", true, "Split Sparse");
         settings.Add("SGLAuroraSplit", true, "Split Aurora");
 
-        settings.SetToolTip("reset", "Resets when you come back to the main menu and might randomly reset when you drop a lead?(needs more testing)\nBoth reset check boxes have to be checked for the reset to work");
-        settings.SetToolTip("load", "This will add time to the actual load times to match the IGT shown on Speedrun.com (can be up to 0.1s inaccurate)");
-        settings.SetToolTip("FabricatorStart", "Only works on old patch for now");
-        //settings.SetToolTip("IntroStart", "The intro needs to start for this to work");
-        //settings.SetToolTip("OxygenStart", "Only in lifepod");
+        settings.SetToolTip("FabricatorStart", "Old patch only");
         settings.SetToolTip("SGBaseSplit", "Split when you die next to your main base(includes clip A and C)");
         settings.SetToolTip("SGTeethSplit", "Split when you leave the Kelp Forest with 1 or more Creepvine samples");
         settings.SetToolTip("SGAuroraSplit", "Split when you die in the Aurora");
@@ -285,11 +275,6 @@ onStart
 
 update
 {
-    //if(current.Oxygen != old.Oxygen)
-    //print("oxygen: "+current.Oxygen + " StartedOxygenBefore: " + vars.StartedOxygenBefore + "\n" + "biome: "+current.Biome + "\n" + "NotMainMenu: " + current.NotMainMenu + "\n" + "");
-    if(current.Biome != old.Biome){
-        print("[Autosplitter] "+current.Biome);
-    }
     //print("[Autosplitter] "+current.RocketStage);
     //print("[Autosplitter] "+current.IsCured);
     //print("[Autosplitter] "+current.YCoord);
@@ -297,7 +282,6 @@ update
     if(!current.NotMainMenu)
     {
         vars.StartedOxygenBefore = 0;
-        vars.CuredBefore = 0;
         vars.StartedBefore = 0;
     }
 }
@@ -309,12 +293,6 @@ start
         print("[Autosplitter] start of intro");
         return true;
     }
-    /*if(settings["OxygenStart"] && current.Oxygen == 45 && old.Oxygen != current.Oxygen && vars.StartedOxygenBefore == 0)
-    {
-        print("[Autosplitter] start of oxygen");
-        vars.StartedOxygenBefore = 1;
-        return true;
-    }*/
 
     if(!current.IsLoadingScreen && current.NotMainMenu)
     {
@@ -392,7 +370,7 @@ split
         {
             int itemID = memory.ReadValue<int>((IntPtr)startAddr + 0x18*i);
             print("[Autosplitter] itemID " + i + ".: "+ itemID);
-            if(itemID == 528)//id for standard and double o2 tank
+            if(itemID == 528)//id for double o2 tank
             {
                 print("[Autosplitter] Shallows split");
                 vars.ShallowsBefore = 1;
@@ -574,7 +552,9 @@ split
 
 reset
 {
-    if(settings["reset"] && !current.NotMainMenu && old.NotMainMenu && current.IsPDAOpen == old.IsPDAOpen)
+    if(settings["reset"] && current.XCoord == 0 && old.XCoord != 0 
+                         && current.YCoord == 1.75f && old.YCoord != 1.75f 
+                         && current.ZCoord == 0 && old.ZCoord != 0)
     {
         return true;
     } 
