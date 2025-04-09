@@ -32,7 +32,7 @@ state("Subnautica", "March 2023")
     bool IsAnimationPlaying:   "UnityPlayer.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x58, 0x28, 0x284;
     bool IsPortalLoading:      "UnityPlayer.dll", 0x17FBE70, 0x10, 0x10, 0x30, 0x1F8, 0x28, 0x28;
     bool IsEggsHatching:        "fmodstudio.dll", 0x2CED70, 0x78, 0x18, 0x190, 0x4D8, 0xB0, 0x20, 0x28;
-    bool IsNotInWater:         "UnityPlayer.dll", 0x183AAD8, 0x5C0;
+    bool IsNotInWater:         "UnityPlayer.dll", 0x18AB130, 0x48, 0x0, 0x68;
     int IsFabiMenu:         "mono-2.0-bdwgc.dll", 0x499C40, 0xE84;
     int IsPDAOpen:          "mono-2.0-bdwgc.dll", 0x499C40, 0xE84; // true = 1051931443, false = 1056964608    
     int IsCured:                "fmodstudio.dll", 0x2CED70, 0x78, 0x18, 0x190, 0x550, 0xB8, 0x20, 0x58;   
@@ -275,10 +275,11 @@ onStart
 
 update
 {
-    //print("[Autosplitter] "+current.RocketStage);
-    //print("[Autosplitter] "+current.IsCured);
-    //print("[Autosplitter] "+current.YCoord);
-    //print("[Autosplitter] "+current.ZCoord);
+    print("[Autosplitter] IsAnimationPlaying "+current.IsAnimationPlaying);
+    print("[Autosplitter] X "+current.XCoord);
+    print("[Autosplitter] Y "+current.YCoord);
+    print("[Autosplitter] Z "+current.ZCoord);
+    print("[Autosplitter] IsNotInWater "+current.IsNotInWater);
     if(!current.NotMainMenu)
     {
         vars.StartedOxygenBefore = 0;
@@ -509,7 +510,7 @@ split
         return true;
     }
 
-    if(settings["SGLBaseSplit"] && current.IsNotInWater && current.IsNotInWater != old.IsNotInWater && vars.EnteredBaseBefore == 0)
+    if(settings["SGLBaseSplit"] && current.IsNotInWater && !old.IsNotInWater && vars.EnteredBaseBefore == 0)
     {
         var IsWithinBounds = vars.IsWithinBoundsFunc(20, 80, -45, -17, 290, 360, current.XCoord, current.YCoord, current.ZCoord);
         if(IsWithinBounds)
@@ -556,6 +557,14 @@ reset
     {
         return true;
     }
+    /*
+    if(settings["reset"] && current.XCoord == 0 && old.XCoord != 0 
+                         && current.YCoord == 1.75f && old.YCoord != 1.75f 
+                         && current.ZCoord == 0 && old.ZCoord != 0)
+    {
+        return true;
+    }
+    */
 }
 
 
