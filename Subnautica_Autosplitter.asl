@@ -552,7 +552,7 @@ split
 
 reset
 {
-    if(settings["reset"] !current.NotMainMenu && old.NotMainMenu && current.IsPDAOpen == old.IsPDAOpen)
+    if(settings["reset"] && !current.NotMainMenu && old.NotMainMenu && current.IsPDAOpen == old.IsPDAOpen)
     {
         return true;
     }
