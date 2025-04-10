@@ -12,16 +12,16 @@ state("Subnautica", "September 2018")
     int IsPDAOpen:             "mono.dll", 0x2655E0, 0x40, 0x18, 0xA0, 0x920, 0x64; // true = 1051931443, false = 1056964608  
     int IsCured:                           0x1445E08, 0xA8, 0x58, 0x110, 0x180, 0x160, 0x190, 0x20, 0xA58;//1059857727 = true //alt: 0x1445DF8, 0xA8, 0x58, 0x110, 0x180, 0x160, 0x190, 0x20, 0xA58;
     int IsRocketGo:            "mono.dll", 0x27EAD8, 0x40, 0x70, 0x50, 0x90, 0x30, 0x8, 0x80;
-    int RocketStage:                       0x142B930, 0x468, 0x380, 0x38, 0x10, 0x30, 0x30, 0x18, 0x28, 0x98;
+    int BPsUnlocked:           "mono.dll", 0x296BC8, 0x20, 0x928, 0x58, 0x38;
     int InventoryItemCount:    "mono.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x1A8, 0x28, 0x38, 0x94;//not working
     int Oxygen:                            0x142ADA8, 0x8, 0x10, 0x30, 0x30, 0x18, 0x28, 0x70;
-    int IsMovingX:                         0x13940D8, 0x840; //0 = false
-    int IsMovingZ:                         0x1443878, 0x8, 0x358, 0x3A8, 0x280, 0x2A8; //false = 0
+    int IsMovingX:                         0x13940D8, 0x840;
+    int IsMovingZ:                         0x1443878, 0x8, 0x358, 0x3A8, 0x280, 0x2A8;
     float XCoord:                          0x142B8C8, 0x180, 0x40, 0xA8, 0x7C0; // 0 in menu
     float YCoord:                          0x142B8C8, 0x180, 0x40, 0xA8, 0x7C4; //1.75 in menu
     float ZCoord:                          0x142B8C8, 0x180, 0x40, 0xA8, 0x7C8; // 0 in menu
     bool died:                             0x13B0650, 0x358, 0x8, 0x38, 0x0, 0x0, 0x108, 0x14;
-    string128 Biome:                       0x142b908, 0x180, 0x128, 0x80, 0x1d0, 0x8, 0x248, 0x1d0, 0x14;
+    string128 Biome:                       0x142b908, 0x180, 0x128, 0x80, 0x1D0, 0x8, 0x248, 0x1D0, 0x14;
 } 
 
 state("Subnautica", "March 2023")
@@ -32,19 +32,19 @@ state("Subnautica", "March 2023")
     bool IsAnimationPlaying:   "UnityPlayer.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x58, 0x28, 0x284;
     bool IsPortalLoading:      "UnityPlayer.dll", 0x17FBE70, 0x10, 0x10, 0x30, 0x1F8, 0x28, 0x28;
     bool IsEggsHatching:        "fmodstudio.dll", 0x2CED70, 0x78, 0x18, 0x190, 0x4D8, 0xB0, 0x20, 0x28;
-    bool IsNotInWater:         "UnityPlayer.dll", 0x18AB130, 0x48, 0x0, 0x68;
+    bool IsNotInWater:         "UnityPlayer.dll", 0x183AAD8, 0x5C0;
     int IsFabiMenu:         "mono-2.0-bdwgc.dll", 0x499C40, 0xE84;
     int IsPDAOpen:          "mono-2.0-bdwgc.dll", 0x499C40, 0xE84; // true = 1051931443, false = 1056964608    
     int IsCured:                "fmodstudio.dll", 0x2CED70, 0x78, 0x18, 0x190, 0x550, 0xB8, 0x20, 0x58;   
     int IsRocketGo:            "UnityPlayer.dll", 0x17FC238, 0x10, 0x3C; //256 = true
-    int RocketStage:           "UnityPlayer.dll", 0x17DB500, 0x8, 0x8, 0x30, 0x30, 0x38, 0x28, 0xE0, 0x98;
+    int BPsUnlocked:           "UnityPlayer.dll", 0x296BC8, 0x20, 0x928, 0x58, 0x38;// not working
     int InventoryItemCount:    "UnityPlayer.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x1A8, 0x28, 0x38, 0x94;
     int Oxygen:                "UnityPlayer.dll", 0x184DDD0, 0x60, 0x0, 0x0, 0x8, 0x38, 0x20, 0x30, 0x70;
     int IsMovingX:             "UnityPlayer.dll", 0x17FBC28, 0x30, 0x98; //false = 0
     int IsMovingZ:             "UnityPlayer.dll", 0x17FBC28, 0x30, 0x150; //false = 0
-    float XCoord:              "UnityPlayer.dll", 0x17F2E30, 0x150, 0xA58; // 0 in menu
-    float YCoord:              "UnityPlayer.dll", 0x17F2E30, 0x150, 0xA5C; //1.75 in menu
-    float ZCoord:              "UnityPlayer.dll", 0x17F2E30, 0x150, 0xA60; // 0 in menu
+    float XCoord:              "UnityPlayer.dll", 0x17F2E28, 0x150, 0x18, 0xA58; // 0 in menu
+    float YCoord:              "UnityPlayer.dll", 0x17F2E28, 0x150, 0x18, 0xA5C; //1.75 in menu
+    float ZCoord:              "UnityPlayer.dll", 0x17F2E28, 0x150, 0x28, 0x60; // 0 in menu
     bool died:                 "UnityPlayer.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x318, 0x28, 0x50;
     string128 Biome:           "UnityPlayer.dll", 0x17fbe70, 0x8, 0x10, 0x30, 0x58, 0x28, 0x1f0, 0x14;
 }
@@ -77,17 +77,15 @@ startup
             settings.Add("CureSplit", true, "Split on Cure");
             settings.Add("BoostersSplit", false, "Split on Boosters");
             settings.Add("FuelreserveSplit", false, "Split on Fuel Reserve");
-            settings.SetToolTip("BoostersSplit", "WARNING: not consistant");
-            settings.SetToolTip("FuelreserveSplit", "WARNING: not consistant");
+            settings.SetToolTip("BoostersSplit", "cg only");
+            settings.SetToolTip("FuelreserveSplit", "cg only");
             settings.Add("GunSplit", true, "Split on Gun deactivation");
             settings.Add("RocketSplit", true, "Split on Rocket launch");
-            settings.SetToolTip("CureSplit", "WARNING: not consistant");
+            settings.SetToolTip("CureSplit", "WARNING: not consistant  yet");
        }
        else if((vars.categoryName.IndexOf("Survival", StringComparison.OrdinalIgnoreCase) >= 0 &&
                vars.categoryName.IndexOf("Any%", StringComparison.OrdinalIgnoreCase) >= 0) || vars.categoryName == "LoadingScreen%" || vars.categoryName == "Any%")
        {
-            settings.Add("IntroStart", true, "Start after the intro animation");
-
             settings.CurrentDefaultParent = null;
             settings.Add("Split");
             settings.CurrentDefaultParent = "Split";
@@ -103,7 +101,7 @@ startup
             settings.Add("CureSplit", false, "Split on Cure"); 
             settings.Add("GunDeathSplit", true, "Split Gun Death");
             settings.Add("SGSparseSplit", true, "Split Sparse");
-            settings.SetToolTip("CureSplit", "WARNING: not consistant");
+            settings.SetToolTip("CureSplit", "WARNING: not consistant yet");
             settings.SetToolTip("SGBaseSplit", "Split when you die next to your main base(includes clip A and C)");
             settings.SetToolTip("SGTeethSplit", "Split when you leave the Kelp Forest with 1 or more Creepvine samples");
             settings.SetToolTip("SGAuroraSplit", "Split when you die in the Aurora");
@@ -144,11 +142,6 @@ startup
         settings.Add("FabricatorStart", true, "Start when you interact with the fabricator");
         settings.Add("PDAStart", true, "Start when you open your PDA");
 
-        settings.CurrentDefaultParent = "Start";
-        settings.Add("SurvivalStarts", false, "Survival starts");
-        settings.CurrentDefaultParent = "SurvivalStarts";
-        settings.Add("IntroStart", true, "Start after the intro animation");
-    
         settings.CurrentDefaultParent = null;
         settings.Add("Split");
         settings.CurrentDefaultParent = "Split";
@@ -209,7 +202,7 @@ startup
         settings.SetToolTip("SGLIonSplit", "Split when you unstuck in the Ion BP room");
         settings.SetToolTip("SGLSparseSplit", "Split when the current biome changes from sparse to shallows or kelp forest");
         settings.SetToolTip("SGLAuroraSplit", "Split when the current biome changes from aurora to shallows or kelp forest");
-        settings.SetToolTip("CureSplit", "WARNING: not consistant");
+        settings.SetToolTip("CureSplit", "WARNING: not consistant yet");
         }
         
     vars.StartedOxygenBefore = 0;
@@ -275,11 +268,10 @@ onStart
 
 update
 {
-    print("[Autosplitter] IsAnimationPlaying "+current.IsAnimationPlaying);
-    print("[Autosplitter] X "+current.XCoord);
-    print("[Autosplitter] Y "+current.YCoord);
-    print("[Autosplitter] Z "+current.ZCoord);
-    print("[Autosplitter] IsNotInWater "+current.IsNotInWater);
+    //print("[Autosplitter] "+current.RocketStage);
+    //print("[Autosplitter] "+current.IsCured);
+    //print("[Autosplitter] "+current.YCoord);
+    //print("[Autosplitter] "+current.ZCoord);
     if(!current.NotMainMenu)
     {
         vars.StartedOxygenBefore = 0;
@@ -289,7 +281,7 @@ update
 
 start
 {
-    if(settings["IntroStart"] && ((!current.introCinematicActive && old.introCinematicActive) || (current.Oxygen == 45 && old.Oxygen != 45)))
+    if((!current.introCinematicActive && old.introCinematicActive) || (current.Oxygen == 45 && old.Oxygen != 45))
     {
         print("[Autosplitter] start of intro");
         return true;
@@ -421,13 +413,13 @@ split
         }          
     }
 
-    if(settings["BoostersSplit"] && current.RocketStage == 3 && old.RocketStage == 2)
+    if(settings["BoostersSplit"] && current.BPsUnlocked == 225 && old.BPsUnlocked == 224)
     {
         print("[Autosplitter] Boosters split");
         return true;
     }
 
-    if(settings["FuelreserveSplit"] && current.RocketStage == 4 && old.RocketStage == 3)
+    if(settings["FuelreserveSplit"] && current.BPsUnlocked == 226 && old.BPsUnlocked == 225)
     {
         print("[Autosplitter] Fuel reserve split");
         return true;
@@ -510,7 +502,7 @@ split
         return true;
     }
 
-    if(settings["SGLBaseSplit"] && current.IsNotInWater && !old.IsNotInWater && vars.EnteredBaseBefore == 0)
+    if(settings["SGLBaseSplit"] && current.IsNotInWater && current.IsNotInWater != old.IsNotInWater && vars.EnteredBaseBefore == 0)
     {
         var IsWithinBounds = vars.IsWithinBoundsFunc(20, 80, -45, -17, 290, 360, current.XCoord, current.YCoord, current.ZCoord);
         if(IsWithinBounds)
@@ -557,14 +549,6 @@ reset
     {
         return true;
     }
-    /*
-    if(settings["reset"] && current.XCoord == 0 && old.XCoord != 0 
-                         && current.YCoord == 1.75f && old.YCoord != 1.75f 
-                         && current.ZCoord == 0 && old.ZCoord != 0)
-    {
-        return true;
-    }
-    */
 }
 
 
