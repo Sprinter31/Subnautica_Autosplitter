@@ -52,15 +52,34 @@ state("Subnautica", "March 2023")
 startup
 {   
     vars.categoryName = timer.Run.CategoryName.ToString();
-
+    if      (vars.categoryName.IndexOf("Creative", StringComparison.OrdinalIgnoreCase) >= 0 &&
+             vars.categoryName.IndexOf("Any%", StringComparison.OrdinalIgnoreCase) >= 0)
+    {
+        vars.shortCategoryName = "Creative";
+    }
+    else if((vars.categoryName.IndexOf("Survival", StringComparison.OrdinalIgnoreCase) >= 0 &&
+             vars.categoryName.IndexOf("Any%", StringComparison.OrdinalIgnoreCase) >= 0) || vars.categoryName == "LoadingScreen%" || vars.categoryName == "Any%")
+    {
+        vars.shortCategoryName = "Survival";
+    }
+    else if((vars.categoryName.IndexOf("Hardcore", StringComparison.OrdinalIgnoreCase) >= 0 &&
+             vars.categoryName.IndexOf("Any%", StringComparison.OrdinalIgnoreCase) >= 0) || vars.categoryName.Contains("HC"))
+    {
+        vars.shortCategoryName = "Hardcore";
+    }
+    else
+    {
+        vars.shortCategoryName = "Unkown";
+    }
     settings.Add("reset", false, "Reset");
     settings.Add("load", true, "SRC loadtimes");
     settings.SetToolTip("reset", "Resets when you come back to the main menu\nBoth reset check boxes have to be checked for the reset to work");
     settings.SetToolTip("load", "This will add time to the actual load times to match the IGT shown on Speedrun.com (can be up to 0.1s inaccurate)");
+
     
-    if(vars.categoryName.IndexOf("Creative", StringComparison.OrdinalIgnoreCase) >= 0 &&
-       vars.categoryName.IndexOf("Any%", StringComparison.OrdinalIgnoreCase) >= 0)
-       {
+    switch((string)vars.shortCategoryName)
+    {
+        case "Creative":
             settings.Add("Start");
             settings.CurrentDefaultParent = "Start";
             settings.Add("MovedStart", true, "Start when you move");
@@ -82,10 +101,9 @@ startup
             settings.Add("GunSplit", true, "Split on Gun deactivation");
             settings.Add("RocketSplit", true, "Split on Rocket launch");
             settings.SetToolTip("CureSplit", "WARNING: not consistant  yet");
-       }
-       else if((vars.categoryName.IndexOf("Survival", StringComparison.OrdinalIgnoreCase) >= 0 &&
-               vars.categoryName.IndexOf("Any%", StringComparison.OrdinalIgnoreCase) >= 0) || vars.categoryName == "LoadingScreen%" || vars.categoryName == "Any%")
-       {
+        break;
+
+        case "Survival":
             settings.CurrentDefaultParent = null;
             settings.Add("Split");
             settings.CurrentDefaultParent = "Split";
@@ -131,80 +149,127 @@ startup
             settings.SetToolTip("SGLIonSplit", "Split when you unstuck in the Ion BP room");
             settings.SetToolTip("SGLSparseSplit", "Split when the current biome changes from Sparse to shallows or kelp forest");
             settings.SetToolTip("SGLAuroraSplit", "Split when the current biome changes from Aurora to shallows or kelp forest");
-       }
-       else
-       {
-        settings.Add("Start");
-        settings.CurrentDefaultParent = "Start";
-        settings.Add("CreativeStarts", false, "Creative starts");
-        settings.CurrentDefaultParent = "CreativeStarts";
-        settings.Add("MovedStart", true, "Start when you move");
-        settings.Add("FabricatorStart", true, "Start when you interact with the fabricator");
-        settings.Add("PDAStart", true, "Start when you open your PDA");
+        break;
 
-        settings.CurrentDefaultParent = null;
-        settings.Add("Split");
-        settings.CurrentDefaultParent = "Split";
-        settings.Add("GeneralSplits", true, "General splits");
+        case "Hardcore":
+            settings.CurrentDefaultParent = null;
+            settings.Add("Split");
+            settings.CurrentDefaultParent = "Split";
+            settings.Add("RocketSplit", true, "Split on Rocket launch");
+            settings.Add("Glitched", false, "Glitched");
+            settings.CurrentDefaultParent = "Glitched";
+            settings.Add("SGTeethSplit", true, "Split Teeth"); 
+            settings.Add("HCShallowsSplit", true, "Split Shallows");
+            settings.Add("MountainSplit", true, "Split Mountain");
+            settings.Add("HCIonSplit", true, "Split Ion BP");
+            settings.Add("HatchSplit", false, "Split on hatching eggs");
+            settings.Add("CureSplit", false, "Split on Cure"); 
+            settings.Add("GunSplit2", true, "Split on Gun deactivation");
+            settings.Add("HCAuroraSplit", true, "Split Aurora");
+            settings.Add("HCSparseSplit", true, "Split Sparse");
+            settings.SetToolTip("CureSplit", "WARNING: not consistant yet");
+            settings.SetToolTip("SGTeethSplit", "Split when you leave the Kelp Forest with 1 or more Creepvine samples");
+            settings.SetToolTip("MountainSplit", "Split when you descend under the arch after getting out of bounds");
+            settings.SetToolTip("HCIonSplit", "Split when you grab the Ion BP");
+            settings.SetToolTip("HCAuroraSplit", "Split when you exit the Aurora after unlocking the Rocket");
+            settings.SetToolTip("HCSparseSplit", "Split when you enter your main base with a ruby (includes clip A and C)");
 
-        settings.CurrentDefaultParent = "GeneralSplits";
-        settings.Add("PCFSplits", true, "Split PCF");
-        settings.CurrentDefaultParent = "PCFSplits";
-        settings.Add("PCFTabletSplit", true, "Split on PCF entrence tablet insert");
-        settings.Add("PCFPoolSplit", false, "Split when entering the aquarium from moonpool");
-        settings.CurrentDefaultParent = "GeneralSplits";
-        settings.Add("HatchSplit", false, "Split on hatching eggs");
-        settings.Add("CureSplit", false, "Split on Cure");
-        settings.Add("RocketSplit", true, "Split on Rocket launch");
-        settings.Add("DeathSplit", false, "Split on death");
-
-        settings.CurrentDefaultParent = "Split";
-        settings.Add("CreativeSplits", false, "Creative splits");
-        settings.CurrentDefaultParent = "CreativeSplits";
-        settings.Add("PortalSplit", true, "Split on Portal entry");
-        settings.Add("BoostersSplit", false, "Split on Boosters");
-        settings.Add("FuelreserveSplit", false, "Split on Fuel Reserve");
-        settings.Add("GunSplit", true, "Split on Gun deactivation");
-
-        settings.CurrentDefaultParent = "Split";
-        settings.Add("SurvivalSplits", true, "Survival splits");
-        settings.CurrentDefaultParent = "SurvivalSplits";
-        settings.Add("Glitched", false, "Glitched");
-        settings.CurrentDefaultParent = "Glitched";
-        settings.Add("SGBaseSplit", true, "Split Base"); 
-        settings.Add("SGTeethSplit", true, "Split Teeth"); 
-        settings.Add("SGAuroraSplit", true, "Split Aurora");
-        settings.Add("MountainSplit", true, "Split Mountain");
-        settings.Add("ATPSplit", true, "Split Ion BP");
-        settings.Add("GunDeathSplit", true, "Split Gun Death");
-        settings.Add("SGSparseSplit", true, "Split Sparse");
-        settings.CurrentDefaultParent = "SurvivalSplits";
-        settings.Add("Glitchless", false, "Glitchless");
-        settings.CurrentDefaultParent = "Glitchless";
-        settings.Add("SGLBaseSplit", true, "Split Base");
-        settings.Add("SGLShallowsSplit", true, "Split Shallows");
-        settings.Add("SGLUpperTabletSplit", true, "Split Upper Tablet");
-        settings.Add("SGLIonSplit", true, "Split Ion BP");
-        settings.Add("SGLSparseSplit", true, "Split Sparse");
-        settings.Add("SGLAuroraSplit", true, "Split Aurora");
-
-        settings.SetToolTip("FabricatorStart", "Old patch only");
-        settings.SetToolTip("SGBaseSplit", "Split when you die next to your main base(includes clip A and C)");
-        settings.SetToolTip("SGTeethSplit", "Split when you leave the Kelp Forest with 1 or more Creepvine samples");
-        settings.SetToolTip("SGAuroraSplit", "Split when you die in the Aurora");
-        settings.SetToolTip("MountainSplit", "Split when you descend under the arch after getting out of bounds");
-        settings.SetToolTip("ATPSplit", "Split when you die in the Alien Thermal Plant");
-        settings.SetToolTip("GunDeathSplit", "Split when you die in the Alien Gun Room");
-        settings.SetToolTip("SGSparseSplit", "Split when you die in the biomes: Sea Treader Path or Sparse Reef");
-        settings.SetToolTip("SGLBaseSplit", "Split when you enter your main base near the seaglide wreck for the first time");
-        settings.SetToolTip("SGLShallowsSplit", "Split when you leave your main base with an extra O2 tank in your inv");
-        settings.SetToolTip("SGLUpperTabletSplit", "Split when you pick up the upper purple tablet that lies next to the gun entrence");
-        settings.SetToolTip("SGLIonSplit", "Split when you unstuck in the Ion BP room");
-        settings.SetToolTip("SGLSparseSplit", "Split when the current biome changes from sparse to shallows or kelp forest");
-        settings.SetToolTip("SGLAuroraSplit", "Split when the current biome changes from aurora to shallows or kelp forest");
-        settings.SetToolTip("CureSplit", "WARNING: not consistant yet");
-        }
+            settings.CurrentDefaultParent = "Split";
+            settings.Add("Glitchless", false, "Glitchless");
+            settings.CurrentDefaultParent = "Glitchless";
+            settings.Add("SGLBaseSplit", true, "Split Base");
+            settings.Add("SGLShallowsSplit", true, "Split Shallows");
+            settings.Add("SGLUpperTabletSplit", true, "Split Upper Tablet");
+            settings.Add("SGLIonSplit", true, "Split Ion BP");
+            settings.Add("PCFSplits", true, "Split PCF");
+            settings.CurrentDefaultParent = "PCFSplits";
+            settings.Add("PCFTabletSplit", true, "Split on PCF entrence tablet insert");
+            settings.Add("PCFPoolSplit", false, "Split when entering the aquarium from moonpool");
+            settings.CurrentDefaultParent = "Glitchless";
+            settings.Add("GunSplit", true, "Split on Gun deactivation");
+            settings.Add("SGLSparseSplit", true, "Split Sparse");
+            settings.Add("SGLAuroraSplit", true, "Split Aurora");
+            settings.SetToolTip("SGLBaseSplit", "Split when you enter your main base near the seaglide wreck for the first time");
+            settings.SetToolTip("SGLShallowsSplit", "Split when you leave your main base with an extra O2 tank in your inv");
+            settings.SetToolTip("SGLUpperTabletSplit", "Split when you pick up the upper purple tablet that lies next to the gun entrence");
+            settings.SetToolTip("SGLIonSplit", "Split when you unstuck in the Ion BP room");
+            settings.SetToolTip("SGLSparseSplit", "Split when the current biome changes from Sparse to shallows or kelp forest");
+            settings.SetToolTip("SGLAuroraSplit", "Split when the current biome changes from Aurora to shallows or kelp forest");
+        break;
         
+        default:
+            settings.Add("Start");
+            settings.CurrentDefaultParent = "Start";
+            settings.Add("CreativeStarts", false, "Creative starts");
+            settings.CurrentDefaultParent = "CreativeStarts";
+            settings.Add("MovedStart", true, "Start when you move");
+            settings.Add("FabricatorStart", true, "Start when you interact with the fabricator");
+            settings.Add("PDAStart", true, "Start when you open your PDA");
+
+            settings.CurrentDefaultParent = null;
+            settings.Add("Split");
+            settings.CurrentDefaultParent = "Split";
+            settings.Add("GeneralSplits", true, "General splits");
+
+            settings.CurrentDefaultParent = "GeneralSplits";
+            settings.Add("PCFSplits", true, "Split PCF");
+            settings.CurrentDefaultParent = "PCFSplits";
+            settings.Add("PCFTabletSplit", true, "Split on PCF entrence tablet insert");
+            settings.Add("PCFPoolSplit", false, "Split when entering the aquarium from moonpool");
+            settings.CurrentDefaultParent = "GeneralSplits";
+            settings.Add("HatchSplit", false, "Split on hatching eggs");
+            settings.Add("CureSplit", false, "Split on Cure");
+            settings.Add("RocketSplit", true, "Split on Rocket launch");
+            settings.Add("DeathSplit", false, "Split on death");
+
+            settings.CurrentDefaultParent = "Split";
+            settings.Add("CreativeSplits", false, "Creative splits");
+            settings.CurrentDefaultParent = "CreativeSplits";
+            settings.Add("PortalSplit", true, "Split on Portal entry");
+            settings.Add("BoostersSplit", false, "Split on Boosters");
+            settings.Add("FuelreserveSplit", false, "Split on Fuel Reserve");
+            settings.Add("GunSplit", true, "Split on Gun deactivation");
+
+            settings.CurrentDefaultParent = "Split";
+            settings.Add("SurvivalSplits", true, "Survival splits");
+            settings.CurrentDefaultParent = "SurvivalSplits";
+            settings.Add("Glitched", false, "Glitched");
+            settings.CurrentDefaultParent = "Glitched";
+            settings.Add("SGBaseSplit", true, "Split Base"); 
+            settings.Add("SGTeethSplit", true, "Split Teeth"); 
+            settings.Add("SGAuroraSplit", true, "Split Aurora");
+            settings.Add("MountainSplit", true, "Split Mountain");
+            settings.Add("ATPSplit", true, "Split Ion BP");
+            settings.Add("GunDeathSplit", true, "Split Gun Death");
+            settings.Add("SGSparseSplit", true, "Split Sparse");
+            settings.CurrentDefaultParent = "SurvivalSplits";
+            settings.Add("Glitchless", false, "Glitchless");
+            settings.CurrentDefaultParent = "Glitchless";
+            settings.Add("SGLBaseSplit", true, "Split Base");
+            settings.Add("SGLShallowsSplit", true, "Split Shallows");
+            settings.Add("SGLUpperTabletSplit", true, "Split Upper Tablet");
+            settings.Add("SGLIonSplit", true, "Split Ion BP");
+            settings.Add("SGLSparseSplit", true, "Split Sparse");
+            settings.Add("SGLAuroraSplit", true, "Split Aurora");
+
+            settings.SetToolTip("FabricatorStart", "Old patch only");
+            settings.SetToolTip("SGBaseSplit", "Split when you die next to your main base(includes clip A and C)");
+            settings.SetToolTip("SGTeethSplit", "Split when you leave the Kelp Forest with 1 or more Creepvine samples");
+            settings.SetToolTip("SGAuroraSplit", "Split when you die in the Aurora");
+            settings.SetToolTip("MountainSplit", "Split when you descend under the arch after getting out of bounds");
+            settings.SetToolTip("ATPSplit", "Split when you die in the Alien Thermal Plant");
+            settings.SetToolTip("GunDeathSplit", "Split when you die in the Alien Gun Room");
+            settings.SetToolTip("SGSparseSplit", "Split when you die in the biomes: Sea Treader Path or Sparse Reef");
+            settings.SetToolTip("SGLBaseSplit", "Split when you enter your main base near the seaglide wreck for the first time");
+            settings.SetToolTip("SGLShallowsSplit", "Split when you leave your main base with an extra O2 tank in your inv");
+            settings.SetToolTip("SGLUpperTabletSplit", "Split when you pick up the upper purple tablet that lies next to the gun entrence");
+            settings.SetToolTip("SGLIonSplit", "Split when you unstuck in the Ion BP room");
+            settings.SetToolTip("SGLSparseSplit", "Split when the current biome changes from sparse to shallows or kelp forest");
+            settings.SetToolTip("SGLAuroraSplit", "Split when the current biome changes from aurora to shallows or kelp forest");
+            settings.SetToolTip("CureSplit", "WARNING: not consistant yet");
+        break;
+    }
+
     vars.StartedOxygenBefore = 0;
     vars.StartedBefore = 0;
     vars.CuredBefore = 0;
@@ -213,6 +278,10 @@ startup
     vars.EnteredBaseBefore = 0;
     vars.TeethBefore = 0;
     vars.ShallowsBefore = 0;
+    vars.HCShallowsBefore = 0;
+    vars.HCSparseBefore = 0;
+    vars.oldBPsCount = 0;
+    vars.FirstTimeAuroraHC = true;
     vars.counter = 0;
     
     vars.waitingFor1 = false;
@@ -261,6 +330,10 @@ onStart
     vars.EnteredBaseBefore = 0;
     vars.TeethBefore = 0;
     vars.ShallowsBefore = 0;
+    vars.HCShallowsBefore = 0;
+    vars.HCSparseBefore = 0;
+    vars.oldBPsCount = 0;
+    vars.FirstTimeAuroraHC = true;
     vars.counter = 0;
     vars.waitingFor1 = false;
     vars.waitingFor0 = false;
@@ -268,7 +341,7 @@ onStart
 
 update
 {
-    //print("[Autosplitter] "+current.RocketStage);
+    print("[Autosplitter] "+current.IsNotInWater);
     //print("[Autosplitter] "+current.IsCured);
     //print("[Autosplitter] "+current.YCoord);
     //print("[Autosplitter] "+current.ZCoord);
@@ -315,7 +388,7 @@ start
 
 split
 {
-    if(settings["SGTeethSplit"] && vars.TeethBefore == 0)
+    if(settings["SGTeethSplit"] && vars.TeethBefore == 0)//will make this shit a function
     {
         var IsWithinBounds = vars.IsWithinBoundsFunc(-212, 27, -100, 100, 159, 177, current.XCoord, current.YCoord, current.ZCoord);
         if(IsWithinBounds)
@@ -334,7 +407,7 @@ split
         for (int i = 0; i < 48; i++)
         {
             int itemID = memory.ReadValue<int>((IntPtr)startAddr + 0x4*i);
-            print("[Autosplitter] itemID " + i + ".: "+ itemID);
+            print("[Autosplitter] TeethitemID " + i + ".: "+ itemID);
             if(itemID == 2529)//id for creepvine sample
             {
                 print("[Autosplitter] Teeth split");
@@ -362,16 +435,45 @@ split
         for (int i = 0; i < 48; i++)
         {
             int itemID = memory.ReadValue<int>((IntPtr)startAddr + 0x18*i);
-            print("[Autosplitter] itemID " + i + ".: "+ itemID);
+            print("[Autosplitter] SGLitemID " + i + ".: "+ itemID);
             if(itemID == 528)//id for double o2 tank
             {
-                print("[Autosplitter] Shallows split");
+                print("[Autosplitter] SGL Shallows split");
                 vars.ShallowsBefore = 1;
                 return true;
             }
         }
     }
+    if(settings["HCSparseSplit"] && current.IsAnimationPlaying && !old.IsAnimationPlaying)
+    {
+        var IsWithinBoundsClipC = vars.IsWithinBoundsFunc(-142, -132, -20, -5, 82, 90, current.XCoord, current.YCoord, current.ZCoord);
+        var IsWithinBoundsClipA = vars.IsWithinBoundsFunc(-48, -55, -20, -5, 106, 111, current.XCoord, current.YCoord, current.ZCoord);
+        if((IsWithinBoundsClipC || IsWithinBoundsClipA) && vars.HCSparseBefore == 0)
+        {
+            var baseAddr = modules.First(m => m.ModuleName == "mono.dll").BaseAddress;
+            IntPtr ptr1 = memory.ReadPointer((IntPtr)(baseAddr + 0x296BC8));
+            IntPtr ptr2 = memory.ReadPointer((IntPtr)(ptr1 + 0x20));
+            IntPtr ptr3 = memory.ReadPointer((IntPtr)(ptr2 + 0xA40));
+            IntPtr ptr4 = memory.ReadPointer((IntPtr)(ptr3 + 0x0));
+            IntPtr ptr5 = memory.ReadPointer((IntPtr)(ptr4 + 0x40));
+            IntPtr ptr6 = memory.ReadPointer((IntPtr)(ptr5 + 0x58));
+            IntPtr ptr7 = memory.ReadPointer((IntPtr)(ptr6 + 0x20));
+            IntPtr finalAddr = (IntPtr)(ptr7 + 0x18);//address of mercuryOre, 0x8 begins the inventory
+            IntPtr startAddr = (IntPtr)(finalAddr + 0x8);//inventory begins here and each item takes up 0x4 after
 
+            for (int i = 0; i < 48; i++)
+            {
+                int itemID = memory.ReadValue<int>((IntPtr)startAddr + 0x4*i);
+                print("[Autosplitter] HCSparse itemID " + i + ".: "+ itemID);
+                if(itemID == 52)//id for ruby
+                {
+                    print("[Autosplitter] HC Sparse split");
+                    vars.HCSparseBefore = 1;
+                    return true;
+                }  
+            }
+        }
+    }
     
     if(settings["PCFTabletSplit"] && current.IsAnimationPlaying && !old.IsAnimationPlaying)
     {
@@ -425,7 +527,7 @@ split
         return true;
     }
 
-    if(settings["GunSplit"] && current.IsAnimationPlaying && current.IsAnimationPlaying != old.IsAnimationPlaying && vars.GunedBefore == 0)
+    if((settings["GunSplit"] || settings["GunSplit2"]) && current.IsAnimationPlaying && current.IsAnimationPlaying != old.IsAnimationPlaying && vars.GunedBefore == 0)
     {        
         var IsWithinBounds = vars.IsWithinBoundsFunc(359, 365, -66, -75, 1079, 1085, current.XCoord, current.YCoord, current.ZCoord);     
         if(IsWithinBounds)
@@ -540,7 +642,37 @@ split
         print("[Autosplitter] Aurora split 2023");
         return true;
     }
-    
+
+    if(settings["HCShallowsSplit"] && vars.HCShallowsBefore == 0)
+    {
+        var IsWithinBounds = vars.IsWithinBoundsFunc(-200, 130, -100, 50, 477, 479, current.XCoord, current.YCoord, current.ZCoord);
+        if(IsWithinBounds)
+        {
+            vars.HCShallowsBefore = 1;
+            print("[Autosplitter] HC Shallows split");
+            return true;
+        }
+    }
+    if(settings["HCIonSplit"] && current.Biome == "PrecursorThermalRoom" && current.BPsUnlocked > old.BPsUnlocked)
+    {
+        print("[Autosplitter] Hardcore Ion split");
+        return true;
+    }
+    if(settings["HCAuroraSplit"])
+    {
+        var IsWithinBounds = vars.IsWithinBoundsFunc(545, 550, -10, 10, -265, -256, current.XCoord, current.YCoord, current.ZCoord);
+        if(IsWithinBounds)
+        {
+            if(vars.oldBPsCount < current.BPsUnlocked && !vars.FirstTimeAuroraHC)
+            {
+                vars.FirstTimeAuroraHC = true;
+                print("[Autosplitter] Hardcore Aurora split");
+                return true;
+            }
+            vars.oldBPsCount = current.BPsUnlocked;
+            vars.FirstTimeAuroraHC = false;
+        } 
+    }
 }
 
 reset
