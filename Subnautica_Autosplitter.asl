@@ -604,7 +604,7 @@ split
         return true;
     }
 
-    if(settings["SGLBaseSplit"] && current.IsNotInWater && current.IsNotInWater != old.IsNotInWater && vars.EnteredBaseBefore == 0)
+    if(settings["SGLBaseSplit"] && current.IsAnimationPlaying && !old.IsAnimationPlaying && vars.EnteredBaseBefore == 0)
     {
         var IsWithinBounds = vars.IsWithinBoundsFunc(20, 80, -45, -17, 290, 360, current.XCoord, current.YCoord, current.ZCoord);
         if(IsWithinBounds)
