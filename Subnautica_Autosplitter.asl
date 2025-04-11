@@ -44,7 +44,7 @@ state("Subnautica", "March 2023")
     int IsMovingZ:             "UnityPlayer.dll", 0x17FBC28, 0x30, 0x150; //false = 0
     float XCoord:              "UnityPlayer.dll", 0x17F2E28, 0x150, 0x18, 0xA58; // 0 in menu
     float YCoord:              "UnityPlayer.dll", 0x17F2E28, 0x150, 0x18, 0xA5C; //1.75 in menu
-    float ZCoord:              "UnityPlayer.dll", 0x17F2E28, 0x150, 0x28, 0xA60; // 0 in menu
+    float ZCoord:              "UnityPlayer.dll", 0x17F2E28, 0x150, 0x18, 0xA60; // 0 in menu
     bool died:                 "UnityPlayer.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x318, 0x28, 0x50;
     string128 Biome:           "UnityPlayer.dll", 0x17fbe70, 0x8, 0x10, 0x30, 0x58, 0x28, 0x1f0, 0x14;
 }
