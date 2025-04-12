@@ -270,18 +270,18 @@ startup
         break;
     }
 
-    vars.StartedOxygenBefore = 0;
-    vars.StartedBefore = 0;
-    vars.CuredBefore = 0;
-    vars.GunedBefore = 0;
-    vars.DescendedBefore = 0;
-    vars.EnteredBaseBefore = 0;
-    vars.TeethBefore = 0;
-    vars.ShallowsBefore = 0;
-    vars.HCShallowsBefore = 0;
-    vars.HCSparseBefore = 0;
-    vars.oldBPsCount = 0;
+    vars.StartedOxygenBefore = false;
+    vars.StartedBefore = false;
+    vars.CuredBefore = false;
+    vars.GunedBefore = false;
+    vars.DescendedBefore = false;
+    vars.EnteredBaseBefore = false;
+    vars.TeethBefore = false;
+    vars.ShallowsBefore = false;
+    vars.HCShallowsBefore = false;
+    vars.HCSparseBefore = false;
     vars.FirstTimeAuroraHC = true;
+    vars.oldBPsCount = 0;
     vars.counter = 0;
     
     vars.waitingFor1 = false;
@@ -324,16 +324,16 @@ init
 
 onStart
 {
-    vars.CuredBefore = 0;
-    vars.GunedBefore = 0;
-    vars.DescendedBefore = 0;
-    vars.EnteredBaseBefore = 0;
-    vars.TeethBefore = 0;
-    vars.ShallowsBefore = 0;
-    vars.HCShallowsBefore = 0;
-    vars.HCSparseBefore = 0;
-    vars.oldBPsCount = 0;
+    vars.CuredBefore = false;
+    vars.GunedBefore = false;
+    vars.DescendedBefore = false;
+    vars.EnteredBaseBefore = false;
+    vars.TeethBefore = false;
+    vars.ShallowsBefore = false;
+    vars.HCShallowsBefore = false;
+    vars.HCSparseBefore = false;
     vars.FirstTimeAuroraHC = true;
+    vars.oldBPsCount = 0;
     vars.counter = 0;
     vars.waitingFor1 = false;
     vars.waitingFor0 = false;
@@ -341,14 +341,16 @@ onStart
 
 update
 {
+    print("[Autosplitter] "+current.InventoryItemCount);
+    print("[Autosplitter] "+current.Biome);
+    print("[Autosplitter] "+current.XCoord);
+    print("[Autosplitter] "+current.YCoord);
+    print("[Autosplitter] "+current.ZCoord);
     print("[Autosplitter] "+current.IsNotInWater);
-    //print("[Autosplitter] "+current.IsCured);
-    //print("[Autosplitter] "+current.YCoord);
-    //print("[Autosplitter] "+current.ZCoord);
     if(!current.NotMainMenu)
     {
-        vars.StartedOxygenBefore = 0;
-        vars.StartedBefore = 0;
+        vars.StartedOxygenBefore = false;
+        vars.StartedBefore = false;
     }
 }
 
@@ -388,7 +390,7 @@ start
 
 split
 {
-    if(settings["SGTeethSplit"] && vars.TeethBefore == 0)//will make this shit a function
+    if(settings["SGTeethSplit"] && !vars.TeethBefore)//will make this shit a function
     {
         var IsWithinBounds = vars.IsWithinBoundsFunc(-212, 27, -100, 100, 159, 177, current.XCoord, current.YCoord, current.ZCoord);
         if(IsWithinBounds)
@@ -411,13 +413,13 @@ split
             if(itemID == 2529)//id for creepvine sample
             {
                 print("[Autosplitter] Teeth split");
-                vars.TeethBefore = 1;
+                vars.TeethBefore = true;
                 return true;
             }
         }
         }
     }
-    if(settings["SGLShallowsSplit"] && vars.ShallowsBefore == 0 && !current.IsNotInWater && old.IsNotInWater)
+    if(settings["SGLShallowsSplit"] && !vars.ShallowsBefore && !current.IsNotInWater && old.IsNotInWater)
     {
         var baseAddr = modules.First(m => m.ModuleName == "UnityPlayer.dll").BaseAddress;
         IntPtr ptr1 = memory.ReadPointer((IntPtr)(baseAddr + 0x17FBE70));
@@ -439,7 +441,7 @@ split
             if(itemID == 528)//id for double o2 tank
             {
                 print("[Autosplitter] SGL Shallows split");
-                vars.ShallowsBefore = 1;
+                vars.ShallowsBefore = true;
                 return true;
             }
         }
@@ -448,7 +450,7 @@ split
     {
         var IsWithinBoundsClipC = vars.IsWithinBoundsFunc(-142, -132, -20, -5, 82, 90, current.XCoord, current.YCoord, current.ZCoord);
         var IsWithinBoundsClipA = vars.IsWithinBoundsFunc(-48, -55, -20, -5, 106, 111, current.XCoord, current.YCoord, current.ZCoord);
-        if((IsWithinBoundsClipC || IsWithinBoundsClipA) && vars.HCSparseBefore == 0)
+        if((IsWithinBoundsClipC || IsWithinBoundsClipA) && !vars.HCSparseBefore)
         {
             var baseAddr = modules.First(m => m.ModuleName == "mono.dll").BaseAddress;
             IntPtr ptr1 = memory.ReadPointer((IntPtr)(baseAddr + 0x296BC8));
@@ -468,7 +470,7 @@ split
                 if(itemID == 52)//id for ruby
                 {
                     print("[Autosplitter] HC Sparse split");
-                    vars.HCSparseBefore = 1;
+                    vars.HCSparseBefore = true;
                     return true;
                 }  
             }
@@ -505,12 +507,12 @@ split
         return true;
     }
 
-    if(settings["CureSplit"] && current.IsCured != old.IsCured && vars.CuredBefore == 0)
+    if(settings["CureSplit"] && current.IsCured != old.IsCured && !vars.CuredBefore)
     {
         if(current.IsCured == 1059857727 || current.IsCured == 1)
         {
             print("[Autosplitter] Cure split");
-            vars.CuredBefore = 1;
+            vars.CuredBefore = true;
             return true;
         }          
     }
@@ -527,13 +529,13 @@ split
         return true;
     }
 
-    if((settings["GunSplit"] || settings["GunSplit2"]) && current.IsAnimationPlaying && current.IsAnimationPlaying != old.IsAnimationPlaying && vars.GunedBefore == 0)
+    if((settings["GunSplit"] || settings["GunSplit2"]) && current.IsAnimationPlaying && current.IsAnimationPlaying != old.IsAnimationPlaying && !vars.GunedBefore)
     {        
         var IsWithinBounds = vars.IsWithinBoundsFunc(359, 365, -66, -75, 1079, 1085, current.XCoord, current.YCoord, current.ZCoord);     
         if(IsWithinBounds)
         {                  
             print("[Autosplitter] Gun split");
-            vars.GunedBefore = 1;
+            vars.GunedBefore = true;
             return true;
         }            
     }
@@ -572,13 +574,13 @@ split
     }
 
     
-    if(settings["MountainSplit"] && vars.DescendedBefore == 0)
+    if(settings["MountainSplit"] && !vars.DescendedBefore)
     {
         var IsWithinBounds = vars.IsWithinBoundsFunc(521, 534, -190.6f, -210, 764.3f, 796.4f, current.XCoord, current.YCoord, current.ZCoord);
         if(IsWithinBounds)
         {
             print("[Autosplitter] Mountain split");
-            vars.DescendedBefore = 1;
+            vars.DescendedBefore = true;
             return true;
         }
 
@@ -604,13 +606,13 @@ split
         return true;
     }
 
-    if(settings["SGLBaseSplit"] && current.IsAnimationPlaying && !old.IsAnimationPlaying && vars.EnteredBaseBefore == 0)
+    if(settings["SGLBaseSplit"] && current.IsAnimationPlaying && !old.IsAnimationPlaying && !vars.EnteredBaseBefore)
     {
         var IsWithinBounds = vars.IsWithinBoundsFunc(20, 80, -45, -17, 290, 360, current.XCoord, current.YCoord, current.ZCoord);
         if(IsWithinBounds)
         {
             print("[Autosplitter] Base split 2023");
-            vars.EnteredBaseBefore = 1;
+            vars.EnteredBaseBefore = true;
             return true;
         }
     }
@@ -643,12 +645,12 @@ split
         return true;
     }
 
-    if(settings["HCShallowsSplit"] && vars.HCShallowsBefore == 0)
+    if(settings["HCShallowsSplit"] && !vars.HCShallowsBefore)
     {
         var IsWithinBounds = vars.IsWithinBoundsFunc(-200, 130, -100, 50, 477, 479, current.XCoord, current.YCoord, current.ZCoord);
         if(IsWithinBounds)
         {
-            vars.HCShallowsBefore = 1;
+            vars.HCShallowsBefore = true;
             print("[Autosplitter] HC Shallows split");
             return true;
         }
@@ -677,9 +679,21 @@ split
 
 reset
 {
-    if(settings["reset"] && !current.NotMainMenu && old.NotMainMenu && current.IsPDAOpen == old.IsPDAOpen)
+    if(settings["reset"] && version == "September 2018")
     {
-        return true;
+        if(current.XCoord == 0 && current.ZCoord == 0 && current.YCoord == 1.75f && old.YCoord != current.YCoord)
+        {
+            print("reset of coords");
+            return true;
+        }
+    }
+    else if(settings["reset"] && version == "March 2023")
+    {
+        if(!current.NotMainMenu && old.NotMainMenu && current.IsPDAOpen == old.IsPDAOpen)
+        {
+            print("reset of main menu variable");
+            return true;
+        }
     }
 }
 
