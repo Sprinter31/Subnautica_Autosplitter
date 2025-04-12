@@ -679,21 +679,10 @@ split
 
 reset
 {
-    if(settings["reset"] && version == "September 2018")
+    if(current.XCoord == 0 && current.ZCoord == 0 && current.YCoord == 1.75f && old.YCoord != current.YCoord)
     {
-        if(current.XCoord == 0 && current.ZCoord == 0 && current.YCoord == 1.75f && old.YCoord != current.YCoord)
-        {
-            print("reset of coords");
-            return true;
-        }
-    }
-    else if(settings["reset"] && version == "March 2023")
-    {
-        if(!current.NotMainMenu && old.NotMainMenu && current.IsPDAOpen == old.IsPDAOpen)
-        {
-            print("reset of main menu variable");
-            return true;
-        }
+        print("reset of coords");
+        return true;
     }
 }
 
