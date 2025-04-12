@@ -58,7 +58,7 @@ startup
         vars.shortCategoryName = "Creative";
     }
     else if((vars.categoryName.IndexOf("Survival", StringComparison.OrdinalIgnoreCase) >= 0 &&
-             vars.categoryName.IndexOf("Any%", StringComparison.OrdinalIgnoreCase) >= 0) || vars.categoryName == "LoadingScreen%" || vars.categoryName == "Any%")
+             vars.categoryName.IndexOf("Any%", StringComparison.OrdinalIgnoreCase) >= 0) || vars.categoryName == "LoadingScreen%")
     {
         vars.shortCategoryName = "Survival";
     }
