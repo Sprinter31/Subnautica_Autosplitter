@@ -35,7 +35,7 @@ state("Subnautica", "March 2023")
     bool IsNotInWater:         "UnityPlayer.dll", 0x18AB130, 0x48, 0x0, 0x68;
     int IsFabiMenu:         "mono-2.0-bdwgc.dll", 0x499C40, 0xE84;
     int IsPDAOpen:          "mono-2.0-bdwgc.dll", 0x499C40, 0xE84; // true = 1051931443, false = 1056964608    
-    int Isd:                "fmodstudio.dll", 0x2CED70, 0x78, 0x18, 0x190, 0x550, 0xB8, 0x20, 0x58;   
+    int IsCured:                "fmodstudio.dll", 0x2CED70, 0x78, 0x18, 0x190, 0x550, 0xB8, 0x20, 0x58;   
     int IsRocketGo:            "UnityPlayer.dll", 0x17FC238, 0x10, 0x3C; //256 = true
     int BPsUnlocked:           "UnityPlayer.dll", 0x296BC8, 0x20, 0x928, 0x58, 0x38;// not working
     int InventoryItemCount:    "UnityPlayer.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x1A8, 0x28, 0x38, 0x94;
@@ -93,7 +93,7 @@ startup
             settings.Add("PCFTabletSplit", true, "Split on PCF entrence tablet insert");
             settings.Add("PortalSplit", true, "Split on Portal entry");
             settings.Add("HatchSplit", false, "Split on hatching eggs");
-            settings.Add("Split", true, "Split on ");
+            settings.Add("CureSplit", true, "Split on Cure");
             settings.Add("BoostersSplit", false, "Split on Boosters");
             settings.Add("FuelreserveSplit", false, "Split on Fuel Reserve");
             settings.SetToolTip("BoostersSplit", "cg only");
