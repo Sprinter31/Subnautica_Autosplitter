@@ -73,11 +73,8 @@ startup
     }
     settings.Add("reset", false, "Reset");
     settings.Add("load", true, "SRC loadtimes");
-    
     settings.SetToolTip("reset", "Resets when you come back to the main menu\nBoth reset check boxes have to be checked for the reset to work");
     settings.SetToolTip("load", "This will add time to the actual load times to match the IGT shown on Speedrun.com (can be up to 0.1s inaccurate)");
-    
-
     
     switch((string)vars.shortCategoryName)
     {
@@ -106,7 +103,7 @@ startup
 
         case "Survival":
             settings.CurrentDefaultParent = null;
-            settings.Add("explo", true, "Show Explosion Time");
+            settings.Add("explo", false, "Show Explosion Time");
             settings.Add("Split");
             settings.CurrentDefaultParent = "Split";
             settings.Add("RocketSplit", true, "Split on Rocket launch");
@@ -154,7 +151,7 @@ startup
 
         case "Hardcore":
             settings.CurrentDefaultParent = null;
-            settings.Add("explo", true, "Show Explosion Time");
+            settings.Add("explo", false, "Show Explosion Time");
             settings.Add("Split");
             settings.CurrentDefaultParent = "Split";
             settings.Add("RocketSplit", true, "Split on Rocket launch");
@@ -199,7 +196,7 @@ startup
         break;
         
         default:
-            settings.Add("explo", true, "Show Explosion Time");
+            settings.Add("explo", false, "Show Explosion Time");
             settings.Add("Start");
             settings.CurrentDefaultParent = "Start";
             settings.Add("CreativeStarts", false, "Creative starts");
@@ -705,21 +702,10 @@ split
 
 reset
 {
-    if(settings["reset"] && version == "September 2018")
+    if(current.XCoord == 0 && current.ZCoord == 0 && current.YCoord == 1.75f && old.YCoord != current.YCoord)
     {
-        if(current.XCoord == 0 && current.ZCoord == 0 && current.YCoord == 1.75f && old.YCoord != current.YCoord)
-        {
-            print("reset of coords");
-            return true;
-        }
-    }
-    else if(settings["reset"] && version == "March 2023")
-    {
-        if(!current.NotMainMenu && old.NotMainMenu && current.IsPDAOpen == old.IsPDAOpen)
-        {
-            print("reset of main menu variable");
-            return true;
-        }
+        print("reset of coords");
+        return true;
     }
 }
 
