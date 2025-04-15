@@ -75,7 +75,6 @@ startup
     settings.Add("load", true, "SRC loadtimes");
     settings.SetToolTip("reset", "Resets when you come back to the main menu\nBoth reset check boxes have to be checked for the reset to work");
     settings.SetToolTip("load", "This will add time to the actual load times to match the IGT shown on Speedrun.com (can be up to 0.1s inaccurate)");
-
     
     switch((string)vars.shortCategoryName)
     {
@@ -104,6 +103,7 @@ startup
 
         case "Survival":
             settings.CurrentDefaultParent = null;
+            settings.Add("explo", false, "Show Explosion Time");
             settings.Add("Split");
             settings.CurrentDefaultParent = "Split";
             settings.Add("RocketSplit", true, "Split on Rocket launch");
@@ -151,6 +151,7 @@ startup
 
         case "Hardcore":
             settings.CurrentDefaultParent = null;
+            settings.Add("explo", false, "Show Explosion Time");
             settings.Add("Split");
             settings.CurrentDefaultParent = "Split";
             settings.Add("RocketSplit", true, "Split on Rocket launch");
@@ -195,6 +196,7 @@ startup
         break;
         
         default:
+            settings.Add("explo", false, "Show Explosion Time");
             settings.Add("Start");
             settings.CurrentDefaultParent = "Start";
             settings.Add("CreativeStarts", false, "Creative starts");
@@ -276,12 +278,32 @@ startup
     vars.ShallowsBefore = false;
     vars.HCShallowsBefore = false;
     vars.HCSparseBefore = false;
+    vars.ExploAdded = false;
     vars.FirstTimeAuroraHC = true;
     vars.oldBPsCount = 0;
     vars.counter = 0;
+
+    vars.startAddr = IntPtr.Zero;
     
     vars.waitingFor1 = false;
     vars.waitingFor0 = false;
+
+    vars.ManageExploTimeComponent = (Action<bool>)((IsAdd) => 
+    {
+        var toRemove = timer.Layout.LayoutComponents.Where(x => x.Component.GetType().FullName == "LiveSplit.UI.Components.Component").FirstOrDefault();
+        if(IsAdd && toRemove == null)
+        {
+            var componentPath = "Components\\SubnauticaShipExplosionInfo.dll";
+            var asm = Assembly.LoadFrom(componentPath);
+            var componentType = asm.GetType("LiveSplit.UI.Components.Component");
+            var component = Activator.CreateInstance(componentType, timer);
+            timer.Layout.LayoutComponents.Add(new LiveSplit.UI.Components.LayoutComponent("SubnauticaShipExplosionInfo.dll", component as LiveSplit.UI.Components.IComponent));
+        }
+        else if(!IsAdd && toRemove != null)
+        {
+            timer.Layout.LayoutComponents.Remove(toRemove);
+        }
+    });
 
     vars.IsWithinBoundsFunc = (Func<float, float, float, float, float, float, float, float, float, bool>)((X1, X2, Y1, Y2, Z1, Z2, x, y, z) =>
     {
@@ -337,12 +359,22 @@ onStart
 
 update
 {
-    print("[Autosplitter] "+current.InventoryItemCount);
-    print("[Autosplitter] "+current.Biome);
-    print("[Autosplitter] "+current.XCoord);
-    print("[Autosplitter] "+current.YCoord);
-    print("[Autosplitter] "+current.ZCoord);
-    print("[Autosplitter] "+current.IsNotInWater);
+    //print("[Autosplitter] "+current.InventoryItemCount);
+    //print("[Autosplitter] "+current.XCoord);
+    //print("[Autosplitter] "+current.YCoord);
+    //print("[Autosplitter] "+current.ZCoord);
+    //print("[Autosplitter] "+current.IsNotInWater);
+    if(settings["explo"] && !vars.ExploAdded)
+    {
+        vars.ManageExploTimeComponent(true);
+        vars.ExploAdded = true;
+    }
+    if(!settings["explo"])
+    {
+        vars.ManageExploTimeComponent(false);
+        vars.ExploAdded = false;
+    }
+
     if(!current.NotMainMenu)
     {
         vars.StartedOxygenBefore = false;
@@ -386,11 +418,9 @@ start
 
 split
 {
-    if(settings["SGTeethSplit"] && !vars.TeethBefore)//will make this shit a function
+    //ini of invenory address
+    if(version == "September 2018")
     {
-        var IsWithinBounds = vars.IsWithinBoundsFunc(-212, 27, -100, 100, 159, 177, current.XCoord, current.YCoord, current.ZCoord);
-        if(IsWithinBounds)
-        {
         var baseAddr = modules.First(m => m.ModuleName == "mono.dll").BaseAddress;
         IntPtr ptr1 = memory.ReadPointer((IntPtr)(baseAddr + 0x296BC8));
         IntPtr ptr2 = memory.ReadPointer((IntPtr)(ptr1 + 0x20));
@@ -400,22 +430,9 @@ split
         IntPtr ptr6 = memory.ReadPointer((IntPtr)(ptr5 + 0x58));
         IntPtr ptr7 = memory.ReadPointer((IntPtr)(ptr6 + 0x20));
         IntPtr finalAddr = (IntPtr)(ptr7 + 0x18);//address of mercuryOre, 0x8 begins the inventory
-        IntPtr startAddr = (IntPtr)(finalAddr + 0x8);//inventory begins here and each item takes up 0x4 after
-
-        for (int i = 0; i < 48; i++)
-        {
-            int itemID = memory.ReadValue<int>((IntPtr)startAddr + 0x4*i);
-            print("[Autosplitter] TeethitemID " + i + ".: "+ itemID);
-            if(itemID == 2529)//id for creepvine sample
-            {
-                print("[Autosplitter] Teeth split");
-                vars.TeethBefore = true;
-                return true;
-            }
-        }
-        }
+        vars.startAddr = (IntPtr)(finalAddr + 0x8);//inventory begins here and each item takes up 0x4 after
     }
-    if(settings["SGLShallowsSplit"] && !vars.ShallowsBefore && !current.IsNotInWater && old.IsNotInWater)
+    if(version == "March 2023")
     {
         var baseAddr = modules.First(m => m.ModuleName == "UnityPlayer.dll").BaseAddress;
         IntPtr ptr1 = memory.ReadPointer((IntPtr)(baseAddr + 0x17FBE70));
@@ -428,11 +445,32 @@ split
         IntPtr ptr8 = memory.ReadPointer((IntPtr)(ptr7 + 0x58));
         IntPtr ptr9 = memory.ReadPointer((IntPtr)(ptr8 + 0x18));
         IntPtr finalAddr = (IntPtr)(ptr9 + 0x18);//address of mercuryOre 0x8 begins the inventory
-        IntPtr startAddr = (IntPtr)(finalAddr + 0x8);//inventory begins here and each item takes up 0x18 after
+        vars.startAddr = (IntPtr)(finalAddr + 0x8);//inventory begins here and each item takes up 0x18 after
+    }
 
+    if(settings["SGTeethSplit"] && !vars.TeethBefore)
+    {
+        var IsWithinBounds = vars.IsWithinBoundsFunc(-212, 27, -100, 100, 159, 177, current.XCoord, current.YCoord, current.ZCoord);
+        if(IsWithinBounds)
+        {
         for (int i = 0; i < 48; i++)
         {
-            int itemID = memory.ReadValue<int>((IntPtr)startAddr + 0x18*i);
+            int itemID = memory.ReadValue<int>((IntPtr)vars.startAddr + 0x4*i);
+            print("[Autosplitter] TeethitemID " + i + ".: "+ itemID);
+            if(itemID == 2529)//id for creepvine sample
+            {
+                print("[Autosplitter] Teeth split");
+                vars.TeethBefore = true;
+                return true;
+            }
+        }
+        }
+    }
+    if(settings["SGLShallowsSplit"] && !vars.ShallowsBefore && !current.IsNotInWater && old.IsNotInWater)
+    {
+        for (int i = 0; i < 48; i++)
+        {
+            int itemID = memory.ReadValue<int>((IntPtr)vars.startAddr + 0x18*i);
             print("[Autosplitter] SGLitemID " + i + ".: "+ itemID);
             if(itemID == 528)//id for double o2 tank
             {
@@ -448,20 +486,9 @@ split
         var IsWithinBoundsClipA = vars.IsWithinBoundsFunc(-48, -55, -20, -5, 106, 111, current.XCoord, current.YCoord, current.ZCoord);
         if((IsWithinBoundsClipC || IsWithinBoundsClipA) && !vars.HCSparseBefore)
         {
-            var baseAddr = modules.First(m => m.ModuleName == "mono.dll").BaseAddress;
-            IntPtr ptr1 = memory.ReadPointer((IntPtr)(baseAddr + 0x296BC8));
-            IntPtr ptr2 = memory.ReadPointer((IntPtr)(ptr1 + 0x20));
-            IntPtr ptr3 = memory.ReadPointer((IntPtr)(ptr2 + 0xA40));
-            IntPtr ptr4 = memory.ReadPointer((IntPtr)(ptr3 + 0x0));
-            IntPtr ptr5 = memory.ReadPointer((IntPtr)(ptr4 + 0x40));
-            IntPtr ptr6 = memory.ReadPointer((IntPtr)(ptr5 + 0x58));
-            IntPtr ptr7 = memory.ReadPointer((IntPtr)(ptr6 + 0x20));
-            IntPtr finalAddr = (IntPtr)(ptr7 + 0x18);//address of mercuryOre, 0x8 begins the inventory
-            IntPtr startAddr = (IntPtr)(finalAddr + 0x8);//inventory begins here and each item takes up 0x4 after
-
             for (int i = 0; i < 48; i++)
             {
-                int itemID = memory.ReadValue<int>((IntPtr)startAddr + 0x4*i);
+                int itemID = memory.ReadValue<int>((IntPtr)vars.startAddr + 0x4*i);
                 print("[Autosplitter] HCSparse itemID " + i + ".: "+ itemID);
                 if(itemID == 52)//id for ruby
                 {
