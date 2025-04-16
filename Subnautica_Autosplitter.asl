@@ -79,7 +79,7 @@ startup
     {
         case "Creative":
             settings.Add("load", true, "SRC loadtimes");
-            settings.SetToolTip("load", "This will add time to the actual load times to match the IGT shown on Speedrun.com (can be up to 0.1s inaccurate)");
+            settings.SetToolTip("load", "This will add time to the actual load times to match the IGT shown on Speedrun.com (can be up to 0.1s inaccurate)\nUnchecking this will not turn off the load removal");
             settings.Add("Start");
             settings.CurrentDefaultParent = "Start";
             settings.Add("MovedStart", true, "Start when you move");
@@ -196,7 +196,7 @@ startup
         
         default:
             settings.Add("load", true, "SRC loadtimes");
-            settings.SetToolTip("load", "This will add time to the actual load times to match the IGT shown on Speedrun.com (can be up to 0.1s inaccurate)");
+            settings.SetToolTip("load", "This will add time to the actual load times to match the IGT shown on Speedrun.com (can be up to 0.1s inaccurate)\nUnchecking this will not turn off the load removal");
             settings.Add("Start");
             settings.CurrentDefaultParent = "Start";
             settings.Add("CreativeStarts", false, "Creative starts");
@@ -290,6 +290,35 @@ startup
     
     vars.waitingFor1 = false;
     vars.waitingFor0 = false;
+
+    if (timer.CurrentTimingMethod == TimingMethod.RealTime && vars.shortCategoryName == "Creative")
+    {
+        var timingMessage = MessageBox.Show(
+        "The category you are currently playing uses RTA w/o Portal Loads as the main timing method.\n"
+        + "LiveSplit is currently set to show Real Time (RTA).\n"
+        + "Would you like to set the timing method to RTA w/o Portal Loads?",
+        "Subnautica | LiveSplit",
+        MessageBoxButtons.YesNo, MessageBoxIcon.Question
+        );  
+        if (timingMessage == DialogResult.Yes)
+        {
+            timer.CurrentTimingMethod = TimingMethod.GameTime;
+        }
+    }
+    else if(timer.CurrentTimingMethod == TimingMethod.GameTime && (vars.shortCategoryName == "Survival" || vars.shortCategoryName == "Hardcore"))
+    {
+        var timingMessage = MessageBox.Show(
+        "The category you are currently playing uses Real Time as the main timing method.\n"
+        + "LiveSplit is currently set to show Real Time w/o Portal Loads.\n"
+        + "Would you like to set the timing method to Real Time?",
+        "Subnautica | LiveSplit",
+        MessageBoxButtons.YesNo, MessageBoxIcon.Question
+        );  
+        if (timingMessage == DialogResult.Yes)
+        {
+            timer.CurrentTimingMethod = TimingMethod.RealTime;
+        }
+    }
 
     vars.ManageExploTimeComponent = (Action<bool>)((IsAdd) => 
     {
@@ -765,6 +794,8 @@ reset
 
 isLoading
 {
+    if(!(current.XCoord == 0 && current.ZCoord == 0 && current.YCoord == 1.75f && old.YCoord != current.YCoord))
+    {
     if(!settings["load"])
     {
         if(current.IsPortalLoading)
@@ -780,9 +811,9 @@ isLoading
     {
         if (current.IsPortalLoading && !old.IsPortalLoading)
         {
-            var IsWithinBounds = vars.IsWithinBoundsFunc(240, 250, -1580, -1590, -2000, 2000, current.XCoord, current.YCoord, current.ZCoord);
-            if(IsWithinBounds)
-            {
+            //var IsWithinBounds = vars.IsWithinBoundsFunc(240, 250, -1580, -1590, -2000, 2000, current.XCoord, current.YCoord, current.ZCoord);
+            //if(IsWithinBounds)
+            //{
                 vars.waitingFor1 = true;
                 vars.waitingFor0 = false;
                 if(version == "September 2018")
@@ -794,7 +825,7 @@ isLoading
                     vars.counter = 34;
                 }
                 
-            }        
+            //}        
         }
         else if (!current.IsPortalLoading && old.IsPortalLoading)
         {
@@ -825,5 +856,6 @@ isLoading
                 return false;
             }
         }
-    }   
+    }  
+    } 
 }
