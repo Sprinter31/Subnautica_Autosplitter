@@ -37,7 +37,6 @@ state("Subnautica", "March 2023")
     int IsPDAOpen:          "mono-2.0-bdwgc.dll", 0x499C40, 0xE84; // true = 1051931443, false = 1056964608    
     int IsCured:                "fmodstudio.dll", 0x2CED70, 0x78, 0x18, 0x190, 0x550, 0xB8, 0x20, 0x58;   
     int IsRocketGo:            "UnityPlayer.dll", 0x17FC238, 0x10, 0x3C; //256 = true
-    int BPsUnlocked:           "UnityPlayer.dll", 0x296BC8, 0x20, 0x928, 0x58, 0x38;// not working
     int InventoryItemCount:    "UnityPlayer.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x1A8, 0x28, 0x38, 0x94;
     int Oxygen:                "UnityPlayer.dll", 0x184DDD0, 0x60, 0x0, 0x0, 0x8, 0x38, 0x20, 0x30, 0x70;
     int IsMovingX:             "UnityPlayer.dll", 0x17FBC28, 0x30, 0x98; //false = 0
@@ -72,13 +71,15 @@ startup
         vars.shortCategoryName = "Unkown";
     }
     settings.Add("reset", false, "Reset");
-    settings.Add("load", true, "SRC loadtimes");
+    settings.Add("explo", false, "Show Explosion Time");
     settings.SetToolTip("reset", "Resets when you come back to the main menu\nBoth reset check boxes have to be checked for the reset to work");
-    settings.SetToolTip("load", "This will add time to the actual load times to match the IGT shown on Speedrun.com (can be up to 0.1s inaccurate)");
+    settings.SetToolTip("explo", "Shows when the Aurora is going to explode\nOnly updates the layout when the game is running");
     
     switch((string)vars.shortCategoryName)
     {
         case "Creative":
+            settings.Add("load", true, "SRC loadtimes");
+            settings.SetToolTip("load", "This will add time to the actual load times to match the IGT shown on Speedrun.com (can be up to 0.1s inaccurate)");
             settings.Add("Start");
             settings.CurrentDefaultParent = "Start";
             settings.Add("MovedStart", true, "Start when you move");
@@ -103,7 +104,6 @@ startup
 
         case "Survival":
             settings.CurrentDefaultParent = null;
-            settings.Add("explo", false, "Show Explosion Time");
             settings.Add("Split");
             settings.CurrentDefaultParent = "Split";
             settings.Add("RocketSplit", true, "Split on Rocket launch");
@@ -144,14 +144,13 @@ startup
             settings.SetToolTip("SGLBaseSplit", "Split when you enter your main base near the seaglide wreck for the first time");
             settings.SetToolTip("SGLShallowsSplit", "Split when you leave your main base with an extra O2 tank in your inv");
             settings.SetToolTip("SGLUpperTabletSplit", "Split when you pick up the upper purple tablet that lies next to the gun entrence");
-            settings.SetToolTip("SGLIonSplit", "Split when you unstuck in the Ion BP room");
+            settings.SetToolTip("SGLIonSplit", "Split when you grab the Ion blueprint");
             settings.SetToolTip("SGLSparseSplit", "Split when the current biome changes from Sparse to shallows or kelp forest");
             settings.SetToolTip("SGLAuroraSplit", "Split when the current biome changes from Aurora to shallows or kelp forest");
         break;
 
         case "Hardcore":
             settings.CurrentDefaultParent = null;
-            settings.Add("explo", false, "Show Explosion Time");
             settings.Add("Split");
             settings.CurrentDefaultParent = "Split";
             settings.Add("RocketSplit", true, "Split on Rocket launch");
@@ -190,13 +189,14 @@ startup
             settings.SetToolTip("SGLBaseSplit", "Split when you enter your main base near the seaglide wreck for the first time");
             settings.SetToolTip("SGLShallowsSplit", "Split when you leave your main base with an extra O2 tank in your inv");
             settings.SetToolTip("SGLUpperTabletSplit", "Split when you pick up the upper purple tablet that lies next to the gun entrence");
-            settings.SetToolTip("SGLIonSplit", "Split when you unstuck in the Ion BP room");
+            settings.SetToolTip("SGLIonSplit", "Split when you grab the Ion blueprint");
             settings.SetToolTip("SGLSparseSplit", "Split when the current biome changes from Sparse to shallows or kelp forest");
             settings.SetToolTip("SGLAuroraSplit", "Split when the current biome changes from Aurora to shallows or kelp forest");
         break;
         
         default:
-            settings.Add("explo", false, "Show Explosion Time");
+            settings.Add("load", true, "SRC loadtimes");
+            settings.SetToolTip("load", "This will add time to the actual load times to match the IGT shown on Speedrun.com (can be up to 0.1s inaccurate)");
             settings.Add("Start");
             settings.CurrentDefaultParent = "Start";
             settings.Add("CreativeStarts", false, "Creative starts");
@@ -262,7 +262,7 @@ startup
             settings.SetToolTip("SGLBaseSplit", "Split when you enter your main base near the seaglide wreck for the first time");
             settings.SetToolTip("SGLShallowsSplit", "Split when you leave your main base with an extra O2 tank in your inv");
             settings.SetToolTip("SGLUpperTabletSplit", "Split when you pick up the upper purple tablet that lies next to the gun entrence");
-            settings.SetToolTip("SGLIonSplit", "Split when you unstuck in the Ion BP room");
+            settings.SetToolTip("SGLIonSplit", "Split when you grab the Ion blueprint");
             settings.SetToolTip("SGLSparseSplit", "Split when the current biome changes from sparse to shallows or kelp forest");
             settings.SetToolTip("SGLAuroraSplit", "Split when the current biome changes from aurora to shallows or kelp forest");
         break;
@@ -276,11 +276,14 @@ startup
     vars.EnteredBaseBefore = false;
     vars.TeethBefore = false;
     vars.ShallowsBefore = false;
+    vars.SGLIonSplitBefore = false;
     vars.HCShallowsBefore = false;
     vars.HCSparseBefore = false;
     vars.ExploAdded = false;
     vars.FirstTimeAuroraHC = true;
-    vars.oldBPsCount = 0;
+    vars.FirstTimeIonGrabSGL = true;
+    vars.oldBPsCountHC = 0;
+    vars.oldBPsCountSGL = 0;
     vars.counter = 0;
 
     vars.startAddr = IntPtr.Zero;
@@ -317,11 +320,77 @@ startup
         {
             return false;
         }
-    }); 
+    });
 }
 
 init 
 {
+    print("bps"+current.BPsUnlocked);
+    vars.IsItemInInventory = (Func<int, bool>)((ItemToSearchFor) =>
+    {
+        int itemOffset = 0x0;
+        IntPtr startAddr = IntPtr.Zero;
+        if(version == "September 2018")
+        {
+            var baseAddr = modules.First(m => m.ModuleName == "mono.dll").BaseAddress;
+            IntPtr ptr1 = memory.ReadPointer((IntPtr)(baseAddr + 0x296BC8));
+            IntPtr ptr2 = memory.ReadPointer((IntPtr)(ptr1 + 0x20));
+            IntPtr ptr3 = memory.ReadPointer((IntPtr)(ptr2 + 0xA40));
+            IntPtr ptr4 = memory.ReadPointer((IntPtr)(ptr3 + 0x0));
+            IntPtr ptr5 = memory.ReadPointer((IntPtr)(ptr4 + 0x40));
+            IntPtr ptr6 = memory.ReadPointer((IntPtr)(ptr5 + 0x58));
+            IntPtr ptr7 = memory.ReadPointer((IntPtr)(ptr6 + 0x20));
+            IntPtr finalAddr = (IntPtr)(ptr7 + 0x18);//address of mercuryOre, 0x8 begins the inventory
+            startAddr = (IntPtr)(finalAddr + 0x8);//inventory begins here and each item takes up 0x4 after
+            itemOffset = 0x4;
+        }
+        else if(version == "March 2023")
+        {
+            var baseAddr = modules.First(m => m.ModuleName == "UnityPlayer.dll").BaseAddress;
+            IntPtr ptr1 = memory.ReadPointer((IntPtr)(baseAddr + 0x17FBE70));
+            IntPtr ptr2 = memory.ReadPointer((IntPtr)(ptr1 + 0x8));
+            IntPtr ptr3 = memory.ReadPointer((IntPtr)(ptr2 + 0x10));
+            IntPtr ptr4 = memory.ReadPointer((IntPtr)(ptr3 + 0x30));
+            IntPtr ptr5 = memory.ReadPointer((IntPtr)(ptr4 + 0x1A8));
+            IntPtr ptr6 = memory.ReadPointer((IntPtr)(ptr5 + 0x28));
+            IntPtr ptr7 = memory.ReadPointer((IntPtr)(ptr6 + 0x38));
+            IntPtr ptr8 = memory.ReadPointer((IntPtr)(ptr7 + 0x58));
+            IntPtr ptr9 = memory.ReadPointer((IntPtr)(ptr8 + 0x18));
+            IntPtr finalAddr = (IntPtr)(ptr9 + 0x18);//address of mercuryOre 0x8 begins the inventory
+            startAddr = (IntPtr)(finalAddr + 0x8);//inventory begins here and each item takes up 0x18 after
+            itemOffset = 0x18;
+        }
+
+        for (int i = 0; i < 48; i++)
+        {
+            int CurrentItemID = memory.ReadValue<int>((IntPtr)startAddr + itemOffset*i);
+            print("[Autosplitter] current item id: " + i + ".: "+ CurrentItemID);
+            if(CurrentItemID == ItemToSearchFor)
+            {
+                return true;
+            }
+        }
+        return false;
+    });
+    vars.GetBPCount = (Func<int>)(() =>
+    {
+        var baseAddr = modules.First(m => m.ModuleName == "UnityPlayer.dll").BaseAddress;
+        IntPtr ptr1 = memory.ReadPointer((baseAddr + 0x1847ED0));
+        IntPtr ptr2 = memory.ReadPointer((ptr1 + 0x48));
+        IntPtr ptr3 = memory.ReadPointer((ptr2 + 0x388));
+        IntPtr ptr4 = memory.ReadPointer((ptr3 + 0x0));
+        IntPtr ptr5 = memory.ReadPointer((ptr4 + 0x190));
+        IntPtr ptr6 = memory.ReadPointer((ptr5 + 0x38));
+        IntPtr ptr7 = memory.ReadPointer((ptr6 + 0xD0));
+        IntPtr ptr8 = memory.ReadPointer((ptr7 + 0x8));
+        IntPtr ptr9 = memory.ReadPointer((ptr8 + 0x60));
+        IntPtr ptr10 = memory.ReadPointer((ptr9 + 0x10));
+        //IntPtr ptr11 = memory.ReadPointer((ptr10 + 0x30));
+        IntPtr finalAddr = (IntPtr)(ptr10 - 0x14);
+        int BPCount = memory.ReadValue<int>(finalAddr);
+        return BPCount;
+    });
+    //print(""+ptr1.ToString("X"));
     int firstModuleSize = modules.First().ModuleMemorySize;
     print(firstModuleSize.ToString());
     switch (firstModuleSize)
@@ -348,10 +417,13 @@ onStart
     vars.EnteredBaseBefore = false;
     vars.TeethBefore = false;
     vars.ShallowsBefore = false;
+    vars.SGLIonSplitBefore = false;
     vars.HCShallowsBefore = false;
     vars.HCSparseBefore = false;
     vars.FirstTimeAuroraHC = true;
-    vars.oldBPsCount = 0;
+    vars.FirstTimeIonGrabSGL = true;
+    vars.oldBPsCountHC = 0;
+    vars.oldBPsCountSGL = 0;
     vars.counter = 0;
     vars.waitingFor1 = false;
     vars.waitingFor0 = false;
@@ -359,6 +431,7 @@ onStart
 
 update
 {
+    
     //print("[Autosplitter] "+current.InventoryItemCount);
     //print("[Autosplitter] "+current.XCoord);
     //print("[Autosplitter] "+current.YCoord);
@@ -418,85 +491,41 @@ start
 
 split
 {
-    //ini of invenory address
-    if(version == "September 2018")
-    {
-        var baseAddr = modules.First(m => m.ModuleName == "mono.dll").BaseAddress;
-        IntPtr ptr1 = memory.ReadPointer((IntPtr)(baseAddr + 0x296BC8));
-        IntPtr ptr2 = memory.ReadPointer((IntPtr)(ptr1 + 0x20));
-        IntPtr ptr3 = memory.ReadPointer((IntPtr)(ptr2 + 0xA40));
-        IntPtr ptr4 = memory.ReadPointer((IntPtr)(ptr3 + 0x0));
-        IntPtr ptr5 = memory.ReadPointer((IntPtr)(ptr4 + 0x40));
-        IntPtr ptr6 = memory.ReadPointer((IntPtr)(ptr5 + 0x58));
-        IntPtr ptr7 = memory.ReadPointer((IntPtr)(ptr6 + 0x20));
-        IntPtr finalAddr = (IntPtr)(ptr7 + 0x18);//address of mercuryOre, 0x8 begins the inventory
-        vars.startAddr = (IntPtr)(finalAddr + 0x8);//inventory begins here and each item takes up 0x4 after
-    }
-    if(version == "March 2023")
-    {
-        var baseAddr = modules.First(m => m.ModuleName == "UnityPlayer.dll").BaseAddress;
-        IntPtr ptr1 = memory.ReadPointer((IntPtr)(baseAddr + 0x17FBE70));
-        IntPtr ptr2 = memory.ReadPointer((IntPtr)(ptr1 + 0x8));
-        IntPtr ptr3 = memory.ReadPointer((IntPtr)(ptr2 + 0x10));
-        IntPtr ptr4 = memory.ReadPointer((IntPtr)(ptr3 + 0x30));
-        IntPtr ptr5 = memory.ReadPointer((IntPtr)(ptr4 + 0x1A8));
-        IntPtr ptr6 = memory.ReadPointer((IntPtr)(ptr5 + 0x28));
-        IntPtr ptr7 = memory.ReadPointer((IntPtr)(ptr6 + 0x38));
-        IntPtr ptr8 = memory.ReadPointer((IntPtr)(ptr7 + 0x58));
-        IntPtr ptr9 = memory.ReadPointer((IntPtr)(ptr8 + 0x18));
-        IntPtr finalAddr = (IntPtr)(ptr9 + 0x18);//address of mercuryOre 0x8 begins the inventory
-        vars.startAddr = (IntPtr)(finalAddr + 0x8);//inventory begins here and each item takes up 0x18 after
-    }
-
     if(settings["SGTeethSplit"] && !vars.TeethBefore)
     {
         var IsWithinBounds = vars.IsWithinBoundsFunc(-212, 27, -100, 100, 159, 177, current.XCoord, current.YCoord, current.ZCoord);
         if(IsWithinBounds)
         {
-        for (int i = 0; i < 48; i++)
-        {
-            int itemID = memory.ReadValue<int>((IntPtr)vars.startAddr + 0x4*i);
-            print("[Autosplitter] TeethitemID " + i + ".: "+ itemID);
-            if(itemID == 2529)//id for creepvine sample
-            {
-                print("[Autosplitter] Teeth split");
-                vars.TeethBefore = true;
-                return true;
-            }
-        }
+                if(vars.IsItemInInventory(2529))//id for creepvine sample
+                {
+                    print("[Autosplitter] Teeth split");
+                    vars.TeethBefore = true;
+                    return true;
+                }
         }
     }
     if(settings["SGLShallowsSplit"] && !vars.ShallowsBefore && !current.IsNotInWater && old.IsNotInWater)
     {
-        for (int i = 0; i < 48; i++)
+        if(vars.IsItemInInventory(528))//id for double o2 tank
         {
-            int itemID = memory.ReadValue<int>((IntPtr)vars.startAddr + 0x18*i);
-            print("[Autosplitter] SGLitemID " + i + ".: "+ itemID);
-            if(itemID == 528)//id for double o2 tank
-            {
-                print("[Autosplitter] SGL Shallows split");
-                vars.ShallowsBefore = true;
-                return true;
-            }
+            print("[Autosplitter] SGL Shallows split");
+            vars.ShallowsBefore = true;
+            return true;
         }
     }
+    
     if(settings["HCSparseSplit"] && current.IsAnimationPlaying && !old.IsAnimationPlaying)
     {
         var IsWithinBoundsClipC = vars.IsWithinBoundsFunc(-142, -132, -20, -5, 82, 90, current.XCoord, current.YCoord, current.ZCoord);
         var IsWithinBoundsClipA = vars.IsWithinBoundsFunc(-48, -55, -20, -5, 106, 111, current.XCoord, current.YCoord, current.ZCoord);
         if((IsWithinBoundsClipC || IsWithinBoundsClipA) && !vars.HCSparseBefore)
         {
-            for (int i = 0; i < 48; i++)
+            if(vars.IsItemInInventory(52))//id for ruby
             {
-                int itemID = memory.ReadValue<int>((IntPtr)vars.startAddr + 0x4*i);
-                print("[Autosplitter] HCSparse itemID " + i + ".: "+ itemID);
-                if(itemID == 52)//id for ruby
-                {
-                    print("[Autosplitter] HC Sparse split");
-                    vars.HCSparseBefore = true;
-                    return true;
-                }  
-            }
+                print("[Autosplitter] HC Sparse split");
+                vars.HCSparseBefore = true;
+                return true;
+            }  
         }
     }
     
@@ -648,10 +677,33 @@ split
             return true;
         }  
     }
-    if(settings["SGLIonSplit"] && current.Biome == "PrecursorThermalRoom" && current.IsAnimationPlaying && !old.IsAnimationPlaying)
+    if(settings["SGLIonSplit"] && current.Biome == "PrecursorThermalRoom" && !vars.SGLIonSplitBefore)
     {
-        print("[Autosplitter] Ion split 2023");
-        return true;
+        if(version == "September 2018")
+        {
+            if(current.BPsUnlocked > old.BPsUnlocked)
+            {
+                print("[Autosplitter] SGL Ion split 2018");
+                vars.SGLIonSplitBefore = true;
+                return true;
+            }
+        }
+        else if(version == "March 2023")
+        {
+            if(vars.FirstTimeIonGrabSGL)
+            {
+                vars.oldBPsCountSGL = vars.GetBPCount();
+                vars.FirstTimeIonGrabSGL = false;
+            }
+            if(vars.GetBPCount() > ((int)vars.oldBPsCountSGL))
+            {
+                print("[Autosplitter] SGL Ion split 2023");
+                vars.oldBPsCountSGL = vars.GetBPCount();
+                vars.SGLIonSplitBefore = true;
+                return true;
+            }
+            vars.oldBPsCountSGL = vars.GetBPCount();
+        }   
     }
     if(settings["SGLSparseSplit"] && 
       (new[] { "sparseReef", "seaTreaderPath", "seaTreaderPath_wreck" }.Contains((string)old.Biome) && 
