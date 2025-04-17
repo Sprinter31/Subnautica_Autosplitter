@@ -706,7 +706,12 @@ split
             return true;
         }  
     }
-    if(settings["SGLIonSplit"] && current.Biome == "PrecursorThermalRoom" && !vars.SGLIonSplitBefore)
+    if(settings["SGLIonSplit"] && current.Biome == "PrecursorThermalRoom" && current.IsAnimationPlaying && !old.IsAnimationPlaying)
+    {
+        print("[Autosplitter] Ion split 2023");
+        return true;
+    }
+    /*if(settings["SGLIonSplit"] && current.Biome == "PrecursorThermalRoom" && !vars.SGLIonSplitBefore)
     {
         if(version == "September 2018")
         {
@@ -733,7 +738,7 @@ split
             }
             vars.oldBPsCountSGL = vars.GetBPCount();
         }   
-    }
+    }*/
     if(settings["SGLSparseSplit"] && 
       (new[] { "sparseReef", "seaTreaderPath", "seaTreaderPath_wreck" }.Contains((string)old.Biome) && 
       (new[] { "safeShallows", "kelpForest" }.Contains((string)current.Biome))))
