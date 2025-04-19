@@ -1,48 +1,51 @@
 state("Subnautica", "September 2018")
 {
-    int gameMode:                        0x149E490, 0x28, 0x0, 0x10, 0xA0, 0x350, 0x20; //0-3, in menu it's 0 and also randomly changes to 0 when loading
+    //int GameMode:                        0x149E490, 0x28, 0x0, 0x10, 0xA0, 0x350, 0x20; //0-3, in menu it's 0 and also randomly changes to 0 when loading
     bool introCinematicActive:             0x142B908, 0x188, 0x150, 0xD0, 0x18, 0x1E8, 0x28, 0x86;
-    bool isLoadingScreen:      "mono.dll", 0x266180, 0x50, 0x2C0, 0x0, 0x30, 0x8, 0x18, 0x20, 0x10, 0x44;
-    bool isAnimationPlaying:               0x142B740, 0x8, 0x8, 0x10, 0x30, 0xD8, 0x28, 0x6C;
-    bool isPortalLoading:                  0x142B740, 0x8, 0x10, 0x30, 0x1F8, 0x28, 0x28;
-    bool isEggsHatching: "fmodstudio.dll", 0x304A30, 0x88, 0x18, 0x158, 0x498, 0x108;
-    bool isNotInWater:                     0x14BC6A0, 0x7C;
-    float IGT:                             0x1445DF8, 0xA8, 0x58, 0x110, 0x18, 0xC3C;
-    int isFabiMenu:            "mono.dll", 0x296BC8, 0x20, 0xA58, 0x20; // 2 means that the esc menu is open
-    int isPDAOpen:             "mono.dll", 0x2655E0, 0x40, 0x18, 0xA0, 0x920, 0x64; // true = 1051931443, false = 1056964608  
-    int isCured:                           0x1445DF8, 0xA8, 0x58, 0x110, 0x180, 0x160, 0x190, 0x20, 0xA58;//1059857727 = true
-    int isRocketGo:            "mono.dll", 0x27EAD8, 0x40, 0x70, 0x50, 0x90, 0x30, 0x8, 0x80;
-    int bpsUnlocked:                       0x142B8E8, 0x1C8, 0x58, 0x58, 0x128, 0x8, 0x18, 0x158, 0x48;
-    int inventoryItemCount:    "mono.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x1A8, 0x28, 0x38, 0x94;//not working
-    int isMovingX:                         0x13940D8, 0x840;
-    int isMovingZ:                         0x1443878, 0x8, 0x358, 0x3A8, 0x280, 0x2A8;
-    float xCoord:                          0x142B8C8, 0x180, 0x40, 0xA8, 0x7C0; // 0 in menu
-    float yCoord:                          0x142B8C8, 0x180, 0x40, 0xA8, 0x7C4; //1.75 in menu
-    float zCoord:                          0x142B8C8, 0x180, 0x40, 0xA8, 0x7C8; // 0 in menu
+    bool NotMainMenu:          "mono.dll", 0x262A68, 0x80, 0xED8;
+    bool IsLoadingScreen:      "mono.dll", 0x266180, 0x50, 0x2C0, 0x0, 0x30, 0x8, 0x18, 0x20, 0x10, 0x44;
+    bool IsAnimationPlaying:               0x142B740, 0x8, 0x8, 0x10, 0x30, 0xD8, 0x28, 0x6C;
+    bool IsPortalLoading:                  0x142B740, 0x8, 0x10, 0x30, 0x1F8, 0x28, 0x28;
+    bool IsEggsHatching: "fmodstudio.dll", 0x304A30, 0x88, 0x18, 0x158, 0x498, 0x108;
+    bool IsNotInWater:                     0x14BC6A0, 0x7C;
+    int IsFabiMenu:            "mono.dll", 0x296BC8, 0x20, 0xA58, 0x20; // 2 means that the esc menu is open
+    int IsPDAOpen:             "mono.dll", 0x2655E0, 0x40, 0x18, 0xA0, 0x920, 0x64; // true = 1051931443, false = 1056964608  
+    int IsCured:                           0x1445DF8, 0xA8, 0x58, 0x110, 0x180, 0x160, 0x190, 0x20, 0xA58;//1059857727 = true
+    int IsRocketGo:            "mono.dll", 0x27EAD8, 0x40, 0x70, 0x50, 0x90, 0x30, 0x8, 0x80;
+    int BPsUnlocked:                       0x142B8E8, 0x1C8, 0x58, 0x58, 0x128, 0x8, 0x18, 0x158, 0x48;
+    int InventoryItemCount:    "mono.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x1A8, 0x28, 0x38, 0x94;//not working
+    int Oxygen:                            0x142ADA8, 0x8, 0x10, 0x30, 0x30, 0x18, 0x28, 0x70;
+    int IsMovingX:                         0x13940D8, 0x840;
+    int IsMovingZ:                         0x1443878, 0x8, 0x358, 0x3A8, 0x280, 0x2A8;
+    float XCoord:                          0x142B8C8, 0x180, 0x40, 0xA8, 0x7C0; // 0 in menu
+    float YCoord:                          0x142B8C8, 0x180, 0x40, 0xA8, 0x7C4; //1.75 in menu
+    float ZCoord:                          0x142B8C8, 0x180, 0x40, 0xA8, 0x7C8; // 0 in menu
     bool died:                             0x13B0650, 0x358, 0x8, 0x38, 0x0, 0x0, 0x108, 0x14;
-    string128 biome:                       0x142b908, 0x180, 0x128, 0x80, 0x1D0, 0x8, 0x248, 0x1D0, 0x14;
+    string128 Biome:                       0x142b908, 0x180, 0x128, 0x80, 0x1D0, 0x8, 0x248, 0x1D0, 0x14;
 } 
 
 state("Subnautica", "March 2023")
 {
     bool introCinematicActive: "UnityPlayer.dll", 0x179B680, 0x88, 0x198, 0x338, 0x30, 0x28, 0x28, 0x87;
-    bool isLoadingScreen:      "UnityPlayer.dll", 0x18AB2E0, 0x430, 0x8, 0x10, 0x48, 0x30, 0x7AC;
-    bool isAnimationPlaying:   "UnityPlayer.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x58, 0x28, 0x284;
-    bool isPortalLoading:      "UnityPlayer.dll", 0x17FBE70, 0x10, 0x10, 0x30, 0x1F8, 0x28, 0x28;
-    bool isEggsHatching:        "fmodstudio.dll", 0x2CED70, 0x78, 0x18, 0x190, 0x4D8, 0xB0, 0x20, 0x28;
-    bool isNotInWater:         "UnityPlayer.dll", 0x18AB130, 0x48, 0x0, 0x68;
-    int isFabiMenu:         "mono-2.0-bdwgc.dll", 0x499C40, 0xE84;
-    int isPDAOpen:          "mono-2.0-bdwgc.dll", 0x499C40, 0xE84; // true = 1051931443, false = 1056964608    
-    int isCured:                "fmodstudio.dll", 0x2CED70, 0x78, 0x18, 0x190, 0x550, 0xB8, 0x20, 0x58;   
-    int isRocketGo:            "UnityPlayer.dll", 0x17FC238, 0x10, 0x3C; //256 = true
-    int inventoryItemCount:    "UnityPlayer.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x1A8, 0x28, 0x38, 0x94;
-    int isMovingX:             "UnityPlayer.dll", 0x17FBC28, 0x30, 0x98; //false = 0
-    int isMovingZ:             "UnityPlayer.dll", 0x17FBC28, 0x30, 0x150; //false = 0
-    float xCoord:              "UnityPlayer.dll", 0x1839CE0, 0x28, 0x10, 0x150, 0xA58; // 0 in menu
-    float yCoord:              "UnityPlayer.dll", 0x1839CE0, 0x28, 0x10, 0x150, 0xA5C; //1.75 in menu
-    float zCoord:              "UnityPlayer.dll", 0x1839CE0, 0x28, 0x10, 0x150, 0xA60; // 0 in menu
+    bool NotMainMenu:          "UnityPlayer.dll", 0x18AB130, 0x48, 0x0, 0x6C;
+    bool IsLoadingScreen:      "UnityPlayer.dll", 0x18AB2E0, 0x430, 0x8, 0x10, 0x48, 0x30, 0x7AC;
+    bool IsAnimationPlaying:   "UnityPlayer.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x58, 0x28, 0x284;
+    bool IsPortalLoading:      "UnityPlayer.dll", 0x17FBE70, 0x10, 0x10, 0x30, 0x1F8, 0x28, 0x28;
+    bool IsEggsHatching:        "fmodstudio.dll", 0x2CED70, 0x78, 0x18, 0x190, 0x4D8, 0xB0, 0x20, 0x28;
+    bool IsNotInWater:         "UnityPlayer.dll", 0x18AB130, 0x48, 0x0, 0x68;
+    int IsFabiMenu:         "mono-2.0-bdwgc.dll", 0x499C40, 0xE84;
+    int IsPDAOpen:          "mono-2.0-bdwgc.dll", 0x499C40, 0xE84; // true = 1051931443, false = 1056964608    
+    int IsCured:                "fmodstudio.dll", 0x2CED70, 0x78, 0x18, 0x190, 0x550, 0xB8, 0x20, 0x58;   
+    int IsRocketGo:            "UnityPlayer.dll", 0x17FC238, 0x10, 0x3C; //256 = true
+    int InventoryItemCount:    "UnityPlayer.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x1A8, 0x28, 0x38, 0x94;
+    int Oxygen:                "UnityPlayer.dll", 0x184DDD0, 0x60, 0x0, 0x0, 0x8, 0x38, 0x20, 0x30, 0x70;
+    int IsMovingX:             "UnityPlayer.dll", 0x17FBC28, 0x30, 0x98; //false = 0
+    int IsMovingZ:             "UnityPlayer.dll", 0x17FBC28, 0x30, 0x150; //false = 0
+    float XCoord:              "UnityPlayer.dll", 0x1839CE0, 0x28, 0x10, 0x150, 0xA58; // 0 in menu
+    float YCoord:              "UnityPlayer.dll", 0x1839CE0, 0x28, 0x10, 0x150, 0xA5C; //1.75 in menu
+    float ZCoord:              "UnityPlayer.dll", 0x1839CE0, 0x28, 0x10, 0x150, 0xA60; // 0 in menu
     bool died:                 "UnityPlayer.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x318, 0x28, 0x50;
-    string128 biome:           "UnityPlayer.dll", 0x17fbe70, 0x8, 0x10, 0x30, 0x58, 0x28, 0x1f0, 0x14;
+    string128 Biome:           "UnityPlayer.dll", 0x17fbe70, 0x8, 0x10, 0x30, 0x58, 0x28, 0x1f0, 0x14;
 }
 
 startup
@@ -265,20 +268,20 @@ startup
         break;
     }
 
-    vars.startedBefore = false;
-    vars.curedBefore = false;
-    vars.gunedBefore = false;
-    vars.descendedBefore = false;
-    vars.enteredBaseBefore = false;
-    vars.teethBefore = false;
-    vars.shallowsBefore = false;
+    vars.StartedOxygenBefore = false;
+    vars.StartedBefore = false;
+    vars.CuredBefore = false;
+    vars.GunedBefore = false;
+    vars.DescendedBefore = false;
+    vars.EnteredBaseBefore = false;
+    vars.TeethBefore = false;
+    vars.ShallowsBefore = false;
     vars.SGLIonSplitBefore = false;
     vars.HCShallowsBefore = false;
     vars.HCSparseBefore = false;
-    vars.isMainMenu = false;
-    vars.exploAdded = false;
-    vars.firstTimeAuroraHC = true;
-    vars.firstTimeIonGrabSGL = true;
+    vars.ExploAdded = false;
+    vars.FirstTimeAuroraHC = true;
+    vars.FirstTimeIonGrabSGL = true;
     vars.oldBPsCountHC = 0;
     vars.oldBPsCountSGL = 0;
     vars.counter = 0;
@@ -317,7 +320,7 @@ startup
         }
     }
 
-    vars.manageExploTimeComponent = (Action<bool>)((IsAdd) => 
+    vars.ManageExploTimeComponent = (Action<bool>)((IsAdd) => 
     {
         var toRemove = timer.Layout.LayoutComponents.Where(x => x.Component.GetType().FullName == "LiveSplit.UI.Components.Component").FirstOrDefault();
         if(IsAdd && toRemove == null)
@@ -334,7 +337,7 @@ startup
         }
     });
 
-    vars.isWithinBoundsFunc = (Func<float, float, float, float, float, float, float, float, float, bool>)((X1, X2, Y1, Y2, Z1, Z2, x, y, z) =>
+    vars.IsWithinBoundsFunc = (Func<float, float, float, float, float, float, float, float, float, bool>)((X1, X2, Y1, Y2, Z1, Z2, x, y, z) =>
     {
         if (x >= Math.Min(X1, X2) && x <= Math.Max(X1, X2) &&
             y >= Math.Min(Y1, Y2) && y <= Math.Max(Y1, Y2) &&
@@ -351,7 +354,8 @@ startup
 
 init 
 {
-    vars.isItemInInventory = (Func<int, bool>)((ItemToSearchFor) =>
+    print("bps"+current.BPsUnlocked);
+    vars.IsItemInInventory = (Func<int, bool>)((ItemToSearchFor) =>
     {
         int itemOffset = 0x0;
         IntPtr startAddr = IntPtr.Zero;
@@ -397,7 +401,7 @@ init
         }
         return false;
     });
-    vars.getBPCount = (Func<int>)(() =>
+    vars.GetBPCount = (Func<int>)(() =>
     {
         var baseAddr = modules.First(m => m.ModuleName == "UnityPlayer.dll").BaseAddress;
         IntPtr ptr1 = memory.ReadPointer((baseAddr + 0x1847ED0));
@@ -415,7 +419,7 @@ init
         int BPCount = memory.ReadValue<int>(finalAddr);
         return BPCount;
     });
-    
+    //print(""+ptr1.ToString("X"));
     int firstModuleSize = modules.First().ModuleMemorySize;
     print(firstModuleSize.ToString());
     switch (firstModuleSize)
@@ -436,17 +440,17 @@ init
 
 onStart
 {
-    vars.curedBefore = false;
-    vars.gunedBefore = false;
-    vars.descendedBefore = false;
-    vars.enteredBaseBefore = false;
-    vars.teethBefore = false;
-    vars.shallowsBefore = false;
+    vars.CuredBefore = false;
+    vars.GunedBefore = false;
+    vars.DescendedBefore = false;
+    vars.EnteredBaseBefore = false;
+    vars.TeethBefore = false;
+    vars.ShallowsBefore = false;
     vars.SGLIonSplitBefore = false;
     vars.HCShallowsBefore = false;
     vars.HCSparseBefore = false;
-    vars.firstTimeAuroraHC = true;
-    vars.firstTimeIonGrabSGL = true;
+    vars.FirstTimeAuroraHC = true;
+    vars.FirstTimeIonGrabSGL = true;
     vars.oldBPsCountHC = 0;
     vars.oldBPsCountSGL = 0;
     vars.counter = 0;
@@ -456,77 +460,58 @@ onStart
 
 update
 {
-    if(settings["explo"] && !vars.exploAdded)
+    
+    //print("[Autosplitter] "+current.InventoryItemCount);
+    //print("[Autosplitter] "+current.XCoord);
+    //print("[Autosplitter] "+current.YCoord);
+    //print("[Autosplitter] "+current.ZCoord);
+    //print("[Autosplitter] "+current.IsNotInWater);
+    if(settings["explo"] && !vars.ExploAdded)
     {
-        vars.manageExploTimeComponent(true);
-        vars.exploAdded = true;
+        vars.ManageExploTimeComponent(true);
+        vars.ExploAdded = true;
     }
     if(!settings["explo"])
     {
-        vars.manageExploTimeComponent(false);
-        vars.exploAdded = false;
+        vars.ManageExploTimeComponent(false);
+        vars.ExploAdded = false;
     }
 
-    if(current.xCoord == 0 && current.zCoord == 0 && current.yCoord == 1.75f && old.yCoord != current.yCoord)
+    if(!current.NotMainMenu)
     {
-        vars.isMainMenu = true;
+        vars.StartedOxygenBefore = false;
+        vars.StartedBefore = false;
     }
-    if(old.xCoord == 0 && old.zCoord == 0 && old.yCoord == 1.75f && old.yCoord != current.yCoord)
-    {
-        vars.isMainMenu = false;
-    }
-
-    if(vars.isMainMenu)
-    {
-        vars.startedBefore = false;
-    }
-
-    /*print("[Autosplitter] IGT: "+current.IGT);
-    print("[Autosplitter] loading: "+current.isLoadingScreen);
-    print("[Autosplitter] GameMode: "+current.gameMode);
-    print("[Autosplitter] menu: "+vars.isMainMenu);
-    print("[Autosplitter] startedBefore: "+vars.startedBefore);
-    print("[Autosplitter] x: "+current.xCoord);
-    print("[Autosplitter] y: "+current.yCoord);
-    print("[Autosplitter] z: "+current.zCoord);
-    print(" ");*/
 }
 
 start
 {
-    if(!current.introCinematicActive && old.introCinematicActive)
+    if((!current.introCinematicActive && old.introCinematicActive) || (current.Oxygen == 45 && old.Oxygen != 45))
     {
         print("[Autosplitter] start of intro");
-        vars.startedBefore = true;
-        return true;
-    }
-    if(current.IGT > old.IGT && old.IGT != 0.2079117745f && !current.isLoadingScreen && current.gameMode != 3 && !vars.startedBefore)
-    {
-        print("[Autosplitter] start of IGT");
-        vars.startedBefore = true;
         return true;
     }
 
-    if(!current.isLoadingScreen && !vars.isMainMenu && !vars.startedBefore)
+    if(!current.IsLoadingScreen && current.NotMainMenu)
     {
-        if(settings["MovedStart"] && (current.isMovingX != 0 && old.isMovingX == 0 || current.isMovingZ != 0 && old.isMovingZ == 0))
+        if(settings["MovedStart"] && (current.IsMovingX != 0 && old.IsMovingX == 0 || current.IsMovingZ != 0 && old.IsMovingZ == 0))
         {
             print("[Autosplitter] start of move");
-            vars.startedBefore = true;
+            vars.StartedBefore = 1;
             return true;
         }
 
-        if(settings["FabricatorStart"] && current.isFabiMenu == 1 && current.isFabiMenu != old.isFabiMenu)
+        if(settings["FabricatorStart"] && current.IsFabiMenu == 1 && current.IsFabiMenu != old.IsFabiMenu)
         {
             print("[Autosplitter] start of fabbi");
-            vars.startedBefore = true;
+            vars.StartedBefore = 1;
             return true;
         }
 
-        if(settings["PDAStart"] && current.isPDAOpen == 1051931443 && current.isPDAOpen != old.isPDAOpen)
+        if(settings["PDAStart"] && current.IsPDAOpen == 1051931443 && current.IsPDAOpen != old.IsPDAOpen)
         {
             print("[Autosplitter] start of pda");
-            vars.startedBefore = true;
+            vars.StartedBefore = 1;
             return true;
         }
     } 
@@ -535,36 +520,36 @@ start
 
 split
 {
-    if(settings["SGTeethSplit"] && !vars.teethBefore)
+    if(settings["SGTeethSplit"] && !vars.TeethBefore)
     {
-        var IsWithinBounds = vars.isWithinBoundsFunc(-212, 27, -100, 100, 159, 177, current.xCoord, current.yCoord, current.zCoord);
+        var IsWithinBounds = vars.IsWithinBoundsFunc(-212, 27, -100, 100, 159, 177, current.XCoord, current.YCoord, current.ZCoord);
         if(IsWithinBounds)
         {
-                if(vars.isItemInInventory(2529))//id for creepvine sample
+                if(vars.IsItemInInventory(2529))//id for creepvine sample
                 {
                     print("[Autosplitter] Teeth split");
-                    vars.teethBefore = true;
+                    vars.TeethBefore = true;
                     return true;
                 }
         }
     }
-    if(settings["SGLShallowsSplit"] && !vars.shallowsBefore && !current.isNotInWater && old.isNotInWater)
+    if(settings["SGLShallowsSplit"] && !vars.ShallowsBefore && !current.IsNotInWater && old.IsNotInWater)
     {
-        if(vars.isItemInInventory(528))//id for double o2 tank
+        if(vars.IsItemInInventory(528))//id for double o2 tank
         {
             print("[Autosplitter] SGL Shallows split");
-            vars.shallowsBefore = true;
+            vars.ShallowsBefore = true;
             return true;
         }
     }
     
-    if(settings["HCSparseSplit"] && current.isAnimationPlaying && !old.isAnimationPlaying)
+    if(settings["HCSparseSplit"] && current.IsAnimationPlaying && !old.IsAnimationPlaying)
     {
-        var IsWithinBoundsClipC = vars.isWithinBoundsFunc(-142, -132, -20, -5, 82, 90, current.xCoord, current.yCoord, current.zCoord);
-        var IsWithinBoundsClipA = vars.isWithinBoundsFunc(-48, -55, -20, -5, 106, 111, current.xCoord, current.yCoord, current.zCoord);
+        var IsWithinBoundsClipC = vars.IsWithinBoundsFunc(-142, -132, -20, -5, 82, 90, current.XCoord, current.YCoord, current.ZCoord);
+        var IsWithinBoundsClipA = vars.IsWithinBoundsFunc(-48, -55, -20, -5, 106, 111, current.XCoord, current.YCoord, current.ZCoord);
         if((IsWithinBoundsClipC || IsWithinBoundsClipA) && !vars.HCSparseBefore)
         {
-            if(vars.isItemInInventory(52))//id for ruby
+            if(vars.IsItemInInventory(52))//id for ruby
             {
                 print("[Autosplitter] HC Sparse split");
                 vars.HCSparseBefore = true;
@@ -573,23 +558,23 @@ split
         }
     }
     
-    if(settings["PCFTabletSplit"] && current.isAnimationPlaying && !old.isAnimationPlaying)
+    if(settings["PCFTabletSplit"] && current.IsAnimationPlaying && !old.IsAnimationPlaying)
     {
-        var IsWithinBounds = vars.isWithinBoundsFunc(216, 224, -1445, -1453, -267, -276, current.xCoord, current.yCoord, current.zCoord);
+        var IsWithinBounds = vars.IsWithinBoundsFunc(216, 224, -1445, -1453, -267, -276, current.XCoord, current.YCoord, current.ZCoord);
         if(IsWithinBounds)
         {
             print("[Autosplitter] PCF Tablet split");
             return true;
         }        
     }
-    if(settings["PCFPoolSplit"] && current.biome == "Prison_Aquarium_Upper" && old.biome == "Prison_Moonpool")
+    if(settings["PCFPoolSplit"] && current.Biome == "Prison_Aquarium_Upper" && old.Biome == "Prison_Moonpool")
     {
         print("[Autosplitter] PCF Pool split");
         return true;
     }
-    if(settings["PortalSplit"] && current.isPortalLoading != old.isPortalLoading && current.isPortalLoading)
+    if(settings["PortalSplit"] && current.IsPortalLoading != old.IsPortalLoading && current.IsPortalLoading)
     {
-        var IsWithinBounds = vars.isWithinBoundsFunc(240, 250, -1580, -1590, -2000, 2000, current.xCoord, current.yCoord, current.zCoord);
+        var IsWithinBounds = vars.IsWithinBoundsFunc(240, 250, -1580, -1590, -2000, 2000, current.XCoord, current.YCoord, current.ZCoord);
         if(IsWithinBounds)
         {
             print("[Autosplitter] Portal split");
@@ -597,48 +582,48 @@ split
         }        
     }  
 
-    if(settings["HatchSplit"] && current.isEggsHatching && current.isEggsHatching != old.isEggsHatching)
+    if(settings["HatchSplit"] && current.IsEggsHatching && current.IsEggsHatching != old.IsEggsHatching)
     {   
         print("[Autosplitter] Hatch split");
         return true;
     }
 
-    if(settings["CureSplit"] && current.isCured != old.isCured && !vars.curedBefore)
+    if(settings["CureSplit"] && current.IsCured != old.IsCured && !vars.CuredBefore)
     {
-        if(current.isCured == 1059857727 || current.isCured == 1)
+        if(current.IsCured == 1059857727 || current.IsCured == 1)
         {
             print("[Autosplitter] Cure split");
-            vars.curedBefore = true;
+            vars.CuredBefore = true;
             return true;
         }          
     }
 
-    if(settings["BoostersSplit"] && current.bpsUnlocked == 225 && old.bpsUnlocked == 224)
+    if(settings["BoostersSplit"] && current.BPsUnlocked == 225 && old.BPsUnlocked == 224)
     {
         print("[Autosplitter] Boosters split");
         return true;
     }
 
-    if(settings["FuelreserveSplit"] && current.bpsUnlocked == 226 && old.bpsUnlocked == 225)
+    if(settings["FuelreserveSplit"] && current.BPsUnlocked == 226 && old.BPsUnlocked == 225)
     {
         print("[Autosplitter] Fuel reserve split");
         return true;
     }
 
-    if((settings["GunSplit"] || settings["GunSplit2"]) && current.isAnimationPlaying && current.isAnimationPlaying != old.isAnimationPlaying && !vars.gunedBefore)
+    if((settings["GunSplit"] || settings["GunSplit2"]) && current.IsAnimationPlaying && current.IsAnimationPlaying != old.IsAnimationPlaying && !vars.GunedBefore)
     {        
-        var IsWithinBounds = vars.isWithinBoundsFunc(359, 365, -66, -75, 1079, 1085, current.xCoord, current.yCoord, current.zCoord);     
+        var IsWithinBounds = vars.IsWithinBoundsFunc(359, 365, -66, -75, 1079, 1085, current.XCoord, current.YCoord, current.ZCoord);     
         if(IsWithinBounds)
         {                  
             print("[Autosplitter] Gun split");
-            vars.gunedBefore = true;
+            vars.GunedBefore = true;
             return true;
         }            
     }
 
-    if(settings["RocketSplit"] && current.isRocketGo != old.isRocketGo)
+    if(settings["RocketSplit"] && current.IsRocketGo != old.IsRocketGo)
     {    
-        if(current.isRocketGo == 1 || current.isRocketGo == 256 || current.isRocketGo == 244)
+        if(current.IsRocketGo == 1 || current.IsRocketGo == 256 || current.IsRocketGo == 244)
         {
             print("[Autosplitter] Rocket split");
             return true;
@@ -654,8 +639,8 @@ split
 
     if(settings["SGBaseSplit"] && current.died && current.died != old.died)
     {
-        var IsWithinBoundsClipC = vars.isWithinBoundsFunc(-155, -133, -20, -10, 96, 73, current.xCoord, current.yCoord, current.zCoord);
-        var IsWithinBoundsClipA = vars.isWithinBoundsFunc(33, 65, -20, -8, 118, 96, current.xCoord, current.yCoord, current.zCoord);
+        var IsWithinBoundsClipC = vars.IsWithinBoundsFunc(-155, -133, -20, -10, 96, 73, current.XCoord, current.YCoord, current.ZCoord);
+        var IsWithinBoundsClipA = vars.IsWithinBoundsFunc(33, 65, -20, -8, 118, 96, current.XCoord, current.YCoord, current.ZCoord);
         if(IsWithinBoundsClipC || IsWithinBoundsClipA)
         {
             print("[Autosplitter] Base split 2018");
@@ -663,77 +648,74 @@ split
         }
     }
 
-    if(settings["SGAuroraSplit"] && current.died && current.died != old.died && current.biome == "crashedShip")
+    if(settings["SGAuroraSplit"] && current.died && current.died != old.died && current.Biome == "crashedShip")
     {
         print("[Autosplitter] Aurora split 2018");
         return true;
     }
 
     
-    if(settings["MountainSplit"] && !vars.descendedBefore)
+    if(settings["MountainSplit"] && !vars.DescendedBefore)
     {
-        var IsWithinBounds = vars.isWithinBoundsFunc(521, 534, -190.6f, -210, 764.3f, 796.4f, current.xCoord, current.yCoord, current.zCoord);
+        var IsWithinBounds = vars.IsWithinBoundsFunc(521, 534, -190.6f, -210, 764.3f, 796.4f, current.XCoord, current.YCoord, current.ZCoord);
         if(IsWithinBounds)
         {
             print("[Autosplitter] Mountain split");
-            vars.descendedBefore = true;
+            vars.DescendedBefore = true;
             return true;
         }
 
     }
 
     if(settings["ATPSplit"] && current.died && current.died != old.died && 
-      (new[] { "Precursor_LavaCastleBase", "ILZCastleChamber", "PrecursorThermalRoom" }.Contains((string)current.biome)))
+      (new[] { "Precursor_LavaCastleBase", "ILZCastleChamber", "PrecursorThermalRoom" }.Contains((string)current.Biome)))
     {
         print("[Autosplitter] ATP split split");
         return true;
     }
 
-    if(settings["GunDeathSplit"] && current.died && current.died != old.died && current.biome == "Precursor_Gun_ControlRoom")
+    if(settings["GunDeathSplit"] && current.died && current.died != old.died && current.Biome == "Precursor_Gun_ControlRoom")
     {
         print("[Autosplitter] GunDeath split");
         return true;    
     }
 
     if(settings["SGSparseSplit"] && current.died && current.died != old.died &&
-    (new[] { "sparseReef", "seaTreaderPath", "seaTreaderPath_wreck" }.Contains((string)current.biome)))
+    (new[] { "sparseReef", "seaTreaderPath", "seaTreaderPath_wreck" }.Contains((string)current.Biome)))
     {
         print("[Autosplitter] Sparse split 2018");
         return true;
     }
 
-    if(settings["SGLBaseSplit"] && current.isNotInWater && current.isNotInWater != old.isNotInWater && vars.enteredBaseBefore == false)
+    if(settings["SGLBaseSplit"] && current.IsNotInWater && current.IsNotInWater != old.IsNotInWater && vars.EnteredBaseBefore == false)
     {
-        var IsWithinBounds = vars.isWithinBoundsFunc(20, 80, -45, -17, 290, 360, current.xCoord, current.yCoord, current.zCoord);
+        var IsWithinBounds = vars.IsWithinBoundsFunc(20, 80, -45, -17, 290, 360, current.XCoord, current.YCoord, current.ZCoord);
         if(IsWithinBounds)
         {
             print("[Autosplitter] Base split 2023");
-            vars.enteredBaseBefore = true;
+            vars.EnteredBaseBefore = true;
             return true;
         }
     }
-
-    if(settings["SGLUpperTabletSplit"] && current.inventoryItemCount > old.inventoryItemCount)
+    if(settings["SGLUpperTabletSplit"] && current.InventoryItemCount > old.InventoryItemCount)
     {
-        var IsWithinBounds = vars.isWithinBoundsFunc(380, 386, 10, 30, 1084, 1090, current.xCoord, current.yCoord, current.zCoord);
+        var IsWithinBounds = vars.IsWithinBoundsFunc(380, 386, 10, 30, 1084, 1090, current.XCoord, current.YCoord, current.ZCoord);
         if(IsWithinBounds)
         {
             print("[Autosplitter] Upper Tablet split");
             return true;
         }  
     }
-
-    if(settings["SGLIonSplit"] && current.biome == "PrecursorThermalRoom" && current.isAnimationPlaying && !old.isAnimationPlaying)
+    if(settings["SGLIonSplit"] && current.Biome == "PrecursorThermalRoom" && current.IsAnimationPlaying && !old.IsAnimationPlaying)
     {
         print("[Autosplitter] Ion split 2023");
         return true;
     }
-
-    /*if(settings["SGLIonSplit"] && current.biome == "PrecursorThermalRoom" && !vars.SGLIonSplitBefore)
+    /*if(settings["SGLIonSplit"] && current.Biome == "PrecursorThermalRoom" && !vars.SGLIonSplitBefore)
     {
         if(version == "September 2018")
         {
-            if(current.bpsUnlocked > old.bpsUnlocked)
+            if(current.BPsUnlocked > old.BPsUnlocked)
             {
                 print("[Autosplitter] SGL Ion split 2018");
                 vars.SGLIonSplitBefore = true;
@@ -742,33 +724,31 @@ split
         }
         else if(version == "March 2023")
         {
-            if(vars.firstTimeIonGrabSGL)
+            if(vars.FirstTimeIonGrabSGL)
             {
-                vars.oldBPsCountSGL = vars.getBPCount();
-                vars.firstTimeIonGrabSGL = false;
+                vars.oldBPsCountSGL = vars.GetBPCount();
+                vars.FirstTimeIonGrabSGL = false;
             }
-            if(vars.getBPCount() > ((int)vars.oldBPsCountSGL))
+            if(vars.GetBPCount() > ((int)vars.oldBPsCountSGL))
             {
                 print("[Autosplitter] SGL Ion split 2023");
-                vars.oldBPsCountSGL = vars.getBPCount();
+                vars.oldBPsCountSGL = vars.GetBPCount();
                 vars.SGLIonSplitBefore = true;
                 return true;
             }
-            vars.oldBPsCountSGL = vars.getBPCount();
+            vars.oldBPsCountSGL = vars.GetBPCount();
         }   
     }*/
-
     if(settings["SGLSparseSplit"] && 
-      (new[] { "sparseReef", "seaTreaderPath", "seaTreaderPath_wreck" }.Contains((string)old.biome) && 
-      (new[] { "safeShallows", "kelpForest" }.Contains((string)current.biome))))
+      (new[] { "sparseReef", "seaTreaderPath", "seaTreaderPath_wreck" }.Contains((string)old.Biome) && 
+      (new[] { "safeShallows", "kelpForest" }.Contains((string)current.Biome))))
     {
         print("[Autosplitter] Sparse split 2023");
         return true;
     }
-
     if(settings["SGLAuroraSplit"] && 
-      (new[] { "crashedShip", "generatorRoom" }.Contains((string)old.biome) &&
-      (new[] { "safeShallows", "kelpForest" }.Contains((string)current.biome))))
+      (new[] { "crashedShip", "generatorRoom" }.Contains((string)old.Biome) &&
+      (new[] { "safeShallows", "kelpForest" }.Contains((string)current.Biome))))
     {
         print("[Autosplitter] Aurora split 2023");
         return true;
@@ -776,7 +756,7 @@ split
 
     if(settings["HCShallowsSplit"] && !vars.HCShallowsBefore)
     {
-        var IsWithinBounds = vars.isWithinBoundsFunc(-200, 130, -100, 50, 477, 479, current.xCoord, current.yCoord, current.zCoord);
+        var IsWithinBounds = vars.IsWithinBoundsFunc(-200, 130, -100, 50, 477, 479, current.XCoord, current.YCoord, current.ZCoord);
         if(IsWithinBounds)
         {
             vars.HCShallowsBefore = true;
@@ -784,33 +764,31 @@ split
             return true;
         }
     }
-
-    if(settings["HCIonSplit"] && current.biome == "PrecursorThermalRoom" && current.bpsUnlocked > old.bpsUnlocked)
+    if(settings["HCIonSplit"] && current.Biome == "PrecursorThermalRoom" && current.BPsUnlocked > old.BPsUnlocked)
     {
         print("[Autosplitter] Hardcore Ion split");
         return true;
     }
-
     if(settings["HCAuroraSplit"])
     {
-        var IsWithinBounds = vars.isWithinBoundsFunc(545, 550, -10, 10, -265, -256, current.xCoord, current.yCoord, current.zCoord);
+        var IsWithinBounds = vars.IsWithinBoundsFunc(545, 550, -10, 10, -265, -256, current.XCoord, current.YCoord, current.ZCoord);
         if(IsWithinBounds)
         {
-            if(vars.oldBPsCount < current.bpsUnlocked && !vars.firstTimeAuroraHC)
+            if(vars.oldBPsCount < current.BPsUnlocked && !vars.FirstTimeAuroraHC)
             {
-                vars.firstTimeAuroraHC = true;
+                vars.FirstTimeAuroraHC = true;
                 print("[Autosplitter] Hardcore Aurora split");
                 return true;
             }
-            vars.oldBPsCount = current.bpsUnlocked;
-            vars.firstTimeAuroraHC = false;
+            vars.oldBPsCount = current.BPsUnlocked;
+            vars.FirstTimeAuroraHC = false;
         } 
     }
 }
 
 reset
 {
-    if(current.xCoord == 0 && current.zCoord == 0 && current.yCoord == 1.75f && old.yCoord != current.yCoord)
+    if(current.XCoord == 0 && current.ZCoord == 0 && current.YCoord == 1.75f && old.YCoord != current.YCoord)
     {
         print("reset of coords");
         return true;
@@ -821,11 +799,11 @@ reset
 
 isLoading
 {
-    if(!(current.xCoord == 0 && current.zCoord == 0 && current.yCoord == 1.75f && old.yCoord != current.yCoord))
+    if(!(current.XCoord == 0 && current.ZCoord == 0 && current.YCoord == 1.75f && old.YCoord != current.YCoord))
     {
     if(!settings["load"])
     {
-        if(current.isPortalLoading)
+        if(current.IsPortalLoading)
         {
             return true;
         }
@@ -836,10 +814,10 @@ isLoading
     }
     else
     {
-        if (current.isPortalLoading && !old.isPortalLoading)
+        if (current.IsPortalLoading && !old.IsPortalLoading)
         {
-            //var isWithinBounds = vars.isWithinBoundsFunc(240, 250, -1580, -1590, -2000, 2000, current.xCoord, current.yCoord, current.zCoord);
-            //if(isWithinBounds)
+            //var IsWithinBounds = vars.IsWithinBoundsFunc(240, 250, -1580, -1590, -2000, 2000, current.XCoord, current.YCoord, current.ZCoord);
+            //if(IsWithinBounds)
             //{
                 vars.waitingFor1 = true;
                 vars.waitingFor0 = false;
@@ -854,7 +832,7 @@ isLoading
                 
             //}        
         }
-        else if (!current.isPortalLoading && old.isPortalLoading)
+        else if (!current.IsPortalLoading && old.IsPortalLoading)
         {
             vars.waitingFor0 = true;
             vars.waitingFor1 = false;
