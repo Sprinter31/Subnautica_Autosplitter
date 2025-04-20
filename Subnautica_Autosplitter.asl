@@ -1,13 +1,12 @@
 state("Subnautica", "September 2018")
 {
-    int gameMode:                        0x149E490, 0x28, 0x0, 0x10, 0xA0, 0x350, 0x20; //0-3, in menu it's 0 and also randomly changes to 0 when loading
+    //int gameMode:                          0x149E490, 0x28, 0x0, 0x10, 0xA0, 0x350, 0x20; //0-3, in menu it's 0 and also randomly changes to 0 when loading
     bool introCinematicActive:             0x142B908, 0x188, 0x150, 0xD0, 0x18, 0x1E8, 0x28, 0x86;
     bool isLoadingScreen:      "mono.dll", 0x266180, 0x50, 0x2C0, 0x0, 0x30, 0x8, 0x18, 0x20, 0x10, 0x44;
     bool isAnimationPlaying:               0x142B740, 0x8, 0x8, 0x10, 0x30, 0xD8, 0x28, 0x6C;
-    bool isPortalLoading:                  0x142B740, 0x8, 0x10, 0x30, 0x1F8, 0x28, 0x28;
+    bool isPortalLoading:                  0x142B740, 0x8, 0x10, 0x30, 0x1F8, 0x28, 0x28; //true in menu
     bool isEggsHatching: "fmodstudio.dll", 0x304A30, 0x88, 0x18, 0x158, 0x498, 0x108;
     bool isNotInWater:                     0x14BC6A0, 0x7C;
-    float IGT:                             0x1445DF8, 0xA8, 0x58, 0x110, 0x18, 0xC3C;
     int isFabiMenu:            "mono.dll", 0x296BC8, 0x20, 0xA58, 0x20; // 2 means that the esc menu is open
     int isPDAOpen:             "mono.dll", 0x2655E0, 0x40, 0x18, 0xA0, 0x920, 0x64; // true = 1051931443, false = 1056964608  
     int isCured:                           0x1445DF8, 0xA8, 0x58, 0x110, 0x180, 0x160, 0x190, 0x20, 0xA58;//1059857727 = true
@@ -28,7 +27,7 @@ state("Subnautica", "March 2023")
     bool introCinematicActive: "UnityPlayer.dll", 0x179B680, 0x88, 0x198, 0x338, 0x30, 0x28, 0x28, 0x87;
     bool isLoadingScreen:      "UnityPlayer.dll", 0x18AB2E0, 0x430, 0x8, 0x10, 0x48, 0x30, 0x7AC;
     bool isAnimationPlaying:   "UnityPlayer.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x58, 0x28, 0x284;
-    bool isPortalLoading:      "UnityPlayer.dll", 0x17FBE70, 0x10, 0x10, 0x30, 0x1F8, 0x28, 0x28;
+    bool isPortalLoading:      "UnityPlayer.dll", 0x17FBE70, 0x10, 0x10, 0x30, 0x1F8, 0x28, 0x28; //true in menu
     bool isEggsHatching:        "fmodstudio.dll", 0x2CED70, 0x78, 0x18, 0x190, 0x4D8, 0xB0, 0x20, 0x28;
     bool isNotInWater:         "UnityPlayer.dll", 0x18AB130, 0x48, 0x0, 0x68;
     int isFabiMenu:         "mono-2.0-bdwgc.dll", 0x499C40, 0xE84;
@@ -494,18 +493,13 @@ update
 
 start
 {
-    if(!current.introCinematicActive && old.introCinematicActive)
+    if(((!current.introCinematicActive && old.introCinematicActive) || (!current.isAnimationPlaying && old.isAnimationPlaying)) && !vars.startedBefore)
     {
         print("[Autosplitter] start of intro");
         vars.startedBefore = true;
         return true;
     }
-    if(current.IGT > old.IGT && old.IGT != 0.2079117745f && !current.isLoadingScreen && current.gameMode != 3 && !vars.startedBefore)
-    {
-        print("[Autosplitter] start of IGT");
-        vars.startedBefore = true;
-        return true;
-    }
+    
 
     if(!current.isLoadingScreen && !vars.isMainMenu && !vars.startedBefore)
     {
