@@ -13,6 +13,7 @@ state("Subnautica", "September 2018")
     int isRocketGo:                        0x142B8E8, 0x1C8, 0x18, 0x3F0, 0xFD0, 0xF8, 0x8, 0x4B0;
     int bpsUnlocked:                       0x142B8E8, 0x1C8, 0x58, 0x58, 0x128, 0x8, 0x18, 0x158, 0x48;
     int inventoryItemCount:    "mono.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x1A8, 0x28, 0x38, 0x94;//not working
+    float skipProgress:        "mono.dll", 0x17FBC48, 0x1F0, 0x1E8, 0x4E0, 0xB10, 0xD0, 0x8, 0x68, 0x30, 0x40, 0x30, 0xF4;//not working
     int isMovingX:                         0x142B8C8, 0x158, 0x40, 0xA0;
     int isMovingZ:                         0x142B8C8, 0x158, 0x40, 0x160;
     float xCoord:                          0x142B8C8, 0x180, 0x40, 0xA8, 0x7C0; // 0 in menu
@@ -30,18 +31,19 @@ state("Subnautica", "March 2023")
     bool isPortalLoading:      "UnityPlayer.dll", 0x17FBE70, 0x10, 0x10, 0x30, 0x1F8, 0x28, 0x28; //true in menu
     bool isEggsHatching:        "fmodstudio.dll", 0x2CED70, 0x78, 0x18, 0x190, 0x4D8, 0xB0, 0x20, 0x28;
     bool isNotInWater:         "UnityPlayer.dll", 0x18AB130, 0x48, 0x0, 0x68;
-    int isFabiMenu:         "mono-2.0-bdwgc.dll", 0x499C40, 0xE84;
+    int isFabiMenu:         "mono-2.0-bdwgc.dll", 0x499C40, 0xE84;// not working
     int isPDAOpen:          "mono-2.0-bdwgc.dll", 0x499C40, 0xE84; // true = 1051931443, false = 1056964608    
     int isCured:                "fmodstudio.dll", 0x2CED70, 0x78, 0x18, 0x190, 0x550, 0xB8, 0x20, 0x58;   
     int isRocketGo:            "UnityPlayer.dll", 0x17FC238, 0x10, 0x3C; //256 = true
     int inventoryItemCount:    "UnityPlayer.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x1A8, 0x28, 0x38, 0x94;
+    float skipProgress:        "UnityPlayer.dll", 0x17FBC48, 0x1F0, 0x1E8, 0x4E0, 0xB10, 0xD0, 0x8, 0x68, 0x30, 0x40, 0x30, 0xF4;
     int isMovingX:             "UnityPlayer.dll", 0x17FBC28, 0x30, 0x98; //false = 0
     int isMovingZ:             "UnityPlayer.dll", 0x17FBC28, 0x30, 0x150; //false = 0
     float xCoord:              "UnityPlayer.dll", 0x1839CE0, 0x28, 0x10, 0x150, 0xA58; // 0 in menu
     float yCoord:              "UnityPlayer.dll", 0x1839CE0, 0x28, 0x10, 0x150, 0xA5C; //1.75 in menu
     float zCoord:              "UnityPlayer.dll", 0x1839CE0, 0x28, 0x10, 0x150, 0xA60; // 0 in menu
     bool died:                 "UnityPlayer.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x318, 0x28, 0x50;
-    string128 biome:           "UnityPlayer.dll", 0x17fbe70, 0x8, 0x10, 0x30, 0x58, 0x28, 0x1f0, 0x14;
+    string128 biome:           "UnityPlayer.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x58, 0x28, 0x1f0, 0x14;
 }
 
 startup
@@ -66,9 +68,7 @@ startup
     {
         vars.shortCategoryName = "Unkown";
     }
-    settings.Add("reset", false, "Reset");
     settings.Add("explo", false, "Show Explosion Time");
-    settings.SetToolTip("reset", "Resets when you come back to the main menu\nBoth reset check boxes have to be checked for the reset to work");
     settings.SetToolTip("explo", "Shows when the Aurora is going to explode\nOnly updates the layout when the game is running");
     
     switch((string)vars.shortCategoryName)
@@ -493,37 +493,37 @@ update
 
 start
 {
-    if(((!current.introCinematicActive && old.introCinematicActive) || (!current.isAnimationPlaying && old.isAnimationPlaying)) && !vars.startedBefore)
+    if(!vars.startedBefore)
     {
-        print("[Autosplitter] start of intro");
-        vars.startedBefore = true;
-        return true;
+        if(!current.introCinematicActive && old.introCinematicActive){print("[Autosplitter] start of intro"); vars.startedBefore = true; return true;}
+        if(!current.isAnimationPlaying && old.isAnimationPlaying)    {print("[Autosplitter] start of animation"); vars.startedBefore = true; return true;}
+        if(current.skipProgress > 0.988f)                            {print("[Autosplitter] start of skipProgress"); vars.startedBefore = true; return true;}
+
+        if(!current.isLoadingScreen && !vars.isMainMenu)
+        {
+            if(settings["MovedStart"] && (current.isMovingX != 0 && old.isMovingX == 0 || current.isMovingZ != 0 && old.isMovingZ == 0))
+            {
+                print("[Autosplitter] start of move");
+                vars.startedBefore = true;
+                return true;
+            }
+
+            if(settings["FabricatorStart"] && current.isFabiMenu == 1 && current.isFabiMenu != old.isFabiMenu)
+            {
+                print("[Autosplitter] start of fabbi");
+                vars.startedBefore = true;
+                return true;
+            }
+
+            if(settings["PDAStart"] && current.isPDAOpen == 1051931443 && current.isPDAOpen != old.isPDAOpen)
+            {
+                print("[Autosplitter] start of pda");
+                vars.startedBefore = true;
+                return true;
+            }
+        } 
     }
     
-
-    if(!current.isLoadingScreen && !vars.isMainMenu && !vars.startedBefore)
-    {
-        if(settings["MovedStart"] && (current.isMovingX != 0 && old.isMovingX == 0 || current.isMovingZ != 0 && old.isMovingZ == 0))
-        {
-            print("[Autosplitter] start of move");
-            vars.startedBefore = true;
-            return true;
-        }
-
-        if(settings["FabricatorStart"] && current.isFabiMenu == 1 && current.isFabiMenu != old.isFabiMenu)
-        {
-            print("[Autosplitter] start of fabbi");
-            vars.startedBefore = true;
-            return true;
-        }
-
-        if(settings["PDAStart"] && current.isPDAOpen == 1051931443 && current.isPDAOpen != old.isPDAOpen)
-        {
-            print("[Autosplitter] start of pda");
-            vars.startedBefore = true;
-            return true;
-        }
-    } 
 }   
 
 
