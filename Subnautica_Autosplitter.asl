@@ -1,5 +1,6 @@
 state("Subnautica", "September 2018")
 {
+    //player:                              0x142B740, 0x8, 0x8, 0x10, 0x30, 0xD8, 0x28, 0x18, 0x0
     //int gameMode:                          0x149E490, 0x28, 0x0, 0x10, 0xA0, 0x350, 0x20; //0-3, in menu it's 0 and also randomly changes to 0 when loading
     bool introCinematicActive:             0x142B908, 0x188, 0x150, 0xD0, 0x18, 0x1E8, 0x28, 0x86;
     bool isLoadingScreen:      "mono.dll", 0x266180, 0x50, 0x2C0, 0x0, 0x30, 0x8, 0x18, 0x20, 0x10, 0x44;
@@ -14,6 +15,7 @@ state("Subnautica", "September 2018")
     int bpsUnlocked:                       0x142B8E8, 0x1C8, 0x58, 0x58, 0x128, 0x8, 0x18, 0x158, 0x48;
     int inventoryItemCount:    "mono.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x1A8, 0x28, 0x38, 0x94;//not working
     float skipProgress:        "mono.dll", 0x17FBC48, 0x1F0, 0x1E8, 0x4E0, 0xB10, 0xD0, 0x8, 0x68, 0x30, 0x40, 0x30, 0xF4;//not working
+    float timeCured:        0x142B740, 0x8, 0x8, 0x10, 0x30, 0xD8, 0x28, 0x18, 0x2B0;
     int isMovingX:                         0x142B8C8, 0x158, 0x40, 0xA0;
     int isMovingZ:                         0x142B8C8, 0x158, 0x40, 0x160;
     float xCoord:                          0x142B8C8, 0x180, 0x40, 0xA8, 0x7C0; // 0 in menu
@@ -25,18 +27,22 @@ state("Subnautica", "September 2018")
 
 state("Subnautica", "March 2023")
 {
+    //player:                  "UnityPlayer.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x58, 0x28, 0x0
     bool introCinematicActive: "UnityPlayer.dll", 0x179B680, 0x88, 0x198, 0x338, 0x30, 0x28, 0x28, 0x87;
     bool isLoadingScreen:      "UnityPlayer.dll", 0x18AB2E0, 0x430, 0x8, 0x10, 0x48, 0x30, 0x7AC;
     bool isAnimationPlaying:   "UnityPlayer.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x58, 0x28, 0x284;
     bool isPortalLoading:      "UnityPlayer.dll", 0x17FBE70, 0x10, 0x10, 0x30, 0x1F8, 0x28, 0x28; //true in menu
     bool isEggsHatching:        "fmodstudio.dll", 0x2CED70, 0x78, 0x18, 0x190, 0x4D8, 0xB0, 0x20, 0x28;
     bool isNotInWater:         "UnityPlayer.dll", 0x18AB130, 0x48, 0x0, 0x68;
+    int isFabiMenu:            "UnityPlayer.dll", 0x183BF48, 0x8, 0x10, 0x30, 0x30, 0x28, 0x128;
+    int isPDAOpen:          "mono-2.0-bdwgc.dll", 0x499C40, 0xE84; // true = 1051931443, false = 1056964608
     int isFabiMenu:         "mono-2.0-bdwgc.dll", 0x499C40, 0xE84;// not working
     int isPDAOpen:          "mono-2.0-bdwgc.dll", 0x499C40, 0xE84; // true = 1051931443, false = 1056964608    
     int isCured:                "fmodstudio.dll", 0x2CED70, 0x78, 0x18, 0x190, 0x550, 0xB8, 0x20, 0x58;   
     int isRocketGo:            "UnityPlayer.dll", 0x17FC238, 0x10, 0x3C; //256 = true
     int inventoryItemCount:    "UnityPlayer.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x1A8, 0x28, 0x38, 0x94;
     float skipProgress:        "UnityPlayer.dll", 0x17FBC48, 0x1F0, 0x1E8, 0x4E0, 0xB10, 0xD0, 0x8, 0x68, 0x30, 0x40, 0x30, 0xF4;
+    float timeCured:           "UnityPlayer.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x58, 0x28, 0x30C;
     int isMovingX:             "UnityPlayer.dll", 0x17FBC28, 0x30, 0x98; //false = 0
     int isMovingZ:             "UnityPlayer.dll", 0x17FBC28, 0x30, 0x150; //false = 0
     float xCoord:              "UnityPlayer.dll", 0x1839CE0, 0x28, 0x10, 0x150, 0xA58; // 0 in menu
@@ -482,13 +488,13 @@ update
 
     /*print("[Autosplitter] IGT: "+current.IGT);
     print("[Autosplitter] loading: "+current.isLoadingScreen);
-    print("[Autosplitter] GameMode: "+current.gameMode);
+    print("[Autosplitter] GameMode: "+current.gameMode);*/
     print("[Autosplitter] menu: "+vars.isMainMenu);
     print("[Autosplitter] startedBefore: "+vars.startedBefore);
     print("[Autosplitter] x: "+current.xCoord);
     print("[Autosplitter] y: "+current.yCoord);
     print("[Autosplitter] z: "+current.zCoord);
-    print(" ");*/
+    print(" ");
 }
 
 start
@@ -599,12 +605,12 @@ split
 
     if(settings["CureSplit"] && current.isCured != old.isCured && !vars.curedBefore)
     {
-        if(current.isCured == 1059857727 || current.isCured == 1)
+        if(current.timeCured > 1 && current.timeCured < 1000000 && old.timeCured == 0)
         {
             print("[Autosplitter] Cure split");
             vars.curedBefore = true;
             return true;
-        }          
+        }   
     }
 
     if(settings["BoostersSplit"] && current.bpsUnlocked == 225 && old.bpsUnlocked == 224)
@@ -815,7 +821,7 @@ reset
 
 isLoading
 {
-    if(!(current.xCoord == 0 && current.zCoord == 0 && current.yCoord == 1.75f && old.yCoord != current.yCoord))
+    if(!vars.isMainMenu)
     {
     if(!settings["load"])
     {
