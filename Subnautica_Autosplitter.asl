@@ -275,12 +275,12 @@ startup
     vars.HCShallowsBefore = false;
     vars.HCSparseBefore = false;
     vars.isMainMenu = false;
-    vars.exploAdded = false;
     vars.firstTimeAuroraHC = true;
     vars.firstTimeIonGrabSGL = true;
     vars.oldBPsCountHC = 0;
     vars.oldBPsCountSGL = 0;
     vars.counter = 0;
+    vars.oldExploSettingState = null;
 
     vars.startAddr = IntPtr.Zero;
     
@@ -455,16 +455,17 @@ onStart
 
 update
 {
-    if(settings["explo"] && !vars.exploAdded)
+    // Manage Explosion Time
+    if(vars.oldExploSettingState == null) vars.oldExploSettingState = settings["explo"];
+    if(settings["explo"] && vars.oldExploSettingState == false)
     {
         vars.manageExploTimeComponent(true);
-        vars.exploAdded = true;
     }
-    if(!settings["explo"])
+    if(!settings["explo"] && vars.oldExploSettingState == true)
     {
         vars.manageExploTimeComponent(false);
-        vars.exploAdded = false;
     }
+    vars.oldExploSettingState = settings["explo"];
 
     if(current.xCoord == 0 && current.zCoord == 0 && current.yCoord == 1.75f && old.yCoord != current.yCoord)
     {
