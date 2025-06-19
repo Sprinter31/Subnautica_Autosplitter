@@ -40,8 +40,8 @@ state("Subnautica", "March 2023")
     int graphicalDetail:       "UnityPlayer.dll", 0x183AB60; // high = 0, medium = 1, low = 2
     float skipProgress:        "UnityPlayer.dll", 0x17FBC48, 0x1F0, 0x1E8, 0x4E0, 0xB10, 0xD0, 0x8, 0x68, 0x30, 0x40, 0x30, 0xF4;
     float timeCured:           "UnityPlayer.dll", 0x179B680, 0x88, 0xC0, 0x288, 0x30, 0x30, 0x38, 0x28, 0x18, 0x30C;
-    float walkDir:             "UnityPlayer.dll", 0x17FBC28, 0x30, 0x98; // false = 0
-    float strafeDir:           "UnityPlayer.dll", 0x17FBC28, 0x30, 0x150; // false = 0
+    float walkDir:             "UnityPlayer.dll", 0x17FBC28, 0x30, 0x98;
+    float strafeDir:           "UnityPlayer.dll", 0x17FBC28, 0x30, 0x150;
     float posX:                "UnityPlayer.dll", 0x1839CE0, 0x28, 0x10, 0x150, 0xA58; // 0 in menu
     float posY:                "UnityPlayer.dll", 0x1839CE0, 0x28, 0x10, 0x150, 0xA5C; // 1.75 in menu
     float posZ:                "UnityPlayer.dll", 0x1839CE0, 0x28, 0x10, 0x150, 0xA60; // 0 in menu
