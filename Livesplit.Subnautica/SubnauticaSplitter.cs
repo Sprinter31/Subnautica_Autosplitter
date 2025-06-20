@@ -78,6 +78,11 @@ namespace Livesplit.Subnautica
                 { SplitName.BaseDeathSplit, () => isDying.Current && !isDying.Old && (isWithinBounds(deathClipABounds) || isWithinBounds(deathClipCBounds)) },
                 { SplitName.LeaveKelpForestSplit, () => false },
                 { SplitName.FourToothSplit, () => false },
+                { SplitName.AuroraDeathSplit, () => !alreadySplit.Contains(SplitName.AuroraDeathSplit) && isDying.Current && !isDying.Old && new[] { "crashedShip", "generatorRoom" }.Contains((string)biomeString)},
+                { SplitName.MountainDescendSplit, () => !alreadySplit.Contains(SplitName.MountainDescendSplit) && isWithinBounds(mountainBounds) },
+                { SplitName.IonDeathSplit, () => isDying.Current && !isDying.Old && new[] { "Precursor_LavaCastleBase", "PrecursorThermalRoom" }.Contains((string)biomeString) },
+                { SplitName.GunDeathSplit, () => isDying.Current && !isDying.Old && biomeString == "Precursor_Gun_ControlRoom" },
+                { SplitName.SparseDeathSplit, () => !alreadySplit.Contains(SplitName.SparseDeathSplit) && isDying.Current && !isDying.Old && new[] { "sparseReef", "seaTreaderPath", "seaTreaderPath_wreck" }.Contains((string)biomeString) },
 
             };
         }       
@@ -89,17 +94,46 @@ namespace Livesplit.Subnautica
             
             if (game != null && pointersInitialized)
             {
-                if (settings.introStart) isIntroCinematicActive.Update(game);
-                if (settings.Splits.Contains(SplitName.RocketSplit)) isRocketLaunching.Update(game);
-                if (settings.Splits.Contains(SplitName.PCFTabletSplit) || settings.Splits.Contains(SplitName.GunDeactivationSplit)) isAnimationPlaying.Update(game);
-                if (settings.Splits.Contains(SplitName.PCFTabletSplit) || settings.Splits.Contains(SplitName.GunDeactivationSplit)) UpdatePosition();
-                if (settings.Splits.Contains(SplitName.PortalSplit)) isPortalLoading.Update(game);
-                if (settings.Splits.Contains(SplitName.HatchSplit)) isEggsHatching.Update(game);
-                if (settings.Splits.Contains(SplitName.CureSplit)) timeCured.Update(game);
-                if (settings.Splits.Contains(SplitName.BoostersSplit) || settings.Splits.Contains(SplitName.FuelReservesSplit)) knownTechSize.Update(game);
-                if (settings.Splits.Contains(SplitName.BaseDeathSplit)) isDying.Update(game);
+                if (settings.introStart)
+                    isIntroCinematicActive.Update(game);
+
+                if (Needs(SplitName.RocketSplit))
+                    isRocketLaunching.Update(game);
+
+                if (Needs(SplitName.PCFTabletSplit, SplitName.GunDeactivationSplit))
+                {
+                    isAnimationPlaying.Update(game);
+                    UpdatePosition();
+                }
+
+                if (Needs(SplitName.PortalSplit))
+                    isPortalLoading.Update(game);
+
+                if (Needs(SplitName.HatchSplit))
+                    isEggsHatching.Update(game);
+
+                if (Needs(SplitName.CureSplit))
+                    timeCured.Update(game);
+
+                if (Needs(SplitName.BoostersSplit, SplitName.FuelReservesSplit))
+                    knownTechSize.Update(game);
+
+                if (Needs(SplitName.BaseDeathSplit,
+                          SplitName.AuroraDeathSplit,
+                          SplitName.IonDeathSplit,
+                          SplitName.GunDeathSplit,
+                          SplitName.SparseDeathSplit))
+                    isDying.Update(game);
+
+                if (Needs(SplitName.AuroraDeathSplit,
+                          SplitName.IonDeathSplit,
+                          SplitName.GunDeathSplit,
+                          SplitName.SparseDeathSplit))
+                    biome.Update(game);
             }
         }
+        bool Needs(params SplitName[] required) =>
+            required.Any(r => settings.Splits.Contains(r));
         private void UpdatePosition() { posX.Update(game); posY.Update(game); posZ.Update(game); }
 
         #region Memory & Such
