@@ -33,7 +33,7 @@ namespace Livesplit.Subnautica
         private MemoryWatcher<bool>  isDying                = new MemoryWatcher<bool>(IntPtr.Zero);
         private MemoryWatcher<int>   isFabiOpen             = new MemoryWatcher<int>(IntPtr.Zero); // 2 means that the esc menu is open
         private MemoryWatcher<int>   isPDAOpen              = new MemoryWatcher<int>(IntPtr.Zero); // true = 1051931443, false = 1056964608
-        private MemoryWatcher<int>   isRocketLaunching      = new MemoryWatcher<int>(IntPtr.Zero);
+        private MemoryWatcher<int>   isRocketLaunching      = new MemoryWatcher<int>(IntPtr.Zero); // 2018 = 1, 2023 = 256
         private MemoryWatcher<int>   knownTechSize          = new MemoryWatcher<int>(IntPtr.Zero);
         private MemoryWatcher<int>   inventorySize          = new MemoryWatcher<int>(IntPtr.Zero);
         private MemoryWatcher<int>   oxygen                 = new MemoryWatcher<int>(IntPtr.Zero);
@@ -45,17 +45,17 @@ namespace Livesplit.Subnautica
         private MemoryWatcher<float> posZ                   = new MemoryWatcher<float>(IntPtr.Zero);
 
         // pointer to the beginning of the string
-        private MemoryWatcher<IntPtr> playerBiomePtr        = new MemoryWatcher<IntPtr>(IntPtr.Zero);
+        private MemoryWatcher<IntPtr> biome                 = new MemoryWatcher<IntPtr>(IntPtr.Zero);
         private string biomeString;
         private string biomeStringOld;
 
-        private MemoryWatcher<IntPtr> inventoryDictionaryPtr = new MemoryWatcher<IntPtr>(IntPtr.Zero);
+        private MemoryWatcher<IntPtr> inventoryDictionary   = new MemoryWatcher<IntPtr>(IntPtr.Zero);
         private Dictionary<TechType, int> playerInventory;
         private Dictionary<TechType, int> playerInventoryOld;
 
-        private MemoryWatcher<IntPtr> knownTechPtr          = new MemoryWatcher<IntPtr>(IntPtr.Zero);
+        /*private MemoryWatcher<IntPtr> knownTech            = new MemoryWatcher<IntPtr>(IntPtr.Zero);
         private List<TechType> knownTech;
-        private List<TechType> knownTechOld;
+        private List<TechType> knownTechOld;*/
         #endregion
 
         private bool pointersInitialized;
@@ -132,22 +132,96 @@ namespace Livesplit.Subnautica
         private void InitPointers()
         {
             DeepPointer introPtr;
+            DeepPointer loadingScreenPtr;
+            DeepPointer animationPtr;
+            DeepPointer portalLoadingPtr;
+            DeepPointer hatchPtr;
+            DeepPointer notInWaterPtr;
+            DeepPointer dyingPtr;
+            DeepPointer fabiPtr;
+            DeepPointer PDAPtr;
             DeepPointer rocketPtr;
-            
+            DeepPointer techSizePtr;
+            DeepPointer invSizePtr;
+            DeepPointer oxygenPtr;
+            DeepPointer timeCuredPtr;
+            DeepPointer walkDirPtr;
+            DeepPointer strafePtr;
+            DeepPointer posX;
+            DeepPointer posY;
+            DeepPointer posZ;
+            DeepPointer biomePtr;
+            DeepPointer inventoryPtr;
+
             switch (gameVersion)
             {
                 case GameVersion.Sept2018:
-                    introPtr =  new DeepPointer("mono.dll", 0x262a68, 0x40, 0xd88, 0x218, 0x10, 0x28, 0x18, 0x1e8, 0x28, 0x86);
+                    introPtr = new DeepPointer("Subnautica.exe", 0x142B908, 0x188, 0x150, 0xD0, 0x18, 0x1E8, 0x28, 0x86);
+                    loadingScreenPtr = new DeepPointer("mono.dll", 0x266180, 0x50, 0x2C0, 0x0, 0x30, 0x8, 0x18, 0x20, 0x10, 0x44);
+                    animationPtr = new DeepPointer("Subnautica.exe", 0x142B740, 0x8, 0x8, 0x10, 0x30, 0xD8, 0x28, 0x6C);
+                    portalLoadingPtr = new DeepPointer("Subnautica.exe", 0x142B740, 0x8, 0x10, 0x30, 0x1F8, 0x28, 0x28);
+                    hatchPtr = new DeepPointer("fmodstudio.dll", 0x304A30, 0x88, 0x18, 0x158, 0x498, 0x108);
+                    notInWaterPtr = new DeepPointer("Subnautica.exe", 0x14BC6A0, 0x7C);
+                    dyingPtr = new DeepPointer("Subnautica.exe", 0x142B740, 0x8, 0x8, 0x10, 0x30, 0x2C8, 0x28, 0x20);
+                    fabiPtr = new DeepPointer("mono.dll", 0x296BC8, 0x20, 0xA58, 0x20);
+                    PDAPtr = new DeepPointer("mono.dll", 0x2655E0, 0x40, 0x18, 0xA0, 0x920, 0x64);
                     rocketPtr = new DeepPointer("mono.dll", 0x27EAD8, 0x40, 0x70, 0x50, 0x90, 0x30, 0x8, 0x80);
-                    break;                
+                    techSizePtr = new DeepPointer("mono.dll", 0x296BC8, 0x20, 0x928, 0x58, 0x38);
+                    invSizePtr = new DeepPointer("mono.dll", 0x2655E0, 0xA0, 0xAB0, 0x18, 0x30, 0x134);
+                    oxygenPtr = new DeepPointer("Subnautica.exe", 0x142ADA8, 0x8, 0x10, 0x30, 0x30, 0x18, 0x28, 0x70);
+                    timeCuredPtr = new DeepPointer("mono.dll", 0x2655E0, 0xA0, 0x598, 0x0, 0x18, 0x20, 0x898, 0x10, 0x20, 0x2B0);
+                    walkDirPtr = new DeepPointer("Subnautica.exe", 0x142B8C8, 0x158, 0x40, 0xA0);
+                    strafePtr = new DeepPointer("Subnautica.exe", 0x142B8C8, 0x158, 0x40, 0x160);
+                    posX = new DeepPointer("Subnautica.exe", 0x142B8C8, 0x180, 0x40, 0xA8, 0x7C0);
+                    posY = new DeepPointer("Subnautica.exe", 0x142B8C8, 0x180, 0x40, 0xA8, 0x7C4);
+                    posZ = new DeepPointer("Subnautica.exe", 0x142B8C8, 0x180, 0x40, 0xA8, 0x7C8);
+                    biomePtr = new DeepPointer("Subnautica.exe", 0x142B908, 0x180, 0x128, 0x80, 0x1D0, 0x8, 0x248, 0x1D0, 0x14);
+                    inventoryPtr = new DeepPointer("mono.dll", 0x00296bc8, 0x20, 0xa40, 0x0, 0x40, 0x58, 0x28);
+                    break;
 
-                default/* GameVersion.Mar2023*/:
-                    introPtr =  new DeepPointer("mono-2.0-bdwgc.dll", 0x499c78, 0x9d0, 0x130, 0x48, 0x250, 0x220, 0x28, 0x87);
-                    rocketPtr = new DeepPointer("UnityPlayer.dll",    0x17FC238, 0x10, 0x3C);
+                default: // GameVersion.Mar2023
+                    introPtr = new DeepPointer("mono-2.0-bdwgc.dll", 0x499c78, 0x9d0, 0x130, 0x48, 0x250, 0x220, 0x28, 0x87);
+                    loadingScreenPtr = new DeepPointer("UnityPlayer.dll", 0x18AB2E0, 0x430, 0x8, 0x10, 0x48, 0x30, 0x7AC);
+                    animationPtr = new DeepPointer("UnityPlayer.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x58, 0x28, 0x284);
+                    portalLoadingPtr = new DeepPointer("UnityPlayer.dll", 0x17FBE70, 0x10, 0x10, 0x30, 0x1F8, 0x28, 0x28);
+                    hatchPtr = new DeepPointer("fmodstudio.dll", 0x2CED70, 0x78, 0x18, 0x190, 0x4D8, 0xB0, 0x20, 0x28);
+                    notInWaterPtr = new DeepPointer("UnityPlayer.dll", 0x18AB130, 0x48, 0x0, 0x68);
+                    dyingPtr = new DeepPointer("UnityPlayer.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x318, 0x28, 0x50);
+                    fabiPtr = new DeepPointer("UnityPlayer.dll", 0x183BF48, 0x8, 0x10, 0x30, 0x30, 0x28, 0x128);
+                    PDAPtr = new DeepPointer("mono-2.0-bdwgc.dll", 0x499C40, 0xE84);
+                    rocketPtr = new DeepPointer("UnityPlayer.dll", 0x17FC238, 0x10, 0x3C);
+                    invSizePtr = new DeepPointer("UnityPlayer.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x1A8, 0x28, 0x38, 0x94);
+                    timeCuredPtr = new DeepPointer("UnityPlayer.dll", 0x179B680, 0x88, 0xC0, 0x288, 0x30, 0x30, 0x38, 0x28, 0x18, 0x30C);
+                    walkDirPtr = new DeepPointer("UnityPlayer.dll", 0x17FBC28, 0x30, 0x98);
+                    strafePtr = new DeepPointer("UnityPlayer.dll", 0x17FBC28, 0x30, 0x150);
+                    posX = new DeepPointer("UnityPlayer.dll", 0x1839CE0, 0x28, 0x10, 0x150, 0xA58);
+                    posY = new DeepPointer("UnityPlayer.dll", 0x1839CE0, 0x28, 0x10, 0x150, 0xA5C);
+                    posZ = new DeepPointer("UnityPlayer.dll", 0x1839CE0, 0x28, 0x10, 0x150, 0xA60);
+                    biomePtr = new DeepPointer("UnityPlayer.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x58, 0x28, 0x1f0, 0x14);
+                    inventoryPtr = new DeepPointer("UnityPlayer.dll", 0x17fbe70, 0x8, 0x10, 0x30, 0x678, 0x1b8, 0x28, 0x38, 0x58, 0x18);
                     break;
             }
+
             isIntroCinematicActive = new MemoryWatcher<bool>(introPtr);
             isRocketLaunching = new MemoryWatcher<int>(rocketPtr);
+            isLoadingScreen = new MemoryWatcher<bool>(loadingScreenPtr);
+            isAnimationPlaying = new MemoryWatcher<bool>(animationPtr);
+            isPortalLoading = new MemoryWatcher<bool>(portalLoadingPtr);
+            isEggsHatching = new MemoryWatcher<bool>(hatchPtr);
+            isNotInWater = new MemoryWatcher<bool>(notInWaterPtr);
+            isDying = new MemoryWatcher<bool>(dyingPtr);
+            isFabiOpen = new MemoryWatcher<int>(fabiPtr);
+            isPDAOpen = new MemoryWatcher<int>(PDAPtr);
+            inventorySize = new MemoryWatcher<int>(invSizePtr);
+            timeCured = new MemoryWatcher<float>(timeCuredPtr);
+            walkDir = new MemoryWatcher<float>(walkDirPtr);
+            strafeDir = new MemoryWatcher<float>(strafePtr);
+            this.posX = new MemoryWatcher<float>(posX);
+            this.posY = new MemoryWatcher<float>(posY);
+            this.posZ = new MemoryWatcher<float>(posZ);
+            biome = new MemoryWatcher<IntPtr>(biomePtr);
+            inventoryDictionary = new MemoryWatcher<IntPtr>(inventoryPtr);
+
             WriteDebug("Pointers initialized");
 
             pointersInitialized = true;
