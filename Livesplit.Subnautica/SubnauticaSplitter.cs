@@ -23,6 +23,8 @@ namespace Livesplit.Subnautica
         private GameVersion gameVersion;
         private readonly Dictionary<SplitName, Func<bool>> splitConditions;
 
+        private bool splitPortalBefore = false;
+
         #region MemoryWatchers
         private MemoryWatcher<bool>  isIntroCinematicActive = new MemoryWatcher<bool>(IntPtr.Zero);
         private MemoryWatcher<bool>  isLoadingScreen        = new MemoryWatcher<bool>(IntPtr.Zero);
@@ -67,9 +69,8 @@ namespace Livesplit.Subnautica
             splitConditions = new Dictionary<SplitName, Func<bool>>
             {
                 { SplitName.RocketSplit, () => isRocketLaunching.Current != isRocketLaunching.Old && (isRocketLaunching.Current == 1 || isRocketLaunching.Current == 256) },
-                //{ SplitName.PCFTabletSplit, () => playerIsCuredWatcher.Current },
-                //{ SplitName.PortalSplit, () => gunIsDeactivatedWatcher.Current },
-        
+                { SplitName.PCFTabletSplit, () => isAnimationPlaying.Current && !isAnimationPlaying.Old && isWithinBounds(PCFEntrBounds) },
+                { SplitName.PortalSplit, () =>  !splitPortalBefore && isPortalLoading.Current && !isPortalLoading.Old },       
             };
         }       
 
@@ -80,10 +81,13 @@ namespace Livesplit.Subnautica
             
             if (game != null && pointersInitialized)
             {
-                isIntroCinematicActive.Update(game);
-                isRocketLaunching.Update(game);
+                if(settings.introStart) isIntroCinematicActive.Update(game);
+                if (settings.Splits.Contains(SplitName.RocketSplit)) isRocketLaunching.Update(game);
+                if (settings.Splits.Contains(SplitName.PCFTabletSplit)) { isAnimationPlaying.Update(game); UpdatePosition(); }
+                if(settings.Splits.Contains(SplitName.PortalSplit)) { isPortalLoading.Update(game); }
             }
         }
+        private void UpdatePosition() { posX.Update(game); posY.Update(game); posZ.Update(game); }
 
         #region Memory & Such
         private void GetGameProcess()
@@ -314,9 +318,9 @@ namespace Livesplit.Subnautica
 
         bool isWithinBounds(float[] bounds)
         {
-            int x = 0;
-            int y = 0;
-            int z = 0;
+            float x = posX.Current;
+            float y = posY.Current;
+            float z = posZ.Current;
             if (x >= Math.Min(bounds[0], bounds[1]) && x <= Math.Max(bounds[0], bounds[1]) &&
                 y >= Math.Min(bounds[2], bounds[3]) && y <= Math.Max(bounds[2], bounds[3]) &&
                 z >= Math.Min(bounds[4], bounds[5]) && z <= Math.Max(bounds[4], bounds[5]))
