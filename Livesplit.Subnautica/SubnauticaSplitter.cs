@@ -74,7 +74,11 @@ namespace Livesplit.Subnautica
                 { SplitName.CureSplit, () => timeCured.Current > timeCured.Old },
                 { SplitName.BoostersSplit, () => knownTechSize.Old == 224 && knownTechSize.Current == 225 },
                 { SplitName.FuelReservesSplit, () => knownTechSize.Old == 225 && knownTechSize.Current == 226 },
-                { SplitName.GunDeactivationSplit, () => knownTechSize.Old == 225 && knownTechSize.Current == 226 },
+                { SplitName.GunDeactivationSplit, () => !alreadySplit.Contains(SplitName.GunDeactivationSplit) && isAnimationPlaying.Current && !isAnimationPlaying.Old && isWithinBounds(gunBounds) },
+                { SplitName.BaseDeathSplit, () => isDying.Current && !isDying.Old && (isWithinBounds(deathClipABounds) || isWithinBounds(deathClipCBounds)) },
+                { SplitName.LeaveKelpForestSplit, () => false },
+                { SplitName.FourToothSplit, () => false },
+
             };
         }       
 
@@ -85,13 +89,15 @@ namespace Livesplit.Subnautica
             
             if (game != null && pointersInitialized)
             {
-                if (settings.introStart) { isIntroCinematicActive.Update(game); }
+                if (settings.introStart) isIntroCinematicActive.Update(game);
                 if (settings.Splits.Contains(SplitName.RocketSplit)) isRocketLaunching.Update(game);
-                if (settings.Splits.Contains(SplitName.PCFTabletSplit)) { isAnimationPlaying.Update(game); UpdatePosition(); }
-                if (settings.Splits.Contains(SplitName.PortalSplit)) { isPortalLoading.Update(game); }
-                if (settings.Splits.Contains(SplitName.HatchSplit)) { isEggsHatching.Update(game); }
-                if (settings.Splits.Contains(SplitName.CureSplit)) { timeCured.Update(game); }
-                if (settings.Splits.Contains(SplitName.BoostersSplit) || settings.Splits.Contains(SplitName.FuelReservesSplit)) { knownTechSize.Update(game); }
+                if (settings.Splits.Contains(SplitName.PCFTabletSplit) || settings.Splits.Contains(SplitName.GunDeactivationSplit)) isAnimationPlaying.Update(game);
+                if (settings.Splits.Contains(SplitName.PCFTabletSplit) || settings.Splits.Contains(SplitName.GunDeactivationSplit)) UpdatePosition();
+                if (settings.Splits.Contains(SplitName.PortalSplit)) isPortalLoading.Update(game);
+                if (settings.Splits.Contains(SplitName.HatchSplit)) isEggsHatching.Update(game);
+                if (settings.Splits.Contains(SplitName.CureSplit)) timeCured.Update(game);
+                if (settings.Splits.Contains(SplitName.BoostersSplit) || settings.Splits.Contains(SplitName.FuelReservesSplit)) knownTechSize.Update(game);
+                if (settings.Splits.Contains(SplitName.BaseDeathSplit)) isDying.Update(game);
             }
         }
         private void UpdatePosition() { posX.Update(game); posY.Update(game); posZ.Update(game); }
