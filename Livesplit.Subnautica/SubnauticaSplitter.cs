@@ -22,8 +22,7 @@ namespace Livesplit.Subnautica
         private System.Threading.Timer debugWriteTimer;
         private GameVersion gameVersion;
         private readonly Dictionary<SplitName, Func<bool>> splitConditions;
-
-        private bool splitPortalBefore = false;
+        private readonly HashSet<SplitName> alreadySplit = new HashSet<SplitName>();       
 
         #region MemoryWatchers
         private MemoryWatcher<bool>  isIntroCinematicActive = new MemoryWatcher<bool>(IntPtr.Zero);
@@ -70,7 +69,12 @@ namespace Livesplit.Subnautica
             {
                 { SplitName.RocketSplit, () => isRocketLaunching.Current != isRocketLaunching.Old && (isRocketLaunching.Current == 1 || isRocketLaunching.Current == 256) },
                 { SplitName.PCFTabletSplit, () => isAnimationPlaying.Current && !isAnimationPlaying.Old && isWithinBounds(PCFEntrBounds) },
-                { SplitName.PortalSplit, () =>  !splitPortalBefore && isPortalLoading.Current && !isPortalLoading.Old },       
+                { SplitName.PortalSplit, () =>  !alreadySplit.Contains(SplitName.PortalSplit) && isPortalLoading.Current && !isPortalLoading.Old },
+                { SplitName.HatchSplit, () => isEggsHatching.Current && !isEggsHatching.Old },
+                { SplitName.CureSplit, () => timeCured.Current > timeCured.Old },
+                { SplitName.BoostersSplit, () => knownTechSize.Old == 224 && knownTechSize.Current == 225 },
+                { SplitName.FuelReservesSplit, () => knownTechSize.Old == 225 && knownTechSize.Current == 226 },
+                { SplitName.GunDeactivationSplit, () => knownTechSize.Old == 225 && knownTechSize.Current == 226 },
             };
         }       
 
@@ -81,10 +85,13 @@ namespace Livesplit.Subnautica
             
             if (game != null && pointersInitialized)
             {
-                if(settings.introStart) isIntroCinematicActive.Update(game);
+                if (settings.introStart) { isIntroCinematicActive.Update(game); }
                 if (settings.Splits.Contains(SplitName.RocketSplit)) isRocketLaunching.Update(game);
                 if (settings.Splits.Contains(SplitName.PCFTabletSplit)) { isAnimationPlaying.Update(game); UpdatePosition(); }
-                if(settings.Splits.Contains(SplitName.PortalSplit)) { isPortalLoading.Update(game); }
+                if (settings.Splits.Contains(SplitName.PortalSplit)) { isPortalLoading.Update(game); }
+                if (settings.Splits.Contains(SplitName.HatchSplit)) { isEggsHatching.Update(game); }
+                if (settings.Splits.Contains(SplitName.CureSplit)) { timeCured.Update(game); }
+                if (settings.Splits.Contains(SplitName.BoostersSplit) || settings.Splits.Contains(SplitName.FuelReservesSplit)) { knownTechSize.Update(game); }
             }
         }
         private void UpdatePosition() { posX.Update(game); posY.Update(game); posZ.Update(game); }
@@ -292,7 +299,8 @@ namespace Livesplit.Subnautica
             {
                 if (splitConditions.TryGetValue(split, out var condition) && condition())
                 {
-                    WriteDebug($"{split} triggered");
+                    alreadySplit.Add(split);
+                    WriteDebug($"{split} split triggered");
                     return true;
                 }
             }
