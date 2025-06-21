@@ -162,6 +162,7 @@ namespace Livesplit.Subnautica
 
                 if (Needs(SplitName.LeaveKelpForestSplit,
                           SplitName.FourToothSplit,
+                          SplitName.HCGSparseSplit,
                           SplitName.HCGSparseSplit))
                     UpdateInventory();
             }
@@ -259,7 +260,7 @@ namespace Livesplit.Subnautica
                     posX = new DeepPointer("Subnautica.exe", 0x142B8C8, 0x180, 0x40, 0xA8, 0x7C0);
                     posY = new DeepPointer("Subnautica.exe", 0x142B8C8, 0x180, 0x40, 0xA8, 0x7C4);
                     posZ = new DeepPointer("Subnautica.exe", 0x142B8C8, 0x180, 0x40, 0xA8, 0x7C8);
-                    biomePtr = new DeepPointer("Subnautica.exe", 0x142B908, 0x180, 0x128, 0x80, 0x1D0, 0x8, 0x248, 0x1D0, 0x14);
+                    biomePtr = new DeepPointer("mono.dll", 0x262a68, 0x40, 0xd88, 0x218, 0x10, 0x28, 0x18, 0x1d0);
                     inventoryPtr = new DeepPointer("mono.dll", 0x00296bc8, 0x20, 0xa40, 0x0, 0x40, 0x58, 0x28);
                     break;
 
@@ -281,7 +282,7 @@ namespace Livesplit.Subnautica
                     posX = new DeepPointer("UnityPlayer.dll", 0x1839CE0, 0x28, 0x10, 0x150, 0xA58);
                     posY = new DeepPointer("UnityPlayer.dll", 0x1839CE0, 0x28, 0x10, 0x150, 0xA5C);
                     posZ = new DeepPointer("UnityPlayer.dll", 0x1839CE0, 0x28, 0x10, 0x150, 0xA60);
-                    biomePtr = new DeepPointer("UnityPlayer.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x58, 0x28, 0x1f0, 0x14);
+                    biomePtr = new DeepPointer("UnityPlayer.dll", 0x17cfbe0, 0xbb0, 0xd0, 0x8, 0xd0, 0x774, 0x0, 0x1f0);
                     inventoryPtr = new DeepPointer("UnityPlayer.dll", 0x17fbe70, 0x8, 0x10, 0x30, 0x678, 0x1b8, 0x28, 0x38, 0x58, 0x18);
                     break;
             }
@@ -373,7 +374,7 @@ namespace Livesplit.Subnautica
                 if (splitConditions.TryGetValue(split, out var condition) && condition())
                 {
                     alreadySplit.Add(split);
-                    WriteDebug($"{split} split triggered");
+                    WriteDebug($"{split} triggered");
                     return true;
                 }
             }
@@ -382,13 +383,13 @@ namespace Livesplit.Subnautica
         }
 
         public bool ShouldReset(LiveSplitState state) { return false; }
-        public void OnReset(TimerPhase t) { }
+        public void OnReset(TimerPhase t) { alreadySplit.Clear(); }
         public bool IsGameTimePaused(LiveSplitState state) { return false; }
         public TimeSpan? GetGameTime(LiveSplitState state) { return null; }
 
         #endregion Logic
 
-        
+
 
         #region World/Player Checks
 
@@ -400,10 +401,9 @@ namespace Livesplit.Subnautica
             if (x >= Math.Min(bounds[0], bounds[1]) && x <= Math.Max(bounds[0], bounds[1]) &&
                 y >= Math.Min(bounds[2], bounds[3]) && y <= Math.Max(bounds[2], bounds[3]) &&
                 z >= Math.Min(bounds[4], bounds[5]) && z <= Math.Max(bounds[4], bounds[5]))
-            {
                 return true;
-            }
-            else return false;
+            else
+                return false;
         }
 
         private void UpdateInventory()
