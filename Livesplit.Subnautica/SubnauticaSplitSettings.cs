@@ -52,10 +52,6 @@ namespace Livesplit.Subnautica
         {
             [Description("Rocket Split"), ToolTip("Splits when you start the Neptune Rocket")]
             RocketSplit,
-            [Description("PCF Tablet Split"), ToolTip("Splits when you insert the tablet at the PCF entrance")]
-            PCFTabletSplit,
-            [Description("PCF Pool Split"), ToolTip("Splits when you enter the prison aquarium the normal way")]
-            PCFPoolSplit,
             [Description("Portal Split"), ToolTip("Splits when you enter a portal for the first time")]
             PortalSplit,
             [Description("Hatch Split"), ToolTip("Splits when you hatch the eggs in the prison aquarium")]
@@ -66,46 +62,50 @@ namespace Livesplit.Subnautica
             BoostersSplit,
             [Description("Fuel Reserves Split"), ToolTip("Splits when you build the fuel reserves section of the Neptune Rocket\nCreative 2018 only")]
             FuelReservesSplit,
+            [Description("Mountain Descend Split"), ToolTip("Splits when you descend under the arch after getting out of bounds")]
+            MountainDescendSplit,
+            [Description("PCF Tablet Split"), ToolTip("Splits when you insert the tablet at the PCF entrance")]
+            PCFTabletSplit,
+            [Description("PCF Pool Split"), ToolTip("Splits when you enter the prison aquarium the normal way")]
+            PCFPoolSplit,            
             [Description("Gun Deactivation Split"), ToolTip("Splits when you deactivate the gun")]
             GunDeactivationSplit,
+            [Description("Glitchless Shallows Split"), ToolTip("Split when you exit the main base with an extra High Capacity O2 tank in your inventory")]
+            SGLShallowsSplit,
+            [Description("Glitchless Base Split"), ToolTip("Splits when you enter the main base near the seaglide wreck for the first time")]
+            SGLBaseSplit,
             [Description("Base Death Split (includes Clip A and Clip C)"), ToolTip("Splits when you die next to the main base (includes Clip A and Clip C)")]
             BaseDeathSplit,
+            [Description("Gun Death Split"), ToolTip("Splits when you die in the gun room")]
+            GunDeathSplit,           
+            [Description("Aurora Death Split"), ToolTip("Splits when you die in the Aurora")]
+            AuroraDeathSplit,            
+            [Description("Sparse Death Split"), ToolTip("Splits when you die in the biomes: Sea Treader Path or Sparse Reef")]
+            SparseDeathSplit,
+            [Description("Death Split"), ToolTip("Splits when you die")]
+            DeathSplit,
+            [Description("Ion Death Split"), ToolTip("Splits when you die in the Alien Thermal Plant")]
+            IonDeathSplit,
+            [Description("Ion Unstuck Split"), ToolTip("Splits when you unstuck in the Ion BP room")]
+            IonUnstuckSplit,
+            [Description("Ion Unlock Split"), ToolTip("Splits when you unlock the Ion BP")]
+            IonUnlockSplit,
             [Description("Leave Kelp Forest Split"), ToolTip("Splits when you leave the Kelp Forest with one or more Creepvine samples")]
             LeaveKelpForestSplit,
             [Description("4-Tooth Split"), ToolTip("Splits when you collect four Stalker teeth")]
-            FourToothSplit,
-            [Description("Aurora Death Split"), ToolTip("Splits when you die in the Aurora")]
-            AuroraDeathSplit,
-            [Description("Mountain Descend Split"), ToolTip("Splits when you descend under the arch after getting out of bounds")]
-            MountainDescendSplit,
-            [Description("Ion Death Split"), ToolTip("Splits when you die in the Alien Thermal Plant")]
-            IonDeathSplit,
-            [Description("Gun Death Split"), ToolTip("Splits when you die in the gun room")]
-            GunDeathSplit,
-            [Description("Sparse Death Split"), ToolTip("Splits when you die in the biomes: Sea Treader Path or Sparse Reef")]
-            SparseDeathSplit,
-            [Description("Glitchless Base Split"), ToolTip("Splits when you enter the main base near the seaglide wreck for the first time")]
-            SGLBaseSplit,
-            [Description("Glitchless Shallows Split"), ToolTip("Split when you exit the main base with an extra High Capacity O2 tank in your inventory")]
-            SGLShallowsSplit,
+            FourToothSplit,                                                       
             [Description("Upper Tablet Split"), ToolTip("Splits when you grab the purple tablet above the Alien Gun Entrence")]
-            UpperTabletSplit,
-            [Description("Ion Unstuck Split"), ToolTip("Splits when you unstuck in the Ion BP room")]
-            IonUnstuckSplit,
+            UpperTabletSplit,            
             [Description("Sparse Biome Change Split"), ToolTip("Splits when the biome changes from Sparse to Shallows or Kelp Forest")]
             SparseBiomeSplit,
             [Description("Aurora Biome Change Split"), ToolTip("Splits when the biome changes from Aurora to Shallows or Kelp Forest")]
             AuroraBiomeSplit,
             [Description("Eyestalk Split"), ToolTip("Splits when you collect an Eyestalk Sample")]
-            EyestalkSplit,
-            [Description("Ion Unlock Split"), ToolTip("Splits when you unlock the Ion BP")]
-            IonUnlockSplit,
+            EyestalkSplit,            
             [Description("Aurora Exit Split"), ToolTip("Splits when you exit the Aurora through the old patch hole after unlocking the rocket")]
             AuroraExitSplit,
             [Description("HCG Sparse Split"), ToolTip("Splits when you enter the main base with a ruby (includes clip A and C)")]
             HCGSparseSplit,
-            [Description("Death Split"), ToolTip("Splits when you die")]
-            DeathSplit,
         }
         public class ToolTipAttribute : Attribute
         {
