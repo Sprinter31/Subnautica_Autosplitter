@@ -153,7 +153,11 @@ namespace Livesplit.Subnautica
                           SplitName.IonDeathSplit,
                           SplitName.GunDeathSplit,
                           SplitName.SparseDeathSplit))
+                {
                     biome.Update(game);
+                    biomeStringOld = biomeString;
+                    biomeString = IntPtrToString(biome.Current + 0x14, 64).Trim(' ');
+                }                 
             }
         }
         bool Needs(params SplitName[] required) => required.Any(r => settings.Splits.Contains(r));
