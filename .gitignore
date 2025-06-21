@@ -1,7 +1,7 @@
 .vs/
 
-bin/
-obj/
+Livesplit.Subnautica/bin/
+Livesplit.Subnautica/obj/
 
 *.user
 *.suo

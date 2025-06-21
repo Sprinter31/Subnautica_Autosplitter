@@ -85,26 +85,23 @@ namespace Livesplit.Subnautica
                 { SplitName.SparseDeathSplit, () => !alreadySplit.Contains(SplitName.SparseDeathSplit) && isDying.Current && !isDying.Old && new[] { "sparseReef", "seaTreaderPath", "seaTreaderPath_wreck" }.Contains((string)biomeString) },
 
             };
-        }       
+        }
 
         public void Update()
         {
             Debug.WriteLineIf(game == null, $"[Subnautica Autosplitter] game null");
             Debug.WriteLineIf(!pointersInitialized, $"[Subnautica Autosplitter] pointers not intialized");
-            
+
             if (game != null && pointersInitialized)
             {
                 if (settings.introStart)
                     isIntroCinematicActive.Update(game);
 
-                if (Needs(SplitName.RocketSplit))
-                    isRocketLaunching.Update(game);
+                if (Needs())
+                    isLoadingScreen.Update(game);
 
                 if (Needs(SplitName.PCFTabletSplit, SplitName.GunDeactivationSplit))
-                {
                     isAnimationPlaying.Update(game);
-                    UpdatePosition();
-                }
 
                 if (Needs(SplitName.PortalSplit))
                     isPortalLoading.Update(game);
@@ -112,11 +109,8 @@ namespace Livesplit.Subnautica
                 if (Needs(SplitName.HatchSplit))
                     isEggsHatching.Update(game);
 
-                if (Needs(SplitName.CureSplit))
-                    timeCured.Update(game);
-
-                if (Needs(SplitName.BoostersSplit, SplitName.FuelReservesSplit))
-                    knownTechSize.Update(game);
+                if (Needs())
+                    isNotInWater.Update(game);
 
                 if (Needs(SplitName.BaseDeathSplit,
                           SplitName.AuroraDeathSplit,
@@ -125,6 +119,36 @@ namespace Livesplit.Subnautica
                           SplitName.SparseDeathSplit))
                     isDying.Update(game);
 
+                if (Needs())
+                    isFabiOpen.Update(game);
+
+                if (Needs())
+                    isPDAOpen.Update(game);
+
+                if (Needs(SplitName.RocketSplit))
+                    isRocketLaunching.Update(game);
+
+                if (Needs(SplitName.BoostersSplit, SplitName.FuelReservesSplit))
+                    knownTechSize.Update(game);
+
+                if (Needs())
+                    inventorySize.Update(game);
+
+                if (Needs())
+                    oxygen.Update(game);
+
+                if (Needs(SplitName.CureSplit))
+                    timeCured.Update(game);
+
+                if (Needs())
+                {
+                    walkDir.Update(game);
+                    strafeDir.Update(game);
+                }
+
+                if (Needs(SplitName.PCFTabletSplit, SplitName.GunDeactivationSplit))
+                    UpdatePosition();
+
                 if (Needs(SplitName.AuroraDeathSplit,
                           SplitName.IonDeathSplit,
                           SplitName.GunDeathSplit,
@@ -132,8 +156,8 @@ namespace Livesplit.Subnautica
                     biome.Update(game);
             }
         }
-        bool Needs(params SplitName[] required) =>
-            required.Any(r => settings.Splits.Contains(r));
+        bool Needs(params SplitName[] required) => required.Any(r => settings.Splits.Contains(r));
+
         private void UpdatePosition() { posX.Update(game); posY.Update(game); posZ.Update(game); }
 
         #region Memory & Such
