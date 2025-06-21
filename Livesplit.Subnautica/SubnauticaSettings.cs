@@ -141,6 +141,9 @@ namespace Livesplit.Subnautica
 
             introStart = chkIntroStart.Checked;
             creativeStart = chkCreativeStart.Checked;
+            reset = chkReset.Checked;
+            askForGoldSave = chkAskForGoldSave.Checked;
+            SRCLoadtimes = chkSRCLoadtimes.Checked;
 
             Splits.Clear();
             foreach (Control c in flowMain.Controls)
@@ -201,6 +204,9 @@ namespace Livesplit.Subnautica
 
             chkIntroStart.Checked = introStart;
             chkCreativeStart.Checked = creativeStart;
+            chkReset.Checked = reset;
+            chkAskForGoldSave.Checked = askForGoldSave;
+            chkSRCLoadtimes.Checked = SRCLoadtimes;
 
             foreach (SplitName split in Splits)
             {

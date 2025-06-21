@@ -161,6 +161,7 @@
         "m (can be up to 0.1s inaccurate)\r\nUnchecking this will not turn off the load rem" +
         "oval");
             this.chkSRCLoadtimes.UseVisualStyleBackColor = true;
+            this.chkSRCLoadtimes.CheckedChanged += new System.EventHandler(this.ControlChanged);
             // 
             // chkAskForGoldSave
             // 
@@ -173,6 +174,7 @@
             this.chkAskForGoldSave.Text = "Ask before saving golds";
             this.ToolTips.SetToolTip(this.chkAskForGoldSave, "Ask to save golds when the timer auto resets");
             this.chkAskForGoldSave.UseVisualStyleBackColor = true;
+            this.chkAskForGoldSave.CheckedChanged += new System.EventHandler(this.ControlChanged);
             // 
             // btnAddSplit
             // 
@@ -209,6 +211,7 @@
             this.chkReset.Text = "Reset";
             this.ToolTips.SetToolTip(this.chkReset, "Resets the timer when you come back to the main menu");
             this.chkReset.UseVisualStyleBackColor = true;
+            this.chkReset.CheckedChanged += new System.EventHandler(this.ControlChanged);
             // 
             // chkCreativeStart
             // 
