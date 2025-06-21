@@ -116,16 +116,21 @@
             this.Options_GroupBox.TabIndex = 6;
             this.Options_GroupBox.TabStop = false;
             this.Options_GroupBox.Text = "Options";
+            this.ToolTips.SetToolTip(this.Options_GroupBox, "This will add time to the actual load times to match the IGT shown on Speedrun.co" +
+        "m (can be up to 0.1s inaccurate)\\nUnchecking this will not turn off the load rem" +
+        "oval\")");
             // 
             // btnAddExplo
             // 
             this.btnAddExplo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnAddExplo.AutoSize = true;
-            this.btnAddExplo.Location = new System.Drawing.Point(477, 126);
+            this.btnAddExplo.Location = new System.Drawing.Point(476, 126);
             this.btnAddExplo.Name = "btnAddExplo";
             this.btnAddExplo.Size = new System.Drawing.Size(138, 26);
             this.btnAddExplo.TabIndex = 9;
             this.btnAddExplo.Text = "Add Explosion Time";
+            this.ToolTips.SetToolTip(this.btnAddExplo, "This will add a text component to your layout which shows when the aurora is goin" +
+        "g to explode");
             this.btnAddExplo.UseVisualStyleBackColor = true;
             // 
             // Other_GroupBox
@@ -152,6 +157,9 @@
             this.chkSRCLoadtimes.Size = new System.Drawing.Size(120, 20);
             this.chkSRCLoadtimes.TabIndex = 1;
             this.chkSRCLoadtimes.Text = "SRC Loadtimes";
+            this.ToolTips.SetToolTip(this.chkSRCLoadtimes, "This will add time to the actual load times to match the IGT shown on Speedrun.co" +
+        "m (can be up to 0.1s inaccurate)\r\nUnchecking this will not turn off the load rem" +
+        "oval");
             this.chkSRCLoadtimes.UseVisualStyleBackColor = true;
             // 
             // chkAskForGoldSave
@@ -160,9 +168,10 @@
             this.chkAskForGoldSave.AutoSize = true;
             this.chkAskForGoldSave.Location = new System.Drawing.Point(7, 28);
             this.chkAskForGoldSave.Name = "chkAskForGoldSave";
-            this.chkAskForGoldSave.Size = new System.Drawing.Size(173, 20);
+            this.chkAskForGoldSave.Size = new System.Drawing.Size(171, 20);
             this.chkAskForGoldSave.TabIndex = 0;
-            this.chkAskForGoldSave.Text = "Ask before saving Golds";
+            this.chkAskForGoldSave.Text = "Ask before saving golds";
+            this.ToolTips.SetToolTip(this.chkAskForGoldSave, "Ask to save golds when the timer auto resets");
             this.chkAskForGoldSave.UseVisualStyleBackColor = true;
             // 
             // btnAddSplit

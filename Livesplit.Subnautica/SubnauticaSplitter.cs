@@ -67,7 +67,7 @@ namespace Livesplit.Subnautica
             {
                 { SplitName.RocketSplit,          () => isRocketLaunching.Current != isRocketLaunching.Old && (isRocketLaunching.Current == 1 || isRocketLaunching.Current == 256) },
                 { SplitName.PCFTabletSplit,       () => isAnimationPlaying.Current && !isAnimationPlaying.Old && IsWithinBounds(PCFEntrBounds) },
-                { SplitName.PortalSplit,          () =>  !alreadySplit.Contains(SplitName.PortalSplit) && isPortalLoading.Current && !isPortalLoading.Old },
+                { SplitName.PortalSplit,          () => !alreadySplit.Contains(SplitName.PortalSplit) && isPortalLoading.Current && !isPortalLoading.Old },
                 { SplitName.HatchSplit,           () => isEggsHatching.Current && !isEggsHatching.Old },
                 { SplitName.CureSplit,            () => timeCured.Current > timeCured.Old },
                 { SplitName.BoostersSplit,        () => !alreadySplit.Contains(SplitName.BoostersSplit) && knownTech.Contains(TechType.RocketStage1) },
