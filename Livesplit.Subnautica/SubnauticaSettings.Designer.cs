@@ -35,18 +35,23 @@
             this.flowOptions = new System.Windows.Forms.FlowLayoutPanel();
             this.Options_GroupBox = new System.Windows.Forms.GroupBox();
             this.btnAddSplit = new System.Windows.Forms.Button();
-            this.RunBehaviour_GroupBox = new System.Windows.Forms.GroupBox();
+            this.StartReset_GroupBox = new System.Windows.Forms.GroupBox();
             this.chkCreativeStart = new System.Windows.Forms.CheckBox();
             this.chkIntroStart = new System.Windows.Forms.CheckBox();
             this.SortBy_GroupBox = new System.Windows.Forms.GroupBox();
             this.rdAlpha = new System.Windows.Forms.RadioButton();
             this.rdType = new System.Windows.Forms.RadioButton();
             this.ToolTips = new System.Windows.Forms.ToolTip(this.components);
+            this.Other_GroupBox = new System.Windows.Forms.GroupBox();
+            this.chkSRCLoadtimes = new System.Windows.Forms.CheckBox();
+            this.chkAskForGoldSave = new System.Windows.Forms.CheckBox();
+            this.chkReset = new System.Windows.Forms.CheckBox();
             this.flowMain.SuspendLayout();
             this.flowOptions.SuspendLayout();
             this.Options_GroupBox.SuspendLayout();
-            this.RunBehaviour_GroupBox.SuspendLayout();
+            this.StartReset_GroupBox.SuspendLayout();
             this.SortBy_GroupBox.SuspendLayout();
+            this.Other_GroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // cb_StartIntro
@@ -80,7 +85,7 @@
             this.flowMain.Location = new System.Drawing.Point(0, 0);
             this.flowMain.Margin = new System.Windows.Forms.Padding(0);
             this.flowMain.Name = "flowMain";
-            this.flowMain.Size = new System.Drawing.Size(608, 159);
+            this.flowMain.Size = new System.Drawing.Size(608, 176);
             this.flowMain.TabIndex = 0;
             this.flowMain.WrapContents = false;
             // 
@@ -92,26 +97,27 @@
             this.flowOptions.Location = new System.Drawing.Point(0, 0);
             this.flowOptions.Margin = new System.Windows.Forms.Padding(0);
             this.flowOptions.Name = "flowOptions";
-            this.flowOptions.Size = new System.Drawing.Size(608, 159);
+            this.flowOptions.Size = new System.Drawing.Size(608, 176);
             this.flowOptions.TabIndex = 2;
             // 
             // Options_GroupBox
             // 
+            this.Options_GroupBox.Controls.Add(this.Other_GroupBox);
             this.Options_GroupBox.Controls.Add(this.btnAddSplit);
-            this.Options_GroupBox.Controls.Add(this.RunBehaviour_GroupBox);
+            this.Options_GroupBox.Controls.Add(this.StartReset_GroupBox);
             this.Options_GroupBox.Controls.Add(this.SortBy_GroupBox);
             this.Options_GroupBox.Location = new System.Drawing.Point(4, 4);
             this.Options_GroupBox.Margin = new System.Windows.Forms.Padding(4);
             this.Options_GroupBox.Name = "Options_GroupBox";
             this.Options_GroupBox.Padding = new System.Windows.Forms.Padding(4);
-            this.Options_GroupBox.Size = new System.Drawing.Size(600, 151);
+            this.Options_GroupBox.Size = new System.Drawing.Size(600, 168);
             this.Options_GroupBox.TabIndex = 6;
             this.Options_GroupBox.TabStop = false;
             this.Options_GroupBox.Text = "Options";
             // 
             // btnAddSplit
             // 
-            this.btnAddSplit.Location = new System.Drawing.Point(8, 113);
+            this.btnAddSplit.Location = new System.Drawing.Point(8, 126);
             this.btnAddSplit.Margin = new System.Windows.Forms.Padding(4);
             this.btnAddSplit.Name = "btnAddSplit";
             this.btnAddSplit.Size = new System.Drawing.Size(76, 26);
@@ -120,24 +126,27 @@
             this.btnAddSplit.UseVisualStyleBackColor = true;
             this.btnAddSplit.Click += new System.EventHandler(this.btnAddSplit_Click);
             // 
-            // RunBehaviour_GroupBox
+            // StartReset_GroupBox
             // 
-            this.RunBehaviour_GroupBox.Controls.Add(this.chkCreativeStart);
-            this.RunBehaviour_GroupBox.Controls.Add(this.chkIntroStart);
-            this.RunBehaviour_GroupBox.Location = new System.Drawing.Point(191, 18);
-            this.RunBehaviour_GroupBox.Margin = new System.Windows.Forms.Padding(4);
-            this.RunBehaviour_GroupBox.Name = "RunBehaviour_GroupBox";
-            this.RunBehaviour_GroupBox.Padding = new System.Windows.Forms.Padding(4);
-            this.RunBehaviour_GroupBox.Size = new System.Drawing.Size(401, 87);
-            this.RunBehaviour_GroupBox.TabIndex = 7;
-            this.RunBehaviour_GroupBox.TabStop = false;
-            this.RunBehaviour_GroupBox.Text = "Starts";
+            this.StartReset_GroupBox.AutoSize = true;
+            this.StartReset_GroupBox.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.StartReset_GroupBox.Controls.Add(this.chkReset);
+            this.StartReset_GroupBox.Controls.Add(this.chkCreativeStart);
+            this.StartReset_GroupBox.Controls.Add(this.chkIntroStart);
+            this.StartReset_GroupBox.Location = new System.Drawing.Point(191, 18);
+            this.StartReset_GroupBox.Margin = new System.Windows.Forms.Padding(4);
+            this.StartReset_GroupBox.Name = "StartReset_GroupBox";
+            this.StartReset_GroupBox.Padding = new System.Windows.Forms.Padding(4);
+            this.StartReset_GroupBox.Size = new System.Drawing.Size(199, 100);
+            this.StartReset_GroupBox.TabIndex = 7;
+            this.StartReset_GroupBox.TabStop = false;
+            this.StartReset_GroupBox.Text = "Start / Reset";
             // 
             // chkCreativeStart
             // 
             this.chkCreativeStart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.chkCreativeStart.AutoSize = true;
-            this.chkCreativeStart.Location = new System.Drawing.Point(214, 38);
+            this.chkCreativeStart.Location = new System.Drawing.Point(7, 58);
             this.chkCreativeStart.Name = "chkCreativeStart";
             this.chkCreativeStart.Size = new System.Drawing.Size(109, 20);
             this.chkCreativeStart.TabIndex = 1;
@@ -149,7 +158,7 @@
             // 
             this.chkIntroStart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.chkIntroStart.AutoSize = true;
-            this.chkIntroStart.Location = new System.Drawing.Point(74, 38);
+            this.chkIntroStart.Location = new System.Drawing.Point(7, 28);
             this.chkIntroStart.Name = "chkIntroStart";
             this.chkIntroStart.Size = new System.Drawing.Size(113, 20);
             this.chkIntroStart.TabIndex = 0;
@@ -165,7 +174,7 @@
             this.SortBy_GroupBox.Margin = new System.Windows.Forms.Padding(4);
             this.SortBy_GroupBox.Name = "SortBy_GroupBox";
             this.SortBy_GroupBox.Padding = new System.Windows.Forms.Padding(4);
-            this.SortBy_GroupBox.Size = new System.Drawing.Size(175, 87);
+            this.SortBy_GroupBox.Size = new System.Drawing.Size(175, 100);
             this.SortBy_GroupBox.TabIndex = 6;
             this.SortBy_GroupBox.TabStop = false;
             this.SortBy_GroupBox.Text = "Sort Split Selects By";
@@ -200,6 +209,51 @@
             // 
             this.ToolTips.ShowAlways = true;
             // 
+            // Other_GroupBox
+            // 
+            this.Other_GroupBox.Controls.Add(this.chkSRCLoadtimes);
+            this.Other_GroupBox.Controls.Add(this.chkAskForGoldSave);
+            this.Other_GroupBox.Location = new System.Drawing.Point(406, 18);
+            this.Other_GroupBox.Margin = new System.Windows.Forms.Padding(4);
+            this.Other_GroupBox.Name = "Other_GroupBox";
+            this.Other_GroupBox.Padding = new System.Windows.Forms.Padding(4);
+            this.Other_GroupBox.Size = new System.Drawing.Size(186, 100);
+            this.Other_GroupBox.TabIndex = 8;
+            this.Other_GroupBox.TabStop = false;
+            this.Other_GroupBox.Text = "Others";
+            // 
+            // chkSRCLoadtimes
+            // 
+            this.chkSRCLoadtimes.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkSRCLoadtimes.AutoSize = true;
+            this.chkSRCLoadtimes.Location = new System.Drawing.Point(7, 58);
+            this.chkSRCLoadtimes.Name = "chkSRCLoadtimes";
+            this.chkSRCLoadtimes.Size = new System.Drawing.Size(123, 20);
+            this.chkSRCLoadtimes.TabIndex = 1;
+            this.chkSRCLoadtimes.Text = "SRC Loadtimes";
+            this.chkSRCLoadtimes.UseVisualStyleBackColor = true;
+            // 
+            // chkAskForGoldSave
+            // 
+            this.chkAskForGoldSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkAskForGoldSave.AutoSize = true;
+            this.chkAskForGoldSave.Location = new System.Drawing.Point(7, 28);
+            this.chkAskForGoldSave.Name = "chkAskForGoldSave";
+            this.chkAskForGoldSave.Size = new System.Drawing.Size(176, 20);
+            this.chkAskForGoldSave.TabIndex = 0;
+            this.chkAskForGoldSave.Text = "Ask before saving Golds";
+            this.chkAskForGoldSave.UseVisualStyleBackColor = true;
+            // 
+            // chkReset
+            // 
+            this.chkReset.AutoSize = true;
+            this.chkReset.Location = new System.Drawing.Point(126, 28);
+            this.chkReset.Name = "chkReset";
+            this.chkReset.Size = new System.Drawing.Size(65, 20);
+            this.chkReset.TabIndex = 2;
+            this.chkReset.Text = "Reset";
+            this.chkReset.UseVisualStyleBackColor = true;
+            // 
             // SubnauticaSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -210,16 +264,19 @@
             this.Controls.Add(this.flowMain);
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "SubnauticaSettings";
-            this.Size = new System.Drawing.Size(608, 159);
+            this.Size = new System.Drawing.Size(608, 176);
             this.Load += new System.EventHandler(this.Settings_Load);
             this.flowMain.ResumeLayout(false);
             this.flowMain.PerformLayout();
             this.flowOptions.ResumeLayout(false);
             this.Options_GroupBox.ResumeLayout(false);
-            this.RunBehaviour_GroupBox.ResumeLayout(false);
-            this.RunBehaviour_GroupBox.PerformLayout();
+            this.Options_GroupBox.PerformLayout();
+            this.StartReset_GroupBox.ResumeLayout(false);
+            this.StartReset_GroupBox.PerformLayout();
             this.SortBy_GroupBox.ResumeLayout(false);
             this.SortBy_GroupBox.PerformLayout();
+            this.Other_GroupBox.ResumeLayout(false);
+            this.Other_GroupBox.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -233,12 +290,16 @@
         private System.Windows.Forms.FlowLayoutPanel flowOptions;
         private System.Windows.Forms.GroupBox Options_GroupBox;
         private System.Windows.Forms.Button btnAddSplit;
-        private System.Windows.Forms.GroupBox RunBehaviour_GroupBox;
+        private System.Windows.Forms.GroupBox StartReset_GroupBox;
         private System.Windows.Forms.GroupBox SortBy_GroupBox;
         private System.Windows.Forms.RadioButton rdAlpha;
         private System.Windows.Forms.RadioButton rdType;
         private System.Windows.Forms.CheckBox chkCreativeStart;
         private System.Windows.Forms.CheckBox chkIntroStart;
         private System.Windows.Forms.ToolTip ToolTips;
+        private System.Windows.Forms.GroupBox Other_GroupBox;
+        private System.Windows.Forms.CheckBox chkSRCLoadtimes;
+        private System.Windows.Forms.CheckBox chkAskForGoldSave;
+        private System.Windows.Forms.CheckBox chkReset;
     }
 }

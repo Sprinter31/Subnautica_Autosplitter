@@ -35,9 +35,7 @@
             this.btnEdit = new System.Windows.Forms.Button();
             this.btnRemove = new System.Windows.Forms.Button();
             this.cboName = new System.Windows.Forms.ComboBox();
-            this.picHandle = new System.Windows.Forms.PictureBox();
             this.ToolTips = new System.Windows.Forms.ToolTip(this.components);
-            ((System.ComponentModel.ISupportInitialize)(this.picHandle)).BeginInit();
             this.SuspendLayout();
             // 
             // btnAddBelow
@@ -90,17 +88,6 @@
             this.cboName.TabIndex = 9;
             this.cboName.SelectedIndexChanged += new System.EventHandler(this.cboName_SelectedIndexChanged);
             // 
-            // picHandle
-            // 
-            this.picHandle.Cursor = System.Windows.Forms.Cursors.SizeAll;
-            this.picHandle.Image = ((System.Drawing.Image)(resources.GetObject("picHandle.Image")));
-            this.picHandle.Location = new System.Drawing.Point(8, 7);
-            this.picHandle.Margin = new System.Windows.Forms.Padding(4);
-            this.picHandle.Name = "picHandle";
-            this.picHandle.Size = new System.Drawing.Size(27, 25);
-            this.picHandle.TabIndex = 11;
-            this.picHandle.TabStop = false;
-            // 
             // ToolTips
             // 
             this.ToolTips.ShowAlways = true;
@@ -115,10 +102,8 @@
             this.Controls.Add(this.btnEdit);
             this.Controls.Add(this.btnRemove);
             this.Controls.Add(this.cboName);
-            this.Controls.Add(this.picHandle);
             this.Name = "SubnauticaSplitSettings";
             this.Size = new System.Drawing.Size(557, 37);
-            ((System.ComponentModel.ISupportInitialize)(this.picHandle)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -130,7 +115,6 @@
         public System.Windows.Forms.Button btnEdit;
         public System.Windows.Forms.Button btnRemove;
         public System.Windows.Forms.ComboBox cboName;
-        private System.Windows.Forms.PictureBox picHandle;
         private System.Windows.Forms.ToolTip ToolTips;
     }
 }
