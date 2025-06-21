@@ -18,6 +18,7 @@ namespace Livesplit.Subnautica
         public SubnauticaSplitSettings()
         {
             InitializeComponent();
+            cboName.DropDownStyle = ComboBoxStyle.DropDownList;
         }
 
         private void cboName_SelectedIndexChanged(object sender, EventArgs e)
@@ -44,7 +45,7 @@ namespace Livesplit.Subnautica
                     return split;
                 }
             }
-            return SplitName.ManualSplit;
+            return SplitName.RocketSplit;            
         }
 
         public enum SplitName
@@ -53,9 +54,11 @@ namespace Livesplit.Subnautica
             RocketSplit,
             [Description("PCF Tablet Split"), ToolTip("Splits when you insert the tablet at the PCF entrance")]
             PCFTabletSplit,
+            [Description("PCF Pool Split"), ToolTip("Splits when you enter the prison aquarium the normal way")]
+            PCFPoolSplit,
             [Description("Portal Split"), ToolTip("Splits when you enter a portal for the first time")]
             PortalSplit,
-            [Description("Hatch Split"), ToolTip("Splits when you hatch the eggs in the aquarium prison")]
+            [Description("Hatch Split"), ToolTip("Splits when you hatch the eggs in the prison aquarium")]
             HatchSplit,
             [Description("Cure Split"), ToolTip("Splits when you cure yourself")]
             CureSplit,
@@ -81,8 +84,28 @@ namespace Livesplit.Subnautica
             GunDeathSplit,
             [Description("Sparse Death Split"), ToolTip("Splits when you die in the biomes: Sea Treader Path or Sparse Reef")]
             SparseDeathSplit,
-            [Description("Don't split"), ToolTip("Doesn't split :(")]
-            ManualSplit,
+            [Description("Glitchless Base Split"), ToolTip("Splits when you enter the main base near the seaglide wreck for the first time")]
+            SGLBaseSplit,
+            [Description("Glitchless Shallows Split"), ToolTip("Split when you exit the main base with an extra High Capacity O2 tank in your inventory")]
+            SGLShallowsSplit,
+            [Description("Upper Tablet Split"), ToolTip("Splits when you grab the purple tablet above the Alien Gun Entrence")]
+            UpperTabletSplit,
+            [Description("Ion Unstuck Split"), ToolTip("Splits when you unstuck in the Ion BP room")]
+            IonUnstuckSplit,
+            [Description("Sparse Biome Change Split"), ToolTip("Splits when the biome changes from Sparse to Shallows or Kelp Forest")]
+            SparseBiomeSplit,
+            [Description("Aurora Biome Change Split"), ToolTip("Splits when the biome changes from Aurora to Shallows or Kelp Forest")]
+            AuroraBiomeSplit,
+            [Description("Eyestalk Split"), ToolTip("Splits when you collect an Eyestalk Sample")]
+            EyestalkSplit,
+            [Description("Ion Unlock Split"), ToolTip("Splits when you unlock the Ion BP")]
+            IonUnlockSplit,
+            [Description("Aurora Exit Split"), ToolTip("Splits when you exit the Aurora through the old patch hole after unlocking the rocket")]
+            AuroraExitSplit,
+            [Description("HCG Sparse Split"), ToolTip("Splits when you enter the main base with a ruby (includes clip A and C)")]
+            HCGSparseSplit,
+            [Description("Death Split"), ToolTip("Splits when you die")]
+            DeathSplit,
         }
         public class ToolTipAttribute : Attribute
         {
