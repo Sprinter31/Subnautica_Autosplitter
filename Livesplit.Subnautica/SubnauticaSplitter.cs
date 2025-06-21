@@ -92,7 +92,7 @@ namespace Livesplit.Subnautica
                 { SplitName.EyestalkSplit,        () => !alreadySplit.Contains(SplitName.EyestalkSplit) && IsWithinBounds(eyestalkBounds) },
                 { SplitName.IonUnlockSplit,       () => !alreadySplit.Contains(SplitName.IonUnlockSplit) && knownTech.Contains(TechType.PrecursorIonBattery) },
                 { SplitName.AuroraExitSplit,      () => !alreadySplit.Contains(SplitName.AuroraExitSplit) && IsWithinBounds(auroraExitBounds) && knownTech.Contains(TechType.RocketBase) },
-                { SplitName.HCGSparseSplit,       () => !alreadySplit.Contains(SplitName.HCGSparseSplit) && isAnimationPlaying.Current && !isAnimationPlaying.Old && (IsWithinBounds(deathClipABounds) || IsWithinBounds(deathClipCBounds)) && IsItemInInventory(TechType.AluminumOxide) },
+                { SplitName.HCGSparseSplit,       () => !alreadySplit.Contains(SplitName.HCGSparseSplit) && isAnimationPlaying.Current && !isAnimationPlaying.Old && (IsWithinBounds(enterClipABounds) || IsWithinBounds(enterClipCBounds)) && IsItemInInventory(TechType.AluminumOxide) },
             };
         }
 
@@ -407,8 +407,6 @@ namespace Livesplit.Subnautica
 
         #endregion Logic
 
-
-
         #region World/Player Checks
 
         private bool IsWithinBounds(float[] bounds)
@@ -500,6 +498,7 @@ namespace Livesplit.Subnautica
         #endregion
 
         #region Bounds
+        // xmin, xmax, ymin, ymax, zmin, zmax
         private readonly float[] teethBounds = { -212f, 27f, -100f, 100f, 159f, 177f };
         private readonly float[] auroraExitBounds = { 545f, 550f, -10f, 10f, -265f, 256f };
         private readonly float[] eyestalkBounds = { -200f, 130f, -100f, 50f, 477f, 479f };

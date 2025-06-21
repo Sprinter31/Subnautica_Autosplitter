@@ -19,6 +19,9 @@ namespace Livesplit.Subnautica
         public List<SplitName> Splits { get; private set; }
         public bool introStart { get; set; }
         public bool creativeStart { get; set; }
+        public bool reset {  get; set; }
+        public bool askForGoldSave { get; set; }
+        public bool SRCLoadtimes { get; set; }
 
         private static ReaderWriterLockSlim isLoading = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
         private List<string> availableSplits = new List<string>();
@@ -29,6 +32,7 @@ namespace Livesplit.Subnautica
             Splits = new List<SplitName>();
         }
 
+        #region Buttons
         private void btnAddSplit_Click(object sender, EventArgs e)
         {
             SubnauticaSplitSettings setting = createSetting();
@@ -94,6 +98,7 @@ namespace Livesplit.Subnautica
                 }
             }
         }
+        #endregion
         private void addSplitAtIndex(int index)
         {
             SubnauticaSplitSettings setting = createSetting();
@@ -279,6 +284,18 @@ namespace Livesplit.Subnautica
             xmlCreativeStart.InnerText = creativeStart.ToString();
             xmlSettings.AppendChild(xmlCreativeStart);
 
+            XmlElement xmlReset = document.CreateElement("Reset");
+            xmlReset.InnerText = reset.ToString();
+            xmlSettings.AppendChild(xmlReset);
+            
+            XmlElement xmlAskForGoldSave = document.CreateElement("AskForGoldSave");
+            xmlAskForGoldSave.InnerText = askForGoldSave.ToString();
+            xmlSettings.AppendChild(xmlAskForGoldSave);
+
+            XmlElement xmlSRCLoadtimes = document.CreateElement("SRCLoadtimes");
+            xmlSRCLoadtimes.InnerText = SRCLoadtimes.ToString();
+            xmlSettings.AppendChild(xmlSRCLoadtimes);
+
             XmlElement xmlSplits = document.CreateElement("Splits");
             xmlSettings.AppendChild(xmlSplits);
 
@@ -314,20 +331,32 @@ namespace Livesplit.Subnautica
             {
                 XmlNode introStartNode = settings.SelectSingleNode(".//IntroStart");
                 XmlNode creativeStartNode = settings.SelectSingleNode(".//CreativeStart");
+                XmlNode resetNode = settings.SelectSingleNode(".//Reset");
+                XmlNode askForGoldSaveNode = settings.SelectSingleNode(".//AskForGoldSave");
+                XmlNode SRCLoadtimesNode = settings.SelectSingleNode(".//SRCLoadtimes");
 
                 bool isIntroStart = false;
                 bool isCreativeStart = false;
+                bool isReset = false;
+                bool isAskForGoldSave = false;
+                bool isSRCLoadtimes = false;
 
                 if (introStartNode != null)
-                {
                     bool.TryParse(introStartNode.InnerText, out isIntroStart);
-                }
                 if (creativeStartNode != null)
-                {
-                    bool.TryParse(creativeStartNode.InnerText, out isCreativeStart);
-                }                
+                    bool.TryParse(creativeStartNode.InnerText, out isCreativeStart);   
+                if (resetNode != null)
+                    bool.TryParse(resetNode.InnerText, out isReset);
+                if (askForGoldSaveNode != null)
+                    bool.TryParse(askForGoldSaveNode.InnerText, out isAskForGoldSave);
+                if (SRCLoadtimesNode != null)
+                    bool.TryParse(SRCLoadtimesNode.InnerText, out isSRCLoadtimes);
+
                 introStart = isIntroStart;
                 creativeStart = isCreativeStart;
+                reset = isReset;
+                askForGoldSave = isAskForGoldSave;
+                SRCLoadtimes = isSRCLoadtimes;
 
                 Splits.Clear();
                 XmlNodeList splitNodes = settings.SelectNodes(".//Splits/Split");
