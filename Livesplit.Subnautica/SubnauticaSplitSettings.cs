@@ -90,6 +90,8 @@ namespace Livesplit.Subnautica
             IonUnstuckSplit,
             [Description("Ion Unlock Split"), ToolTip("Splits when you unlock the Ion BP")]
             IonUnlockSplit,
+            [Description("Rocket Unlock Split"), ToolTip("Splits when you unlock the Neptune Rocket")]
+            RocketUnlockSplit,
             [Description("Leave Kelp Forest Split"), ToolTip("Splits when you leave the Kelp Forest with one or more Creepvine samples")]
             LeaveKelpForestSplit,
             [Description("4-Tooth Split"), ToolTip("Splits when you collect four Stalker teeth")]

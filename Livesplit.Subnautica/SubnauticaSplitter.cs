@@ -35,8 +35,6 @@ namespace Livesplit.Subnautica
         private MemoryWatcher<int>   isFabiOpen             = new MemoryWatcher<int>(IntPtr.Zero); // 2 means that the esc menu is open
         private MemoryWatcher<int>   isPDAOpen              = new MemoryWatcher<int>(IntPtr.Zero); // true = 1051931443, false = 1056964608
         private MemoryWatcher<int>   isRocketLaunching      = new MemoryWatcher<int>(IntPtr.Zero); // 2018 = 1, 2023 = 256
-        private MemoryWatcher<int>   knownTechSize          = new MemoryWatcher<int>(IntPtr.Zero);
-        private MemoryWatcher<int>   inventorySize          = new MemoryWatcher<int>(IntPtr.Zero);
         private MemoryWatcher<int>   oxygen                 = new MemoryWatcher<int>(IntPtr.Zero);
         private MemoryWatcher<float> timeCured              = new MemoryWatcher<float>(IntPtr.Zero);
         private MemoryWatcher<float> walkDir                = new MemoryWatcher<float>(IntPtr.Zero);
@@ -67,24 +65,34 @@ namespace Livesplit.Subnautica
             this.settings = _settings;
             splitConditions = new Dictionary<SplitName, Func<bool>>
             {
-                { SplitName.RocketSplit, () => isRocketLaunching.Current != isRocketLaunching.Old && (isRocketLaunching.Current == 1 || isRocketLaunching.Current == 256) },
-                { SplitName.PCFTabletSplit, () => isAnimationPlaying.Current && !isAnimationPlaying.Old && IsWithinBounds(PCFEntrBounds) },
-                { SplitName.PortalSplit, () =>  !alreadySplit.Contains(SplitName.PortalSplit) && isPortalLoading.Current && !isPortalLoading.Old },
-                { SplitName.HatchSplit, () => isEggsHatching.Current && !isEggsHatching.Old },
-                { SplitName.CureSplit, () => timeCured.Current > timeCured.Old },
-                { SplitName.BoostersSplit, () => knownTechSize.Old == 224 && knownTechSize.Current == 225 },
-                { SplitName.FuelReservesSplit, () => knownTechSize.Old == 225 && knownTechSize.Current == 226 },
+                { SplitName.RocketSplit,          () => isRocketLaunching.Current != isRocketLaunching.Old && (isRocketLaunching.Current == 1 || isRocketLaunching.Current == 256) },
+                { SplitName.PCFTabletSplit,       () => isAnimationPlaying.Current && !isAnimationPlaying.Old && IsWithinBounds(PCFEntrBounds) },
+                { SplitName.PortalSplit,          () =>  !alreadySplit.Contains(SplitName.PortalSplit) && isPortalLoading.Current && !isPortalLoading.Old },
+                { SplitName.HatchSplit,           () => isEggsHatching.Current && !isEggsHatching.Old },
+                { SplitName.CureSplit,            () => timeCured.Current > timeCured.Old },
+                { SplitName.BoostersSplit,        () => !alreadySplit.Contains(SplitName.BoostersSplit) && knownTech.Contains(TechType.RocketStage1) },
+                { SplitName.FuelReservesSplit,    () => !alreadySplit.Contains(SplitName.FuelReservesSplit) && knownTech.Contains(TechType.RocketStage2) },
                 { SplitName.GunDeactivationSplit, () => !alreadySplit.Contains(SplitName.GunDeactivationSplit) && isAnimationPlaying.Current && !isAnimationPlaying.Old && IsWithinBounds(gunBounds) },
-                { SplitName.BaseDeathSplit, () => isDying.Current && !isDying.Old && (IsWithinBounds(deathClipABounds) || IsWithinBounds(deathClipCBounds)) },
+                { SplitName.BaseDeathSplit,       () => isDying.Current && !isDying.Old && (IsWithinBounds(deathClipABounds) || IsWithinBounds(deathClipCBounds)) },
                 { SplitName.LeaveKelpForestSplit, () => !alreadySplit.Contains(SplitName.LeaveKelpForestSplit) && IsWithinBounds(teethBounds) && IsItemInInventory(TechType.CreepvinePiece) },
-                { SplitName.FourToothSplit, () => !alreadySplit.Contains(SplitName.FourToothSplit) && IsItemInInventory(TechType.StalkerTooth, 4) },
-                { SplitName.AuroraDeathSplit, () => !alreadySplit.Contains(SplitName.AuroraDeathSplit) && isDying.Current && !isDying.Old && new[] { "crashedShip", "generatorRoom" }.Contains((string)biomeString)},
+                { SplitName.FourToothSplit,       () => !alreadySplit.Contains(SplitName.FourToothSplit) && IsItemInInventory(TechType.StalkerTooth, 4) },
+                { SplitName.AuroraDeathSplit,     () => !alreadySplit.Contains(SplitName.AuroraDeathSplit) && !alreadySplit.Contains(SplitName.AuroraBiomeSplit) && isDying.Current && !isDying.Old && new[] { "crashedShip", "generatorRoom" }.Contains(biomeString)},
+                { SplitName.RocketUnlockSplit,    () => !alreadySplit.Contains(SplitName.RocketUnlockSplit) && knownTech.Contains(TechType.RocketBase) },
                 { SplitName.MountainDescendSplit, () => !alreadySplit.Contains(SplitName.MountainDescendSplit) && IsWithinBounds(mountainBounds) },
-                { SplitName.IonDeathSplit, () => isDying.Current && !isDying.Old && new[] { "Precursor_LavaCastleBase", "PrecursorThermalRoom" }.Contains((string)biomeString) },
-                { SplitName.GunDeathSplit, () => isDying.Current && !isDying.Old && biomeString == "Precursor_Gun_ControlRoom" },
-                { SplitName.SparseDeathSplit, () => !alreadySplit.Contains(SplitName.SparseDeathSplit) && isDying.Current && !isDying.Old && new[] { "sparseReef", "seaTreaderPath", "seaTreaderPath_wreck" }.Contains((string)biomeString) },
-                { SplitName.SGLBaseSplit, () => !alreadySplit.Contains(SplitName.SGLBaseSplit) && isNotInWater.Current && !isNotInWater.Old && IsWithinBounds(SGLBaseBounds) },
-                { SplitName.SGLShallowsSplit, () => !alreadySplit.Contains(SplitName.SGLShallowsSplit) && !isNotInWater.Current && isAnimationPlaying.Current && IsWithinBounds(SGLBaseBounds) && IsItemInInventory(TechType.DoubleTank) },
+                { SplitName.IonDeathSplit,        () => isDying.Current && !isDying.Old && new[] { "Precursor_LavaCastleBase", "PrecursorThermalRoom" }.Contains(biomeString) },
+                { SplitName.GunDeathSplit,        () => isDying.Current && !isDying.Old && biomeString == "Precursor_Gun_ControlRoom" },
+                { SplitName.SparseDeathSplit,     () => !alreadySplit.Contains(SplitName.SparseDeathSplit) && isDying.Current && !isDying.Old && new[] { "sparseReef", "seaTreaderPath", "seaTreaderPath_wreck" }.Contains(biomeString) },
+                { SplitName.SGLBaseSplit,         () => !alreadySplit.Contains(SplitName.SGLBaseSplit) && isNotInWater.Current && !isNotInWater.Old && IsWithinBounds(SGLBaseBounds) },
+                { SplitName.SGLShallowsSplit,     () => !alreadySplit.Contains(SplitName.SGLShallowsSplit) && !isNotInWater.Current && isAnimationPlaying.Current && IsWithinBounds(SGLBaseBounds) && IsItemInInventory(TechType.DoubleTank) },
+                { SplitName.UpperTabletSplit,     () => GetItemCount(playerInventory, TechType.PrecursorKey_Purple) > GetItemCount(playerInventoryOld, TechType.PrecursorKey_Purple) && IsWithinBounds(upperTabletBounds) },
+                { SplitName.IonUnstuckSplit,      () => isAnimationPlaying.Current && !isAnimationPlaying.Old && biomeString == "PrecursorThermalRoom" },
+                { SplitName.PCFPoolSplit,         () => !alreadySplit.Contains(SplitName.PCFPoolSplit) && biomeString == "Prison_Aquarium_Upper" && biomeStringOld == "Prison_Moonpool" },
+                { SplitName.SparseBiomeSplit,     () => !alreadySplit.Contains(SplitName.SparseBiomeSplit) && new[] { "sparseReef", "seaTreaderPath", "seaTreaderPath_wreck" }.Contains(biomeStringOld) && new[] { "safeShallows", "kelpForest", "Lifepod" }.Contains(biomeString) },
+                { SplitName.AuroraBiomeSplit,     () => !alreadySplit.Contains(SplitName.AuroraBiomeSplit) && !alreadySplit.Contains(SplitName.AuroraDeathSplit) && new[] { "crashedShip", "generatorRoom" }.Contains(biomeStringOld) &&new[] { "safeShallows", "kelpForest", "Lifepod" }.Contains(biomeString) },
+                { SplitName.EyestalkSplit,        () => !alreadySplit.Contains(SplitName.EyestalkSplit) && IsWithinBounds(eyestalkBounds) },
+                { SplitName.IonUnlockSplit,       () => !alreadySplit.Contains(SplitName.IonUnlockSplit) && knownTech.Contains(TechType.PrecursorIonBattery) },
+                { SplitName.AuroraExitSplit,      () => !alreadySplit.Contains(SplitName.AuroraExitSplit) && IsWithinBounds(auroraExitBounds) && knownTech.Contains(TechType.RocketBase) },
+                { SplitName.HCGSparseSplit,       () => !alreadySplit.Contains(SplitName.HCGSparseSplit) && isAnimationPlaying.Current && !isAnimationPlaying.Old && (IsWithinBounds(deathClipABounds) || IsWithinBounds(deathClipCBounds)) && IsItemInInventory(TechType.AluminumOxide) },
             };
         }
 
@@ -101,7 +109,11 @@ namespace Livesplit.Subnautica
                 if (Needs())
                     isLoadingScreen.Update(game);
 
-                if (Needs(SplitName.PCFTabletSplit, SplitName.GunDeactivationSplit))
+                if (Needs(SplitName.PCFTabletSplit, 
+                          SplitName.GunDeactivationSplit,
+                          SplitName.SGLShallowsSplit,
+                          SplitName.IonUnstuckSplit,
+                          SplitName.HCGSparseSplit))
                     isAnimationPlaying.Update(game);
 
                 if (Needs(SplitName.PortalSplit))
@@ -110,14 +122,14 @@ namespace Livesplit.Subnautica
                 if (Needs(SplitName.HatchSplit))
                     isEggsHatching.Update(game);
 
-                if (Needs())
+                if (Needs(SplitName.SGLBaseSplit, SplitName.SGLShallowsSplit))
                     isNotInWater.Update(game);
 
                 if (Needs(SplitName.BaseDeathSplit,
                           SplitName.AuroraDeathSplit,
                           SplitName.IonDeathSplit,
-                          SplitName.GunDeathSplit,
-                          SplitName.SparseDeathSplit))
+                          SplitName.SparseDeathSplit,
+                          SplitName.GunDeathSplit))
                     isDying.Update(game);
 
                 if (Needs())
@@ -128,12 +140,6 @@ namespace Livesplit.Subnautica
 
                 if (Needs(SplitName.RocketSplit))
                     isRocketLaunching.Update(game);
-
-                if (Needs(SplitName.BoostersSplit, SplitName.FuelReservesSplit))
-                    knownTechSize.Update(game);
-
-                if (Needs())
-                    inventorySize.Update(game);
 
                 if (Needs())
                     oxygen.Update(game);
@@ -147,13 +153,23 @@ namespace Livesplit.Subnautica
                     strafeDir.Update(game);
                 }
 
-                if (Needs(SplitName.PCFTabletSplit, SplitName.GunDeactivationSplit))
+                if (Needs(SplitName.PCFTabletSplit, 
+                          SplitName.GunDeactivationSplit,
+                          SplitName.BaseDeathSplit,
+                          SplitName.LeaveKelpForestSplit,
+                          SplitName.MountainDescendSplit,
+                          SplitName.SGLBaseSplit,
+                          SplitName.SGLShallowsSplit,
+                          SplitName.UpperTabletSplit,
+                          SplitName.AuroraExitSplit,
+                          SplitName.HCGSparseSplit))
                     UpdatePosition();
 
                 if (Needs(SplitName.AuroraDeathSplit,
                           SplitName.IonDeathSplit,
                           SplitName.GunDeathSplit,
-                          SplitName.SparseDeathSplit))
+                          SplitName.SparseDeathSplit,
+                          SplitName.IonUnlockSplit))
                 {
                     biomePtr.Update(game);
                     biomeStringOld = biomeString;
@@ -163,8 +179,16 @@ namespace Livesplit.Subnautica
                 if (Needs(SplitName.LeaveKelpForestSplit,
                           SplitName.FourToothSplit,
                           SplitName.HCGSparseSplit,
+                          SplitName.HCGSparseSplit,
+                          SplitName.SGLShallowsSplit,
                           SplitName.HCGSparseSplit))
                     UpdateInventory();
+
+                if (Needs(SplitName.BoostersSplit,
+                          SplitName.FuelReservesSplit,
+                          SplitName.RocketUnlockSplit,
+                          SplitName.UpperTabletSplit))
+                    UpdateBlueprints();
             }
         }
         bool Needs(params SplitName[] required) => required.Any(r => settings.Splits.Contains(r));
@@ -226,8 +250,6 @@ namespace Livesplit.Subnautica
             DeepPointer fabiPtr;
             DeepPointer PDAPtr;
             DeepPointer rocketPtr;
-            DeepPointer techSizePtr;
-            DeepPointer invSizePtr;
             DeepPointer oxygenPtr;
             DeepPointer timeCuredPtr;
             DeepPointer walkDirPtr;
@@ -251,8 +273,6 @@ namespace Livesplit.Subnautica
                     fabiPtr = new DeepPointer("mono.dll", 0x296BC8, 0x20, 0xA58, 0x20);
                     PDAPtr = new DeepPointer("mono.dll", 0x2655E0, 0x40, 0x18, 0xA0, 0x920, 0x64);
                     rocketPtr = new DeepPointer("mono.dll", 0x27EAD8, 0x40, 0x70, 0x50, 0x90, 0x30, 0x8, 0x80);
-                    techSizePtr = new DeepPointer("mono.dll", 0x296BC8, 0x20, 0x928, 0x58, 0x38);
-                    invSizePtr = new DeepPointer("mono.dll", 0x2655E0, 0xA0, 0xAB0, 0x18, 0x30, 0x134);
                     oxygenPtr = new DeepPointer("Subnautica.exe", 0x142ADA8, 0x8, 0x10, 0x30, 0x30, 0x18, 0x28, 0x70);
                     timeCuredPtr = new DeepPointer("mono.dll", 0x2655E0, 0xA0, 0x598, 0x0, 0x18, 0x20, 0x898, 0x10, 0x20, 0x2B0);
                     walkDirPtr = new DeepPointer("Subnautica.exe", 0x142B8C8, 0x158, 0x40, 0xA0);
@@ -274,8 +294,7 @@ namespace Livesplit.Subnautica
                     dyingPtr = new DeepPointer("UnityPlayer.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x318, 0x28, 0x50);
                     fabiPtr = new DeepPointer("UnityPlayer.dll", 0x183BF48, 0x8, 0x10, 0x30, 0x30, 0x28, 0x128);
                     PDAPtr = new DeepPointer("mono-2.0-bdwgc.dll", 0x499C40, 0xE84);
-                    rocketPtr = new DeepPointer("UnityPlayer.dll", 0x17FC238, 0x10, 0x3C);
-                    invSizePtr = new DeepPointer("UnityPlayer.dll", 0x17FBE70, 0x8, 0x10, 0x30, 0x1A8, 0x28, 0x38, 0x94);
+                    rocketPtr = new DeepPointer("UnityPlayer.dll", 0x17FC238, 0x10, 0x3C);                    
                     timeCuredPtr = new DeepPointer("UnityPlayer.dll", 0x179B680, 0x88, 0xC0, 0x288, 0x30, 0x30, 0x38, 0x28, 0x18, 0x30C);
                     walkDirPtr = new DeepPointer("UnityPlayer.dll", 0x17FBC28, 0x30, 0x98);
                     strafePtr = new DeepPointer("UnityPlayer.dll", 0x17FBC28, 0x30, 0x150);
@@ -297,7 +316,6 @@ namespace Livesplit.Subnautica
             isDying = new MemoryWatcher<bool>(dyingPtr);
             isFabiOpen = new MemoryWatcher<int>(fabiPtr);
             isPDAOpen = new MemoryWatcher<int>(PDAPtr);
-            inventorySize = new MemoryWatcher<int>(invSizePtr);
             timeCured = new MemoryWatcher<float>(timeCuredPtr);
             walkDir = new MemoryWatcher<float>(walkDirPtr);
             strafeDir = new MemoryWatcher<float>(strafePtr);
@@ -436,115 +454,49 @@ namespace Livesplit.Subnautica
                     inv.Add(itemType, itemCount);
                 }
             }
+            playerInventoryOld = playerInventory;
             playerInventory = inv;
         }
-
         private bool IsItemInInventory(TechType techtype, int? count = null)
         {
             if (!playerInventory.TryGetValue(techtype, out int current))
                 return false;
             return count == null || current >= count.Value;
         }
-
-        /*private void GetInventory(object o)
+        private int GetItemCount(Dictionary<TechType, int> inv, TechType techtype)
         {
-            Dictionary<TechType, int> inv = new Dictionary<TechType, int>();
-            if (game != null)
-            {
-                inventoryDictionary.Update(game);
-                IntPtr startAddr = inventoryDictionary.Current;
-
-#if EXTRADBG
-                DateTime start = DateTime.Now;
-                WriteDebug("Getting inv from " + startAddr.ToString("X"));
-#endif
-
-                int size = game.ReadValue<int>(startAddr + 0x18);
-                //for Dec2021 & Mar2023 patches, the items start at 0x30 after the ptr
-                //                               and each take up 0x18.
-                //for Sept2018 patch, the items start at 0x20 after the ptr
-                // 					 and each take up 0x8.
-                int startOffset = gameVersion == GameVersion.Sept2018 ? 0x20 : 0x30;
-                int itemOffset = gameVersion == GameVersion.Sept2018 ? 0x8 : 0x18;
-
-                for (int i = 0; i < size; i++)
-                {
-                    IntPtr itemGroup = game.ReadPointer(startAddr + startOffset + (itemOffset * i));
-
-                    if (itemGroup != IntPtr.Zero)
-                    {
-                        TechType itemType = (TechType)game.ReadValue<int>(itemGroup + 0x18);
-
-                        IntPtr list = game.ReadPointer(itemGroup + 0x10);
-                        int itemCount = game.ReadValue<int>(list + 0x18);
-                        inv.Add(itemType, itemCount);
-
-#if EXTRADBG
-                        WriteDebug($"Inv contains: {itemCount} {itemType}");
-#endif
-                    }
-                }
-#if EXTRADBG
-                DateTime end = DateTime.Now;
-                TimeSpan time = end - start;
-                WriteDebug($"inv read took {time.Ticks / 1000000d}ms");
-                WriteDebug("end inv");
-#endif
-            }
-            else
-            {
-                WriteDebug("Game null in GetInventory");
-            }
-            Thread.Sleep(10);
-            playerInventoryOld = playerInventory;
-            playerInventory = inv;
+            if (!playerInventory.TryGetValue(techtype, out int current))
+                return 0;
+            return current;
         }
-        /*
-        private void GetBlueprints(object o)
+
+        private void UpdateBlueprints()
         {
             List<TechType> blueprints = new List<TechType>();
-            if (game != null)
+            if (game == null)
+                return;
+
+            knownTechPtr.Update(game);
+            IntPtr startAddr = knownTechPtr.Current;
+
+            int slotsOffset = gameVersion == GameVersion.Sept2018 ? 0x20 : 0x18;
+            IntPtr slots = game.ReadPointer(startAddr + slotsOffset);
+            int countOffset = gameVersion == GameVersion.Sept2018 ? 0x40 : 0x30;
+            int count = game.ReadValue<int>(startAddr + countOffset);
+
+            int slotBeginningOffset = gameVersion == GameVersion.Sept2018 ? 0x0 : 0x20;
+            int slotSize = gameVersion == GameVersion.Sept2018 ? 0x4 : 0xC;
+            for (int i = 0; i < count; i++)
             {
-                knownTechPtr.Update(game);
-                IntPtr startAddr = knownTechPtr.Current;
-#if EXTRADBG
-                DateTime start = DateTime.Now;
-                WriteDebug("Getting bps from " + startAddr.ToString("X"));
-#endif
-
-                int slotsOffset = gameVersion == GameVersion.Sept2018 ? 0x20 : 0x18;
-                IntPtr slots = game.ReadPointer(startAddr + slotsOffset);
-                int countOffset = gameVersion == GameVersion.Sept2018 ? 0x40 : 0x30;
-                int count = game.ReadValue<int>(startAddr + countOffset);
-
-                int slotBeginningOffset = gameVersion == GameVersion.Sept2018 ? 0x0 : 0x20;
-                int slotSize = gameVersion == GameVersion.Sept2018 ? 0x4 : 0xC;
-                for (int i = 0; i < count; i++)
+                int tech = game.ReadValue<int>(slots + slotBeginningOffset + slotSize * i);
+                if (tech > 0 && tech < 10005)
                 {
-                    int tech = game.ReadValue<int>(slots + slotBeginningOffset + slotSize * i);
-                    if (tech > 0 && tech < 10005)
-                    {
-                        TechType type = (TechType)tech;
-                        blueprints.Add(type);
-#if EXTRADBG
-                        WriteDebug($"knows: {type}");
-#endif
-                    }
+                    TechType type = (TechType)tech;
+                    blueprints.Add(type);
                 }
-#if EXTRADBG
-                DateTime end = DateTime.Now;
-                TimeSpan time = end - start;
-                WriteDebug($"bp read took {time.Ticks / 1000000d}ms");
-                WriteDebug("end BPs");
-#endif
             }
-            else
-            {
-                WriteDebug("Game null in GetBlueprints");
-            }
-            knownTechOld = knownTech;
             knownTech = blueprints;
-        }*/
+        }
         #endregion
 
         #region Bounds
