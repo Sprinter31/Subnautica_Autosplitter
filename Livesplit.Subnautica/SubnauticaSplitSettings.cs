@@ -104,7 +104,7 @@ namespace Livesplit.Subnautica
             EyestalkSplit,            
             [Description("Aurora Exit Split"), ToolTip("Splits when you exit the Aurora through the old patch hole after unlocking the rocket")]
             AuroraExitSplit,
-            [Description("HCG Sparse Split"), ToolTip("Splits when you enter the main base with a ruby (includes clip A and C)")]
+            [Description("HCG Sparse Split (includes clip A and C)"), ToolTip("Splits when you enter the main base with a ruby (includes clip A and C)")]
             HCGSparseSplit,
         }
         public class ToolTipAttribute : Attribute

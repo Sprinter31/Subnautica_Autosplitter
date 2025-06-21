@@ -46,17 +46,17 @@ namespace Livesplit.Subnautica
         private MemoryWatcher<float> posZ                   = new MemoryWatcher<float>(IntPtr.Zero);
 
         // pointer to the beginning of the string
-        private MemoryWatcher<IntPtr> biome                 = new MemoryWatcher<IntPtr>(IntPtr.Zero);
+        private MemoryWatcher<IntPtr> biomePtr = new MemoryWatcher<IntPtr>(IntPtr.Zero);
         private string biomeString;
         private string biomeStringOld;
 
-        private MemoryWatcher<IntPtr> inventoryDictionary   = new MemoryWatcher<IntPtr>(IntPtr.Zero);
+        private MemoryWatcher<IntPtr> inventoryDictionaryPtr = new MemoryWatcher<IntPtr>(IntPtr.Zero);
         private Dictionary<TechType, int> playerInventory;
         private Dictionary<TechType, int> playerInventoryOld;
 
-        /*private MemoryWatcher<IntPtr> knownTech            = new MemoryWatcher<IntPtr>(IntPtr.Zero);
+        private MemoryWatcher<IntPtr> knownTechPtr = new MemoryWatcher<IntPtr>(IntPtr.Zero);
         private List<TechType> knownTech;
-        private List<TechType> knownTechOld;*/
+        private List<TechType> knownTechOld;
         #endregion
 
         private bool pointersInitialized;
@@ -68,22 +68,23 @@ namespace Livesplit.Subnautica
             splitConditions = new Dictionary<SplitName, Func<bool>>
             {
                 { SplitName.RocketSplit, () => isRocketLaunching.Current != isRocketLaunching.Old && (isRocketLaunching.Current == 1 || isRocketLaunching.Current == 256) },
-                { SplitName.PCFTabletSplit, () => isAnimationPlaying.Current && !isAnimationPlaying.Old && isWithinBounds(PCFEntrBounds) },
+                { SplitName.PCFTabletSplit, () => isAnimationPlaying.Current && !isAnimationPlaying.Old && IsWithinBounds(PCFEntrBounds) },
                 { SplitName.PortalSplit, () =>  !alreadySplit.Contains(SplitName.PortalSplit) && isPortalLoading.Current && !isPortalLoading.Old },
                 { SplitName.HatchSplit, () => isEggsHatching.Current && !isEggsHatching.Old },
                 { SplitName.CureSplit, () => timeCured.Current > timeCured.Old },
                 { SplitName.BoostersSplit, () => knownTechSize.Old == 224 && knownTechSize.Current == 225 },
                 { SplitName.FuelReservesSplit, () => knownTechSize.Old == 225 && knownTechSize.Current == 226 },
-                { SplitName.GunDeactivationSplit, () => !alreadySplit.Contains(SplitName.GunDeactivationSplit) && isAnimationPlaying.Current && !isAnimationPlaying.Old && isWithinBounds(gunBounds) },
-                { SplitName.BaseDeathSplit, () => isDying.Current && !isDying.Old && (isWithinBounds(deathClipABounds) || isWithinBounds(deathClipCBounds)) },
-                { SplitName.LeaveKelpForestSplit, () => false },
-                { SplitName.FourToothSplit, () => false },
+                { SplitName.GunDeactivationSplit, () => !alreadySplit.Contains(SplitName.GunDeactivationSplit) && isAnimationPlaying.Current && !isAnimationPlaying.Old && IsWithinBounds(gunBounds) },
+                { SplitName.BaseDeathSplit, () => isDying.Current && !isDying.Old && (IsWithinBounds(deathClipABounds) || IsWithinBounds(deathClipCBounds)) },
+                { SplitName.LeaveKelpForestSplit, () => !alreadySplit.Contains(SplitName.LeaveKelpForestSplit) && IsWithinBounds(teethBounds) && IsItemInInventory(TechType.CreepvinePiece) },
+                { SplitName.FourToothSplit, () => !alreadySplit.Contains(SplitName.FourToothSplit) && IsItemInInventory(TechType.StalkerTooth, 4) },
                 { SplitName.AuroraDeathSplit, () => !alreadySplit.Contains(SplitName.AuroraDeathSplit) && isDying.Current && !isDying.Old && new[] { "crashedShip", "generatorRoom" }.Contains((string)biomeString)},
-                { SplitName.MountainDescendSplit, () => !alreadySplit.Contains(SplitName.MountainDescendSplit) && isWithinBounds(mountainBounds) },
+                { SplitName.MountainDescendSplit, () => !alreadySplit.Contains(SplitName.MountainDescendSplit) && IsWithinBounds(mountainBounds) },
                 { SplitName.IonDeathSplit, () => isDying.Current && !isDying.Old && new[] { "Precursor_LavaCastleBase", "PrecursorThermalRoom" }.Contains((string)biomeString) },
                 { SplitName.GunDeathSplit, () => isDying.Current && !isDying.Old && biomeString == "Precursor_Gun_ControlRoom" },
                 { SplitName.SparseDeathSplit, () => !alreadySplit.Contains(SplitName.SparseDeathSplit) && isDying.Current && !isDying.Old && new[] { "sparseReef", "seaTreaderPath", "seaTreaderPath_wreck" }.Contains((string)biomeString) },
-
+                { SplitName.SGLBaseSplit, () => !alreadySplit.Contains(SplitName.SGLBaseSplit) && isNotInWater.Current && !isNotInWater.Old && IsWithinBounds(SGLBaseBounds) },
+                { SplitName.SGLShallowsSplit, () => !alreadySplit.Contains(SplitName.SGLShallowsSplit) && !isNotInWater.Current && isAnimationPlaying.Current && IsWithinBounds(SGLBaseBounds) && IsItemInInventory(TechType.DoubleTank) },
             };
         }
 
@@ -154,10 +155,15 @@ namespace Livesplit.Subnautica
                           SplitName.GunDeathSplit,
                           SplitName.SparseDeathSplit))
                 {
-                    biome.Update(game);
+                    biomePtr.Update(game);
                     biomeStringOld = biomeString;
-                    biomeString = IntPtrToString(biome.Current + 0x14, 64).Trim(' ');
-                }                 
+                    biomeString = IntPtrToString(biomePtr.Current + 0x14, 64).Trim(' ');
+                }
+
+                if (Needs(SplitName.LeaveKelpForestSplit,
+                          SplitName.FourToothSplit,
+                          SplitName.HCGSparseSplit))
+                    UpdateInventory();
             }
         }
         bool Needs(params SplitName[] required) => required.Any(r => settings.Splits.Contains(r));
@@ -206,7 +212,6 @@ namespace Livesplit.Subnautica
                     break;
             }
         }
-
         
         private void InitPointers()
         {
@@ -298,8 +303,8 @@ namespace Livesplit.Subnautica
             this.posX = new MemoryWatcher<float>(posX);
             this.posY = new MemoryWatcher<float>(posY);
             this.posZ = new MemoryWatcher<float>(posZ);
-            biome = new MemoryWatcher<IntPtr>(biomePtr);
-            inventoryDictionary = new MemoryWatcher<IntPtr>(inventoryPtr);
+            this.biomePtr = new MemoryWatcher<IntPtr>(biomePtr);
+            inventoryDictionaryPtr = new MemoryWatcher<IntPtr>(inventoryPtr);
 
             WriteDebug("Pointers initialized");
 
@@ -383,16 +388,11 @@ namespace Livesplit.Subnautica
 
         #endregion Logic
 
-        private void WriteDebug(string message)
-        {
-            #if DEBUG
-            Debug.WriteLine($"[Subnautica Autosplitter] {message}");
-            #endif
-        }
+        
 
         #region World/Player Checks
 
-        bool isWithinBounds(float[] bounds)
+        private bool IsWithinBounds(float[] bounds)
         {
             float x = posX.Current;
             float y = posY.Current;
@@ -406,13 +406,53 @@ namespace Livesplit.Subnautica
             else return false;
         }
 
+        private void UpdateInventory()
+        {
+            Dictionary<TechType, int> inv = new Dictionary<TechType, int>();
+            if (game == null)
+                return;
+
+            inventoryDictionaryPtr.Update(game);
+            IntPtr startAddr = inventoryDictionaryPtr.Current;
+
+            int size = game.ReadValue<int>(startAddr + 0x18);
+            //for Dec2021 & Mar2023 patches, the items start at 0x30 after the ptr
+            //                               and each take up 0x18.
+            //for Sept2018 patch, the items start at 0x20 after the ptr
+            // 					 and each take up 0x8.
+            int startOffset = gameVersion == GameVersion.Sept2018 ? 0x20 : 0x30;
+            int itemOffset = gameVersion == GameVersion.Sept2018 ? 0x8 : 0x18;
+
+            for (int i = 0; i < size; i++)
+            {
+                IntPtr itemGroup = game.ReadPointer(startAddr + startOffset + (itemOffset * i));
+
+                if (itemGroup != IntPtr.Zero)
+                {
+                    TechType itemType = (TechType)game.ReadValue<int>(itemGroup + 0x18);
+                    IntPtr list = game.ReadPointer(itemGroup + 0x10);
+                    int itemCount = game.ReadValue<int>(list + 0x18);
+
+                    inv.Add(itemType, itemCount);
+                }
+            }
+            playerInventory = inv;
+        }
+
+        private bool IsItemInInventory(TechType techtype, int? count = null)
+        {
+            if (!playerInventory.TryGetValue(techtype, out int current))
+                return false;
+            return count == null || current >= count.Value;
+        }
+
         /*private void GetInventory(object o)
         {
             Dictionary<TechType, int> inv = new Dictionary<TechType, int>();
             if (game != null)
             {
-                inventoryDictionaryPtr.Update(game);
-                IntPtr startAddr = inventoryDictionaryPtr.Current;
+                inventoryDictionary.Update(game);
+                IntPtr startAddr = inventoryDictionary.Current;
 
 #if EXTRADBG
                 DateTime start = DateTime.Now;
@@ -434,7 +474,6 @@ namespace Livesplit.Subnautica
                     if (itemGroup != IntPtr.Zero)
                     {
                         TechType itemType = (TechType)game.ReadValue<int>(itemGroup + 0x18);
-                        WriteDebug((itemGroup + 0x18).ToString("X"));
 
                         IntPtr list = game.ReadPointer(itemGroup + 0x10);
                         int itemCount = game.ReadValue<int>(list + 0x18);
@@ -460,7 +499,7 @@ namespace Livesplit.Subnautica
             playerInventoryOld = playerInventory;
             playerInventory = inv;
         }
-
+        /*
         private void GetBlueprints(object o)
         {
             List<TechType> blueprints = new List<TechType>();
@@ -528,6 +567,12 @@ namespace Livesplit.Subnautica
         {
             Sept2018,
             Mar2023
+        }
+        private void WriteDebug(string message)
+        {
+#if DEBUG
+            Debug.WriteLine($"[Subnautica Autosplitter] {message}");
+#endif
         }
     }
 }
