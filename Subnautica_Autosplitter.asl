@@ -32,7 +32,7 @@ state("Subnautica", "March 2023")
     bool isPortalLoading:      "UnityPlayer.dll", 0x17FBE70, 0x10, 0x10, 0x30, 0x1F8, 0x28, 0x28; //true in menu
     bool isEggsHatching:        "fmodstudio.dll", 0x2CED70, 0x78, 0x18, 0x190, 0x4D8, 0xB0, 0x20, 0x28;
     bool isNotInWater:         "UnityPlayer.dll", 0x18AB130, 0x48, 0x0, 0x68;
-    int isFabiMenu:         "mono-2.0-bdwgc.dll", 0x499C40, 0xE84;// not working
+    int isFabiMenu:            "UnityPlayer.dll", 0x183BF48, 0x8, 0x10, 0x30, 0x30, 0x28, 0x128;
     int isPDAOpen:          "mono-2.0-bdwgc.dll", 0x499C40, 0xE84; // true = 1051931443, false = 1056964608    
     int isCured:                "fmodstudio.dll", 0x2CED70, 0x78, 0x18, 0x190, 0x550, 0xB8, 0x20, 0x58;   
     int isRocketGo:            "UnityPlayer.dll", 0x17FC238, 0x10, 0x3C; //256 = true
