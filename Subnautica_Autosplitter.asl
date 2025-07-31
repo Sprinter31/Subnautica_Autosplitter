@@ -862,7 +862,7 @@ isLoading
             }
             else
             {
-                vars.counter = 0;
+                vars.counter = 24;
             }
         }
 
