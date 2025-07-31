@@ -1,3 +1,5 @@
+// it's acc over for this code
+
 state("Subnautica", "September 2018")
 {
     //int gameMode:                          0x149E490, 0x28, 0x0, 0x10, 0xA0, 0x350, 0x20; //0-3, in menu it's 0 and also randomly changes to 0 when loading
