@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <updates>
+    <update version="2.3.5.1">
+		<files>
+			<file path="Components/LiveSplit.Subnautica.dll" status="changed"/>
+		</files>
+		<changelog>
+			<change>Add Enter Base Prefabricated Split</change>
+            <change>Add Builder Loop Lifepod Return Prefabricated Split</change>
+            <change>Rework Throw Flare to Prevent Double Splitting</change>
+		</changelog>
+	</update>
     <update version="2.3.5.0">
 		<files>
 			<file path="Components/LiveSplit.Subnautica.dll" status="changed"/>

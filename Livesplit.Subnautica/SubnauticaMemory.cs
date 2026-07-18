@@ -58,6 +58,7 @@ namespace LiveSplit.Subnautica
 
         public Pointer<IntPtr> MainMenu;
         public Pointer<IntPtr> CraftingMenu;
+        public Pointer<IntPtr> CurrentSub;
         private Pointer<IntPtr> knowntechPtr;
         private Pointer<IntPtr> pdaMappingPtr;
         private Pointer<IntPtr> goalsPtr;
@@ -67,6 +68,7 @@ namespace LiveSplit.Subnautica
         public Pointer<int> GameMode;
         public Pointer<int> CraftedNode;
         public Pointer<int> PlayerMode;
+        public Pointer<bool> CurrentSubIsBase;
 
         public StringPointer BiomeString;
         public StringPointer ActiveToolName;
@@ -224,6 +226,7 @@ namespace LiveSplit.Subnautica
                 //{ SplitName.ChairSplit,           () => (PlayerMode)PlayerMode.New == LiveSplit.Subnautica.PlayerMode.Sitting && PlayerMode.Changed },
                 { SplitName.ThrowFlareSplit,      () => IsFlareThrowDrop() },
                 { SplitName.BuilderLoopLifepodReturnSplit, () => IsBuilderLoopLifepodReturn() },
+                { SplitName.EnterBaseSplit,       () => CurrentSub.New != IntPtr.Zero && CurrentSub.Old == IntPtr.Zero && CurrentSubIsBase.New },
             };
         }
 
@@ -287,6 +290,11 @@ namespace LiveSplit.Subnautica
             #region Is Animation Playing
             IsAnimationPlaying = ptrFactory.Make<bool>("Player", "main", "_cinematicModeActive");
             #endregion Is Animation Playing
+            #region Current Base
+            CurrentSub = ptrFactory.Make<IntPtr>("Player", "main", "_currentSub");
+            int off_subRootIsBase = mono.GetFieldOffset(mono.FindClass("SubRoot"), "isBase");
+            CurrentSubIsBase = ptrFactory.Make<bool>(CurrentSub, off_subRootIsBase);
+            #endregion Current Base
             #region IsLoadingScreenShowing
             Pointer<IntPtr> uGUI_SceneLoadingPtr = ptrFactory.Make<IntPtr>("uGUI", "_main", "loading");
             int off_isLoading = mono.GetFieldOffset(mono.FindClass("uGUI_SceneLoading"), "isLoading");
@@ -537,6 +545,12 @@ namespace LiveSplit.Subnautica
 
             if (Needs(SplitName.SGLBaseSplit, SplitName.SGLShallowsSplit))
                 isNotInWater.Update(game.Process);
+
+            if (Needs(SplitName.EnterBaseSplit))
+            {
+                CurrentSub.ForceUpdate();
+                CurrentSubIsBase.ForceUpdate();
+            }
 
             if (Needs(SplitName.PCFTabletSplit,
                       SplitName.GunDeactivationSplit,
