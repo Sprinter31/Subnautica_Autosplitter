@@ -223,6 +223,7 @@ namespace LiveSplit.Subnautica
                 { SplitName.FullInventorySplit,   () => PlayerInventory.Select(kvp => kvp.Value * TechTypeItemSlots.GetSlotCount(kvp.Key)).Sum() == 48 && PlayerInventoryOld.Select(kvp => kvp.Value * TechTypeItemSlots.GetSlotCount(kvp.Key)).Sum() != 48 },
                 //{ SplitName.ChairSplit,           () => (PlayerMode)PlayerMode.New == LiveSplit.Subnautica.PlayerMode.Sitting && PlayerMode.Changed },
                 { SplitName.ThrowFlareSplit,      () => IsFlareThrowDrop() },
+                { SplitName.BuilderLoopLifepodReturnSplit, () => IsBuilderLoopLifepodReturn() },
             };
         }
 
@@ -553,6 +554,7 @@ namespace LiveSplit.Subnautica
             if (Needs(SplitName.Inventory,
                       SplitName.FullInventorySplit,
                       SplitName.ThrowFlareSplit,
+                      SplitName.BuilderLoopLifepodReturnSplit,
                       SplitName.LeaveKelpForestSplit,
                       SplitName.FourToothSplit,
                       SplitName.HCGSparseSplit,
@@ -737,6 +739,19 @@ namespace LiveSplit.Subnautica
                 return false;
 
             return (LiveSplit.Subnautica.PDATab)PDATab.New == LiveSplit.Subnautica.PDATab.Inventory;
+        }
+
+        private bool IsBuilderLoopLifepodReturn()
+        {
+            if (!IsAnimationPlaying.New || IsAnimationPlaying.Old)
+                return false;
+
+            if (!string.Equals(BiomeString.New, "safeShallows", StringComparison.OrdinalIgnoreCase))
+                return false;
+
+            return GetPlayerItemCount(TechType.Gold) >= 1
+                && GetPlayerItemCount(TechType.Silver) >= 2
+                && GetPlayerItemCount(TechType.JeweledDiskPiece) >= 3;
         }
 
         private void UpdateEncyclopedia()
