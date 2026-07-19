@@ -199,6 +199,7 @@ namespace LiveSplit.Subnautica
         public override void OnReset()
         {
             alreadySplit.Clear();
+            memory.ResetRunState();
         }
 
         private void UpdateExploTime()

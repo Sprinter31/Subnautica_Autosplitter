@@ -149,7 +149,7 @@ namespace LiveSplit.Subnautica
         SGLShallowsSplit,
         [Description("Glitchless Base Split"), ToolTip("Splits when you enter the main base near the seaglide wreck for the first time")]
         SGLBaseSplit,
-        [Description("Base Death Split (includes Clip A and Clip C)"), ToolTip("Splits when you die next to the main base (includes Clip A and Clip C)")]
+        [Description("Base Death Split"), ToolTip("After exiting a base, splits when you die in the Safe Shallows with a knife held and at least one Acid Mushroom Spore")]
         BaseDeathSplit,
         [Description("Gun Death"), ToolTip("Splits when you die in the gun room")]
         GunDeathSplit,
@@ -189,7 +189,7 @@ namespace LiveSplit.Subnautica
         FullInventorySplit,
         [Description("Throw Flare"), ToolTip("Splits when you throw a flare")]
         ThrowFlareSplit,
-        [Description("Builder Loop Lifepod Return"), ToolTip("Splits when you Return to the Lifepod after the Builder Tool Resouce Collection Loop with a minimum of 1 Gold, 2 Silver and 3 Table Coral")]
+        [Description("Builder Loop Lifepod Return"), ToolTip("Splits when you return to the Lifepod after the Builder Tool Resource Collection Loop with 3 or 4 Table Coral Samples")]
         BuilderLoopLifepodReturnSplit,
         [Description("Enter Base"), ToolTip("Splits when you enter a constructed base")]
         EnterBaseSplit,

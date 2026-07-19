@@ -40,6 +40,7 @@ namespace LiveSplit.Subnautica
         readonly Dictionary<TechType, InvChangeInfo> curPickUpCounts = new Dictionary<TechType, InvChangeInfo>();
         readonly Dictionary<TechType, InvChangeInfo> curDropCounts = new Dictionary<TechType, InvChangeInfo>();
         private Dictionary<TechType, int> currentInventoryChanges = new Dictionary<TechType, int>();
+        private bool baseDeathArmed;
 
         #region Pointer stuff
         public Pointer<bool> IsIntroCinematicActive; // true in main menu sometimes
@@ -139,6 +140,7 @@ namespace LiveSplit.Subnautica
             };
 
             OnExit += () => {
+                baseDeathArmed = false;
                 if (unityTask != null)
                 {
                     pointersInitialized = false;
@@ -201,7 +203,7 @@ namespace LiveSplit.Subnautica
                 { SplitName.BoostersSplit,        () => KnownTech.Contains(TechType.RocketStage2) && !KnownTechOld.Contains(TechType.RocketStage2) },
                 { SplitName.FuelReservesSplit,    () => KnownTech.Contains(TechType.RocketStage3) && !KnownTechOld.Contains(TechType.RocketStage3) },
                 { SplitName.GunDeactivationSplit, () => IsAnimationPlaying.New && !IsAnimationPlaying.Old && IsWithinBounds(gunBounds) },
-                { SplitName.BaseDeathSplit,       () => Health.New <= 0 && Health.Old > 0 && (IsWithinBounds(deathClipABounds) || IsWithinBounds(deathClipCBounds)) },
+                { SplitName.BaseDeathSplit,       () => IsArmedBaseDeath() },
                 { SplitName.LeaveKelpForestSplit, () => IsWithinBounds(teethBounds) && !IsWithinBounds(teethBounds, old: true) && PlayerInventory.ContainsKey(TechType.CreepvinePiece) },
                 { SplitName.FourToothSplit,       () => PlayerInventory.GetCount(TechType.StalkerTooth) == 4 && PlayerInventoryOld.GetCount(TechType.StalkerTooth) != 4 },
                 { SplitName.AuroraDeathSplit,     () => !component.alreadySplit.Select(s => s.SplitName).Contains(SplitName.AuroraBiomeSplit) && Health.New <= 0 && Health.Old > 0 && new[] { "crashedShip", "generatorRoom" }.Contains(BiomeString.New)},
@@ -225,7 +227,7 @@ namespace LiveSplit.Subnautica
                 { SplitName.FullInventorySplit,   () => PlayerInventory.Select(kvp => kvp.Value * TechTypeItemSlots.GetSlotCount(kvp.Key)).Sum() == 48 && PlayerInventoryOld.Select(kvp => kvp.Value * TechTypeItemSlots.GetSlotCount(kvp.Key)).Sum() != 48 },
                 //{ SplitName.ChairSplit,           () => (PlayerMode)PlayerMode.New == LiveSplit.Subnautica.PlayerMode.Sitting && PlayerMode.Changed },
                 { SplitName.ThrowFlareSplit,      () => IsFlareThrowDrop() },
-                { SplitName.BuilderLoopLifepodReturnSplit, () => IsAnimationPlaying.New && !IsAnimationPlaying.Old && string.Equals(BiomeString.New, "safeShallows", StringComparison.OrdinalIgnoreCase) && GetPlayerItemCount(TechType.Gold) >= 1 && GetPlayerItemCount(TechType.Silver) >= 2 && GetPlayerItemCount(TechType.JeweledDiskPiece) >= 3 && GetPlayerItemCount(TechType.JeweledDiskPiece) < 8 },
+                { SplitName.BuilderLoopLifepodReturnSplit, () => IsAnimationPlaying.New && !IsAnimationPlaying.Old && string.Equals(BiomeString.New, "safeShallows", StringComparison.OrdinalIgnoreCase) && GetPlayerItemCount(TechType.JeweledDiskPiece) >= 3 && GetPlayerItemCount(TechType.JeweledDiskPiece) <= 4 },
                 { SplitName.EnterBaseSplit,       () => CurrentSub.New != IntPtr.Zero && CurrentSub.Old == IntPtr.Zero && CurrentSubIsBase.New },
             };
         }
@@ -242,7 +244,10 @@ namespace LiveSplit.Subnautica
 
             isInMainMenu = IsInMainMenu();
             if (isInMainMenu)
+            {
                 startedTimerBefore = false;
+                baseDeathArmed = false;
+            }
 
             return true;
         }
@@ -546,10 +551,19 @@ namespace LiveSplit.Subnautica
             if (Needs(SplitName.SGLBaseSplit, SplitName.SGLShallowsSplit))
                 isNotInWater.Update(game.Process);
 
-            if (Needs(SplitName.EnterBaseSplit))
+            if (Needs(SplitName.EnterBaseSplit, SplitName.BaseDeathSplit))
             {
                 CurrentSub.ForceUpdate();
                 CurrentSubIsBase.ForceUpdate();
+
+                if (Needs(SplitName.BaseDeathSplit)
+                    && CurrentSub.New == IntPtr.Zero
+                    && CurrentSub.Old != IntPtr.Zero
+                    && CurrentSubIsBase.Old)
+                {
+                    baseDeathArmed = true;
+                    logger.Log("Base Death armed after exiting a base.");
+                }
             }
 
             if (Needs(SplitName.PCFTabletSplit,
@@ -568,6 +582,7 @@ namespace LiveSplit.Subnautica
             if (Needs(SplitName.Inventory,
                       SplitName.FullInventorySplit,
                       SplitName.ThrowFlareSplit,
+                      SplitName.BaseDeathSplit,
                       SplitName.BuilderLoopLifepodReturnSplit,
                       SplitName.LeaveKelpForestSplit,
                       SplitName.FourToothSplit,
@@ -753,6 +768,29 @@ namespace LiveSplit.Subnautica
                 return false;
 
             return (LiveSplit.Subnautica.PDATab)PDATab.New == LiveSplit.Subnautica.PDATab.Inventory;
+        }
+
+        private bool IsArmedBaseDeath()
+        {
+            bool knifeHeldOrWasHeld = string.Equals(ActiveToolName.New, "knife", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(ActiveToolName.Old, "knife", StringComparison.OrdinalIgnoreCase);
+
+            bool shouldSplit = baseDeathArmed
+                && Health.New <= 0
+                && Health.Old > 0
+                && string.Equals(BiomeString.New, "safeShallows", StringComparison.OrdinalIgnoreCase)
+                && GetPlayerItemCount(TechType.AcidMushroomSpore) >= 1
+                && knifeHeldOrWasHeld;
+
+            if (shouldSplit)
+                baseDeathArmed = false;
+
+            return shouldSplit;
+        }
+
+        public void ResetRunState()
+        {
+            baseDeathArmed = false;
         }
 
 
@@ -1177,8 +1215,6 @@ namespace LiveSplit.Subnautica
         private readonly float[] gunBounds = { 359f, 365f, -75f, -66f, 1079f, 1085f };
         private readonly float[] upperTabletBounds = { 380f, 386f, 10f, 30f, 1084f, 1090f };
         private readonly float[] SGLBaseBounds = { 20f, 80f, -45f, -17f, 290f, 360f };
-        private readonly float[] deathClipABounds = { 33f, 65f, -20f, -8f, 118f, 96f };
-        private readonly float[] deathClipCBounds = { -155f, -133f, -20f, -10f, 73f, 96f };
         private readonly float[] enterClipABounds = { 48f, 55f, -20f, -5f, 106f, 111f };
         private readonly float[] enterClipCBounds = { -144f, -132f, -20f, -5f, 78f, 90f };
         #endregion
