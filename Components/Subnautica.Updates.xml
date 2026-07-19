@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <updates>
+    <update version="2.3.5.2">
+		<files>
+			<file path="Components/LiveSplit.Subnautica.dll" status="changed"/>
+		</files>
+		<changelog>
+			<change>Generalize Base Death Split for Safe Shallows base locations</change>
+            <change>Refine Builder Loop Lifepod Return inventory requirements</change>
+		</changelog>
+	</update>
     <update version="2.3.5.1">
 		<files>
 			<file path="Components/LiveSplit.Subnautica.dll" status="changed"/>
