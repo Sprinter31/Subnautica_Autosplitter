@@ -765,7 +765,8 @@ namespace LiveSplit.Subnautica
 
             return GetPlayerItemCount(TechType.Gold) >= 1
                 && GetPlayerItemCount(TechType.Silver) >= 2
-                && GetPlayerItemCount(TechType.JeweledDiskPiece) >= 3;
+                && GetPlayerItemCount(TechType.JeweledDiskPiece) >= 3
+                && GetPlayerItemCount(TechType.JeweledDiskPiece) < 8;
         }
 
         private void UpdateEncyclopedia()
