@@ -33,7 +33,7 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("2.3.5.2")]
-[assembly: AssemblyFileVersion("2.3.5.2")]
+[assembly: AssemblyVersion("2.3.5.3")]
+[assembly: AssemblyFileVersion("2.3.5.3")]
 
 [assembly: ComponentFactory(typeof(Factory))]

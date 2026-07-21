@@ -8,3 +8,5 @@ Livesplit.Subnautica/External/
 *.suo
 *.userosscache
 *.sln.docstates
+BuildAutosplitter.ps1
+ForceBuildAutosplitter.ps1

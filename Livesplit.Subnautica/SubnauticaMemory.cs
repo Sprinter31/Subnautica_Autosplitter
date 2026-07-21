@@ -210,8 +210,7 @@ namespace LiveSplit.Subnautica
                 { SplitName.IonDeathSplit,        () => Health.New <= 0 && Health.Old > 0 && new[] { "Precursor_LavaCastleBase", "PrecursorThermalRoom" }.Contains(BiomeString.New) },
                 { SplitName.GunDeathSplit,        () => Health.New <= 0 && Health.Old > 0 && BiomeString.New == "Precursor_Gun_ControlRoom" },
                 { SplitName.SparseDeathSplit,     () => Health.New <= 0 && Health.Old > 0 && new[] { "sparseReef", "seaTreaderPath", "seaTreaderPath_wreck" }.Contains(BiomeString.New) },
-                { SplitName.SGLBaseSplit,         () => isNotInWater.Current && !isNotInWater.Old && IsWithinBounds(SGLBaseBounds) },
-                { SplitName.SGLShallowsSplit,     () => !isNotInWater.Current && IsAnimationPlaying.New && IsWithinBounds(SGLBaseBounds) && PlayerInventory.ContainsKey(TechType.DoubleTank) },
+                { SplitName.SGLShallowsSplit,     () => CurrentSub.Old != IntPtr.Zero && CurrentSub.New == IntPtr.Zero && CurrentSubIsBase.Old && GetPlayerItemCount(TechType.JeweledDiskPiece) >= 1 && GetPlayerItemCount(TechType.CrashPowder) >= 1 && GetPlayerItemCount(TechType.Battery) >= 1 && (GetPlayerItemCount(TechType.FiberMesh) >= 2 || GetPlayerItemCount(TechType.FirstAidKit) >= 2) },
                 { SplitName.UpperTabletSplit,     () => PlayerInventory.GetCount(TechType.PrecursorKey_Purple) > PlayerInventoryOld.GetCount(TechType.PrecursorKey_Purple) && IsWithinBounds(upperTabletBounds) },
                 { SplitName.IonUnstuckSplit,      () => IsAnimationPlaying.New && !IsAnimationPlaying.Old && BiomeString.New == "PrecursorThermalRoom" },
                 { SplitName.PCFPoolSplit,         () => BiomeString.New == "Prison_Aquarium_Upper" && BiomeString.Old == "Prison_Moonpool" },
@@ -227,6 +226,7 @@ namespace LiveSplit.Subnautica
                 { SplitName.ThrowFlareSplit,      () => IsFlareThrowDrop() },
                 { SplitName.BuilderLoopLifepodReturnSplit, () => IsAnimationPlaying.New && !IsAnimationPlaying.Old && string.Equals(BiomeString.New, "safeShallows", StringComparison.OrdinalIgnoreCase) && GetPlayerItemCount(TechType.JeweledDiskPiece) >= 3 && GetPlayerItemCount(TechType.JeweledDiskPiece) <= 4 && GetPlayerItemCount(TechType.Builder) == 0 },
                 { SplitName.EnterBaseSplit,       () => CurrentSub.New != IntPtr.Zero && CurrentSub.Old == IntPtr.Zero && CurrentSubIsBase.New },
+                { SplitName.ExitBaseSplit,        () => CurrentSub.Old != IntPtr.Zero && CurrentSub.New == IntPtr.Zero && CurrentSubIsBase.Old },
             };
         }
 
@@ -543,10 +543,7 @@ namespace LiveSplit.Subnautica
             if (Needs(SplitName.HatchSplit))
                 isEggsHatching.Update(game.Process);
 
-            if (Needs(SplitName.SGLBaseSplit, SplitName.SGLShallowsSplit))
-                isNotInWater.Update(game.Process);
-
-            if (Needs(SplitName.EnterBaseSplit))
+            if (Needs(SplitName.EnterBaseSplit, SplitName.ExitBaseSplit, SplitName.SGLShallowsSplit))
             {
                 CurrentSub.ForceUpdate();
                 CurrentSubIsBase.ForceUpdate();
@@ -556,8 +553,6 @@ namespace LiveSplit.Subnautica
                       SplitName.GunDeactivationSplit,
                       SplitName.LeaveKelpForestSplit,
                       SplitName.MountainDescendSplit,
-                      SplitName.SGLBaseSplit,
-                      SplitName.SGLShallowsSplit,
                       SplitName.UpperTabletSplit,
                       SplitName.AuroraExitSplit,
                       SplitName.HCGSparseSplit) ||
@@ -1175,7 +1170,6 @@ namespace LiveSplit.Subnautica
         private readonly float[] portalBounds = { 240f, 250f, -1590f, -1580f, -2000f, 2000f };
         private readonly float[] gunBounds = { 359f, 365f, -75f, -66f, 1079f, 1085f };
         private readonly float[] upperTabletBounds = { 380f, 386f, 10f, 30f, 1084f, 1090f };
-        private readonly float[] SGLBaseBounds = { 20f, 80f, -45f, -17f, 290f, 360f };
         private readonly float[] enterClipABounds = { 48f, 55f, -20f, -5f, 106f, 111f };
         private readonly float[] enterClipCBounds = { -144f, -132f, -20f, -5f, 78f, 90f };
         #endregion
