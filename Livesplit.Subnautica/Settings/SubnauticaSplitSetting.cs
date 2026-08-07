@@ -189,6 +189,8 @@ namespace LiveSplit.Subnautica
         FullInventorySplit,
         [Description("Throw Flare"), ToolTip("Splits when you throw a flare")]
         ThrowFlareSplit,
+        [Description("Builder Loop Lifepod Return"), ToolTip("Splits when you return to the Lifepod with 3 or 4 Table Coral Samples and no Builder Tool in your inventory")]
+        BuilderLoopLifepodReturnSplit,
     }
     public class ToolTipAttribute : Attribute
     {

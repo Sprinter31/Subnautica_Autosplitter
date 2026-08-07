@@ -226,6 +226,7 @@ namespace LiveSplit.Subnautica
                 { SplitName.FullInventorySplit,   () => PlayerInventory.Select(kvp => kvp.Value * TechTypeItemSlots.GetSlotCount(kvp.Key)).Sum() == 48 && PlayerInventoryOld.Select(kvp => kvp.Value * TechTypeItemSlots.GetSlotCount(kvp.Key)).Sum() != 48 },
                 //{ SplitName.ChairSplit,           () => (PlayerMode)PlayerMode.New == LiveSplit.Subnautica.PlayerMode.Sitting && PlayerMode.Changed },
                 { SplitName.ThrowFlareSplit,      () => IsFlareThrowDrop() },
+                { SplitName.BuilderLoopLifepodReturnSplit, () => IsAnimationPlaying.New && !IsAnimationPlaying.Old && BiomeString.New == "safeShallows" && GetPlayerItemCount(TechType.JeweledDiskPiece) >= 3 && GetPlayerItemCount(TechType.JeweledDiskPiece) <= 4 && GetPlayerItemCount(TechType.Builder) == 0 },
             };
         }
 
@@ -566,7 +567,8 @@ namespace LiveSplit.Subnautica
                       SplitName.FourToothSplit,
                       SplitName.HCGSparseSplit,
                       SplitName.SGLShallowsSplit,
-                      SplitName.UpperTabletSplit))
+                      SplitName.UpperTabletSplit,
+                      SplitName.BuilderLoopLifepodReturnSplit))
                 UpdateInventory();
 
             if (Needs(SplitName.Blueprint, 
