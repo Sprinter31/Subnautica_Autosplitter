@@ -53,6 +53,7 @@ namespace LiveSplit.Subnautica
         public Pointer<bool> RadiationFixed;        
         public Pointer<bool> IsPlayerJumping;   
         public Pointer<bool> IsDying;
+        public Pointer<bool> CurrentSubIsBase;
 
         public Pointer<float> TimeCured;
         public Pointer<float> Health;
@@ -60,6 +61,7 @@ namespace LiveSplit.Subnautica
         public Pointer<float> TimeToStartWarning;
         public Pointer<float> TimeOfLastToolUseAnim;
 
+        public Pointer<IntPtr> CurrentSub;
         public Pointer<IntPtr> MainMenu;
         public Pointer<IntPtr> CraftingMenu;
         private Pointer<IntPtr> knowntechPtr;
@@ -70,7 +72,7 @@ namespace LiveSplit.Subnautica
         public Pointer<int> GameMode;
         public Pointer<int> CraftedNode;
         public Pointer<int> PlayerMode;
-
+        
         public StringPointer BiomeString;
         public StringPointer ActiveToolName;
 
@@ -226,6 +228,8 @@ namespace LiveSplit.Subnautica
                 { SplitName.FullInventorySplit,   () => PlayerInventory.Select(kvp => kvp.Value * TechTypeItemSlots.GetSlotCount(kvp.Key)).Sum() == 48 && PlayerInventoryOld.Select(kvp => kvp.Value * TechTypeItemSlots.GetSlotCount(kvp.Key)).Sum() != 48 },
                 //{ SplitName.ChairSplit,           () => (PlayerMode)PlayerMode.New == LiveSplit.Subnautica.PlayerMode.Sitting && PlayerMode.Changed },
                 { SplitName.ThrowFlareSplit,      () => IsFlareThrowDrop() },
+                { SplitName.EnterBaseSplit,       () => CurrentSub.New != IntPtr.Zero && CurrentSub.Old == IntPtr.Zero && CurrentSubIsBase.New },
+                { SplitName.ExitBaseSplit,        () => CurrentSub.Old != IntPtr.Zero && CurrentSub.New == IntPtr.Zero && CurrentSubIsBase.Old },
             };
         }
 
@@ -289,6 +293,11 @@ namespace LiveSplit.Subnautica
             #region Is Animation Playing
             IsAnimationPlaying = ptrFactory.Make<bool>("Player", "main", "_cinematicModeActive");
             #endregion Is Animation Playing
+            #region Current Sub
+            CurrentSub = ptrFactory.Make<IntPtr>("Player", "main", "_currentSub");
+            int off_subRootIsBase = mono.GetFieldOffset(mono.FindClass("SubRoot"), "isBase");
+            CurrentSubIsBase = ptrFactory.Make<bool>(CurrentSub, off_subRootIsBase);
+            #endregion Current Sub
             #region IsLoadingScreenShowing
             Pointer<IntPtr> uGUI_SceneLoadingPtr = ptrFactory.Make<IntPtr>("uGUI", "_main", "loading");
             int off_isLoading = mono.GetFieldOffset(mono.FindClass("uGUI_SceneLoading"), "isLoading");
@@ -539,6 +548,12 @@ namespace LiveSplit.Subnautica
 
             if (Needs(SplitName.HatchSplit))
                 isEggsHatching.Update(game.Process);
+           
+            if (Needs(SplitName.EnterBaseSplit, SplitName.ExitBaseSplit))
+            {
+                CurrentSub.ForceUpdate();
+                CurrentSubIsBase.ForceUpdate();
+            }
 
             if (Needs(SplitName.SGLBaseSplit, SplitName.SGLShallowsSplit))
                 isNotInWater.Update(game.Process);
