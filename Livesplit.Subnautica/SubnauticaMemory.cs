@@ -40,9 +40,6 @@ namespace LiveSplit.Subnautica
         readonly Dictionary<TechType, InvChangeInfo> curPickUpCounts = new Dictionary<TechType, InvChangeInfo>();
         readonly Dictionary<TechType, InvChangeInfo> curDropCounts = new Dictionary<TechType, InvChangeInfo>();
         private Dictionary<TechType, int> currentInventoryChanges = new Dictionary<TechType, int>();
-        private readonly Stopwatch flareThrowArmedTime = new Stopwatch();
-        private bool flareThrowArmed;
-        private const int maxFlareThrowAnimWindowMs = 1500;
 
         #region Pointer stuff
         public Pointer<bool> IsIntroCinematicActive; // true in main menu sometimes
@@ -53,6 +50,7 @@ namespace LiveSplit.Subnautica
         public Pointer<bool> RadiationFixed;        
         public Pointer<bool> IsPlayerJumping;   
         public Pointer<bool> IsDying;
+        public Pointer<bool> PDAIsInUse;
 
         public Pointer<float> TimeCured;
         public Pointer<float> Health;
@@ -420,6 +418,11 @@ namespace LiveSplit.Subnautica
             BiomeString = ptrFactory.MakeString("Player", "main", "biomeString", 0x14);
             #endregion
             #region PDATab
+            Pointer<IntPtr> armsControllerPtr = ptrFactory.Make<IntPtr>("Player", "main", "armsController");
+            int off_armsControllerPda = mono.GetFieldOffset(mono.FindClass("ArmsController"), "pda");
+            Pointer<IntPtr> playerPdaPtr = ptrFactory.Make<IntPtr>(armsControllerPtr, off_armsControllerPda);
+            int off_pdaIsInUse = mono.GetFieldOffset(mono.FindClass("PDA"), "<isInUse>k__BackingField");
+            PDAIsInUse = ptrFactory.Make<bool>(playerPdaPtr, off_pdaIsInUse);
             PDATab = ptrFactory.Make<int>("uGUI_PDA", "<main>k__BackingField", "tabOpen");
             #endregion PDATab
             #region Damage Effects Showing
@@ -467,11 +470,9 @@ namespace LiveSplit.Subnautica
             #endregion IsDying
             #region ThrowFlare
             Pointer<IntPtr> quickSlotsPtr = ptrFactory.Make<IntPtr>("Inventory", "main", "<quickSlots>k__BackingField");
-
             int off_activeToolName = mono.GetFieldOffset(mono.FindClass("QuickSlots"), "activeToolName");
             ActiveToolName = ptrFactory.MakeString(quickSlotsPtr, off_activeToolName, 0x14);
 
-            Pointer<IntPtr> armsControllerPtr = ptrFactory.Make<IntPtr>("Player", "main", "armsController");
             int off_armsControllerGuiHand = mono.GetFieldOffset(mono.FindClass("ArmsController"), "guiHand");
             Pointer<IntPtr> guiHandPtr = ptrFactory.Make<IntPtr>(armsControllerPtr, off_armsControllerGuiHand);
             int off_timeOfLastToolUseAnim = mono.GetFieldOffset(mono.FindClass("GUIHand"), "timeOfLastToolUseAnim");
@@ -542,9 +543,6 @@ namespace LiveSplit.Subnautica
 
             if (Needs(SplitName.SGLBaseSplit, SplitName.SGLShallowsSplit))
                 isNotInWater.Update(game.Process);
-
-            if (Needs(SplitName.ThrowFlareSplit))
-                UpdateFlareThrowState();
 
             if (Needs(SplitName.PCFTabletSplit,
                       SplitName.GunDeactivationSplit,
@@ -716,36 +714,23 @@ namespace LiveSplit.Subnautica
 
         private int GetPlayerItemCountOld(TechType techType) => PlayerInventoryOld.GetCount(techType) + PlayerEquipmentOld.Count(item => item == techType);
 
-        private void UpdateFlareThrowState()
-        {
-            bool isFlareTool = string.Equals(ActiveToolName.New, "flare", StringComparison.OrdinalIgnoreCase)
-                || string.Equals(ActiveToolName.Old, "flare", StringComparison.OrdinalIgnoreCase);
-
-            if (isFlareTool && TimeOfLastToolUseAnim.New != TimeOfLastToolUseAnim.Old)
-            {
-                flareThrowArmed = true;
-                flareThrowArmedTime.Restart();
-            }
-
-            if (flareThrowArmed && flareThrowArmedTime.ElapsedMilliseconds > maxFlareThrowAnimWindowMs)
-            {
-                flareThrowArmed = false;
-                flareThrowArmedTime.Reset();
-            }
-        }
-
         private bool IsFlareThrowDrop()
         {
             bool flareDropped = currentInventoryChanges.TryGetValue(TechType.Flare, out int delta) && delta < 0;
             if (!flareDropped)
-            {
                 return false;
-            }
 
-            bool split = flareThrowArmed && flareThrowArmedTime.ElapsedMilliseconds <= maxFlareThrowAnimWindowMs;
-            flareThrowArmed = false;
-            flareThrowArmedTime.Reset();
-            return split;
+            if (IsPDAInventoryOpen())
+                return false;
+
+            return string.Equals(ActiveToolName.New, "flare", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(ActiveToolName.Old, "flare", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private bool IsPDAInventoryOpen()
+        {
+            return (PDAIsInUse?.New ?? false)
+                && (LiveSplit.Subnautica.PDATab)PDATab.New == LiveSplit.Subnautica.PDATab.Inventory;
         }
 
         private void UpdateEncyclopedia()
