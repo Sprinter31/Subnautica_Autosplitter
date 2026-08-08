@@ -145,10 +145,8 @@ namespace LiveSplit.Subnautica
         PCFPoolSplit,
         [Description("Deactivate Gun"), ToolTip("Splits when you deactivate the gun")]
         GunDeactivationSplit,
-        [Description("Glitchless Shallows Split"), ToolTip("Split when you exit the main base with an extra High Capacity O2 tank in your inventory")]
+        [Description("Glitchless Shallows Split"), ToolTip("Splits when you exit a constructed base with 1 Table Coral Sample, 1 Cave Sulfur, 1 Battery, and 2 Fiber Mesh or 2 First Aid Kits")]
         SGLShallowsSplit,
-        [Description("Glitchless Base Split"), ToolTip("Splits when you enter the main base near the seaglide wreck for the first time")]
-        SGLBaseSplit,
         [Description("Base Death Split (includes Clip A and Clip C)"), ToolTip("Splits when you die next to the main base (includes Clip A and Clip C)")]
         BaseDeathSplit,
         [Description("Gun Death"), ToolTip("Splits when you die in the gun room")]
