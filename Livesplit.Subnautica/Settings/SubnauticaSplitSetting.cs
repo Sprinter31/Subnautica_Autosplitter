@@ -189,6 +189,8 @@ namespace LiveSplit.Subnautica
         FullInventorySplit,
         [Description("Throw Flare"), ToolTip("Splits when you throw a flare")]
         ThrowFlareSplit,
+        [Description("Repair Secondary Systems"), ToolTip("Splits when you Repair the Lifepod Secondary Systems")]
+        RepairSecondarySystemsSplit,
     }
     public class ToolTipAttribute : Attribute
     {

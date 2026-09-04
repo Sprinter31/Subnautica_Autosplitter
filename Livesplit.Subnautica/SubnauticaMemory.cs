@@ -226,6 +226,7 @@ namespace LiveSplit.Subnautica
                 { SplitName.FullInventorySplit,   () => PlayerInventory.Select(kvp => kvp.Value * TechTypeItemSlots.GetSlotCount(kvp.Key)).Sum() == 48 && PlayerInventoryOld.Select(kvp => kvp.Value * TechTypeItemSlots.GetSlotCount(kvp.Key)).Sum() != 48 },
                 //{ SplitName.ChairSplit,           () => (PlayerMode)PlayerMode.New == LiveSplit.Subnautica.PlayerMode.Sitting && PlayerMode.Changed },
                 { SplitName.ThrowFlareSplit,      () => IsFlareThrowDrop() },
+                { SplitName.RepairSecondarySystemsSplit,     () => string.Equals(BiomeString.New, "Lifepod", StringComparison.OrdinalIgnoreCase) && ( string.Equals(ActiveToolName.New, "welder", StringComparison.OrdinalIgnoreCase) || string.Equals(ActiveToolName.Old, "welder", StringComparison.OrdinalIgnoreCase)) && DamageEffectsShowing.Old && !DamageEffectsShowing.New },
             };
         }
 
