@@ -59,6 +59,7 @@ namespace LiveSplit.Subnautica
         public Pointer<float> TimeToStartCountdown;
         public Pointer<float> TimeToStartWarning;
         public Pointer<float> TimeOfLastToolUseAnim;
+        public Pointer<float> RepairProgress;
 
         public Pointer<IntPtr> MainMenu;
         public Pointer<IntPtr> CraftingMenu;
@@ -226,6 +227,7 @@ namespace LiveSplit.Subnautica
                 { SplitName.FullInventorySplit,   () => PlayerInventory.Select(kvp => kvp.Value * TechTypeItemSlots.GetSlotCount(kvp.Key)).Sum() == 48 && PlayerInventoryOld.Select(kvp => kvp.Value * TechTypeItemSlots.GetSlotCount(kvp.Key)).Sum() != 48 },
                 //{ SplitName.ChairSplit,           () => (PlayerMode)PlayerMode.New == LiveSplit.Subnautica.PlayerMode.Sitting && PlayerMode.Changed },
                 { SplitName.ThrowFlareSplit,      () => IsFlareThrowDrop() },
+                { SplitName.RepairRadioSplit,     () => string.Equals(BiomeString.New, "Lifepod", StringComparison.OrdinalIgnoreCase) && (string.Equals(ActiveToolName.New, "welder", StringComparison.OrdinalIgnoreCase) || string.Equals(ActiveToolName.Old, "welder", StringComparison.OrdinalIgnoreCase)) && RepairProgress.Old >= 0.9f && RepairProgress.New == 0f && !(DamageEffectsShowing.Old && !DamageEffectsShowing.New) },
             };
         }
 
@@ -425,6 +427,9 @@ namespace LiveSplit.Subnautica
             #region Damage Effects Showing
             DamageEffectsShowing = ptrFactory.Make<bool>("EscapePod", "main", "damageEffectsShowing");
             #endregion Damage Effects Showing
+            #region Repair Progress
+            RepairProgress = ptrFactory.Make<float>("HandReticle", "main", "cachedProgress");
+            #endregion Repair Progress
             #region Game Mode
             GameMode = ptrFactory.Make<int>("GameModeUtils", "currentGameMode");
             #endregion Game Mode
