@@ -53,6 +53,7 @@ namespace LiveSplit.Subnautica
         public Pointer<bool> RadiationFixed;        
         public Pointer<bool> IsPlayerJumping;   
         public Pointer<bool> IsDying;
+        public Pointer<bool> DevConsoleOpen;
 
         public Pointer<float> TimeCured;
         public Pointer<float> Health;
@@ -422,6 +423,9 @@ namespace LiveSplit.Subnautica
             #region PDATab
             PDATab = ptrFactory.Make<int>("uGUI_PDA", "<main>k__BackingField", "tabOpen");
             #endregion PDATab
+            #region Dev Console
+            DevConsoleOpen = ptrFactory.Make<bool>("DevConsole", "instance", "state");
+            #endregion Dev Console
             #region Damage Effects Showing
             DamageEffectsShowing = ptrFactory.Make<bool>("EscapePod", "main", "damageEffectsShowing");
             #endregion Damage Effects Showing
