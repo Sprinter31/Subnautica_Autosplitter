@@ -9,6 +9,7 @@ namespace LiveSplit.Subnautica
     public enum GameVersion
     {
         Sept2018,
+        Dec2021,
         Mar2023
     }
 }
