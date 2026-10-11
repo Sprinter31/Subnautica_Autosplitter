@@ -17,6 +17,7 @@ namespace LiveSplit.Subnautica
         private readonly SubnauticaMemory memory;
         private readonly LiveSplitState _state;
         private readonly TimerModel timerModel;
+        private double? survivalStartPausedTime;
         public readonly HashSet<SubnauticaSplit> alreadySplit = new HashSet<SubnauticaSplit>();
 
         public SubnauticaComponent(LiveSplitState state) : base(state)
@@ -69,10 +70,46 @@ namespace LiveSplit.Subnautica
             if (memory.startedTimerBefore || !memory.pointersInitialized)
                 return false;
 
-            // options: 100 -> 80 health
-            if (settings.IntroStart && (GameModeOption)memory.GameMode.New != GameModeOption.Creative)
+            if (settings.IntroStart)
             {
-                if (memory.DamageEffectsShowing.New && !memory.DamageEffectsShowing.Old) { logger.Log("Start of damageEffectsShowing"); memory.startedTimerBefore = true; return true; }
+                GameModeOption gameMode = (GameModeOption)memory.GameMode.New;
+                
+                string biome = memory.BiomeString.New;
+                double currentTime = memory.TimePassed.New;
+                float dayNightSpeed = memory.DayNightSpeed.New;
+                bool inLifepod = string.Equals(biome, "Lifepod", StringComparison.OrdinalIgnoreCase);
+                bool initialTime = currentTime >= 480.0 && currentTime < 481.0;
+                bool capturePausedTime = !memory.isInMainMenu && gameMode != GameModeOption.Creative && inLifepod && initialTime && dayNightSpeed == 0f;
+
+                if (capturePausedTime)
+                {
+                    if (survivalStartPausedTime != currentTime)
+                    {
+                        survivalStartPausedTime = currentTime;
+                        logger.Log($"Survival start paused at DayNightCycle time {currentTime:R}");
+                    }
+                }
+                
+                else if (survivalStartPausedTime.HasValue)
+                {
+                    bool captureInvalid = memory.isInMainMenu || gameMode == GameModeOption.Creative || !inLifepod || currentTime < survivalStartPausedTime.Value;
+
+                    if (captureInvalid)
+                    {
+                        survivalStartPausedTime = null;
+                    }
+                    else if (dayNightSpeed > 0f && currentTime > survivalStartPausedTime.Value)
+                    {
+                        logger.Log($"Start of DayNightCycle time ({survivalStartPausedTime.Value:R} -> {currentTime:R})");
+                        survivalStartPausedTime = null;
+                        memory.startedTimerBefore = true;
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                survivalStartPausedTime = null;
             }
             if (settings.CreativeStart && !memory.IsLoadingScreenShowing.New && !memory.IsIntroCinematicActive.New && !memory.isInMainMenu)
             {
@@ -199,6 +236,8 @@ namespace LiveSplit.Subnautica
         public override void OnReset()
         {
             alreadySplit.Clear();
+            survivalStartPausedTime = null;
+            memory.startedTimerBefore = false;
         }
 
         private void UpdateExploTime()

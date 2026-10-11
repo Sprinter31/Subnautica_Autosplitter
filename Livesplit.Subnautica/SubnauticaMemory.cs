@@ -59,6 +59,8 @@ namespace LiveSplit.Subnautica
         public Pointer<float> TimeToStartCountdown;
         public Pointer<float> TimeToStartWarning;
         public Pointer<float> TimeOfLastToolUseAnim;
+        public Pointer<float> DayNightSpeed;
+        public Pointer<double> TimePassed;
 
         public Pointer<IntPtr> MainMenu;
         public Pointer<IntPtr> CraftingMenu;
@@ -425,6 +427,10 @@ namespace LiveSplit.Subnautica
             #region Damage Effects Showing
             DamageEffectsShowing = ptrFactory.Make<bool>("EscapePod", "main", "damageEffectsShowing");
             #endregion Damage Effects Showing
+            #region Day Night Time
+            DayNightSpeed = ptrFactory.Make<float>("DayNightCycle", "main", "_dayNightSpeed");
+            TimePassed = ptrFactory.Make<double>("DayNightCycle", "main", "timePassedAsDouble");
+            #endregion Day Night Time
             #region Game Mode
             GameMode = ptrFactory.Make<int>("GameModeUtils", "currentGameMode");
             #endregion Game Mode
