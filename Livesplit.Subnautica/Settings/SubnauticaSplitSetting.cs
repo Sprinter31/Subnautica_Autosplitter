@@ -149,8 +149,8 @@ namespace LiveSplit.Subnautica
         SGLShallowsSplit,
         [Description("Glitchless Base Split"), ToolTip("Splits when you enter the main base near the seaglide wreck for the first time")]
         SGLBaseSplit,
-        [Description("Base Death Split (includes Clip A and Clip C)"), ToolTip("Splits when you die next to the main base (includes Clip A and Clip C)")]
-        BaseDeathSplit,
+        [Description("Base Flood"), ToolTip("Splits when the last constructed base you entered first begins flooding, including while you are just outside the base")]
+        BaseFloodSplit,
         [Description("Gun Death"), ToolTip("Splits when you die in the gun room")]
         GunDeathSplit,
         [Description("Aurora Death"), ToolTip("Splits when you die in the Aurora")]
