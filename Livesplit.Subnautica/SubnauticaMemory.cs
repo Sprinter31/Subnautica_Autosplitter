@@ -195,6 +195,7 @@ namespace LiveSplit.Subnautica
                 { SplitName.RocketSplit,          () => RocketLaunching.New && !RocketLaunching.Old },
                 { SplitName.PCFTabletSplit,       () => IsAnimationPlaying.New && !IsAnimationPlaying.Old && IsWithinBounds(PCFEntrBounds) },
                 { SplitName.PortalSplit,          () => isPortalLoading.Current && !isPortalLoading.Old && IsWithinBounds(portalBounds) },
+                { SplitName.AnyPortalSplit,          () => isPortalLoading.Current && !isPortalLoading.Old },
                 { SplitName.HatchSplit,           () => isEggsHatching.Current && !isEggsHatching.Old },
                 { SplitName.CureSplit,            () => TimeCured.New > TimeCured.Old },
                 { SplitName.NeptuneLaunchPlatform,() => (TechType)CraftedNode.New == TechType.RocketBase && CraftedNode.Changed },

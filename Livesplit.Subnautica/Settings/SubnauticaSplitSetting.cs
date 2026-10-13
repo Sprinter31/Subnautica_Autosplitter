@@ -125,6 +125,8 @@ namespace LiveSplit.Subnautica
         RocketSplit,
         [Description("Prison Portal"), ToolTip("Splits when you enter the prison aquarium portal for the first time")]
         PortalSplit,
+        [Description("Enter Any Portal"), ToolTip("Splits when you enter any alien portal on the map")]
+        AnyPortalSplit,
         [Description("Hatch Eggs"), ToolTip("Splits when you hatch the eggs in the prison aquarium")]
         HatchSplit,
         [Description("Cure"), ToolTip("Splits when you cure yourself")]
