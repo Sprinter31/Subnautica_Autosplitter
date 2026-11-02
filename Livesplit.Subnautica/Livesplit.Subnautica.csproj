@@ -35,6 +35,7 @@
   <ItemGroup>
     <Compile Include="Enums\Biome.cs" />
     <Compile Include="Enums\Craftable.cs" />
+    <Compile Include="Enums\Buildable.cs" />
     <Compile Include="Enums\EncyMapping2023.cs" />
     <Compile Include="Enums\GameModeOption.cs" />
     <Compile Include="Enums\InvItems.cs" />
@@ -87,6 +88,18 @@
     </Compile>
     <Compile Include="Settings\CraftSplit\SubnauticaCraftSplitSettings.Designer.cs">
       <DependentUpon>SubnauticaCraftSplitSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Settings\BuildSplit\SubnauticaBuildSplit.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Settings\BuildSplit\SubnauticaBuildSplit.Designer.cs">
+      <DependentUpon>SubnauticaBuildSplit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Settings\BuildSplit\SubnauticaBuildSplitSettings.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Settings\BuildSplit\SubnauticaBuildSplitSettings.Designer.cs">
+      <DependentUpon>SubnauticaBuildSplitSettings.cs</DependentUpon>
     </Compile>
     <Compile Include="Settings\EncySplit\SubnauticaEncySplitSettings.cs">
       <SubType>UserControl</SubType>
@@ -207,6 +220,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Settings\CraftSplit\SubnauticaCraftSplitSettings.resx">
       <DependentUpon>SubnauticaCraftSplitSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Settings\BuildSplit\SubnauticaBuildSplit.resx">
+      <DependentUpon>SubnauticaBuildSplit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Settings\BuildSplit\SubnauticaBuildSplitSettings.resx">
+      <DependentUpon>SubnauticaBuildSplitSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Settings\EncySplit\SubnauticaEncySplitSettings.resx">
       <DependentUpon>SubnauticaEncySplitSettings.cs</DependentUpon>

@@ -209,6 +209,9 @@ namespace LiveSplit.Subnautica
                 case CraftSplit craftSplit:
                     xmlValue.InnerText = craftSplit.Craftable.ToString();
                     break;
+                case BuildSplit buildSplit:
+                    xmlValue.InnerText = buildSplit.Buildable.ToString();
+                    break;
                 default:
                     xmlValue.InnerText = split.SplitName.ToString();
                     break;
@@ -321,6 +324,11 @@ namespace LiveSplit.Subnautica
                 case SplitName.Craft:
                     var craftable = SubnauticaSplitSetting.GetTechType(value);
                     split = new CraftSplit(craftable.ConvertTo<Craftable>(), onlySplitOnce, isSubCondition);
+                    break;
+
+                case SplitName.Build:
+                    var buildable = SubnauticaSplitSetting.GetTechType(value);
+                    split = new BuildSplit(buildable.ConvertTo<Buildable>(), onlySplitOnce, isSubCondition);
                     break;
 
                 default:
