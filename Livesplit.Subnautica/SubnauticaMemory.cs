@@ -28,6 +28,7 @@ namespace LiveSplit.Subnautica
         private int prePortalDelayMs = 0;
         private int postPortalDelayMs = 0;
         private const int maxInventoryTimeWithoutChangingMs = 1000;
+        private const int emptyInventoryConfirmationMs = 1000;
         public bool pointersInitialized;
         public GameVersion gameVersion;
         //string[] EncyMappingMarch2023;
@@ -40,6 +41,8 @@ namespace LiveSplit.Subnautica
         readonly Dictionary<TechType, InvChangeInfo> curPickUpCounts = new Dictionary<TechType, InvChangeInfo>();
         readonly Dictionary<TechType, InvChangeInfo> curDropCounts = new Dictionary<TechType, InvChangeInfo>();
         private Dictionary<TechType, int> currentInventoryChanges = new Dictionary<TechType, int>();
+        private IntPtr trackedInventoryMain;
+        private readonly Stopwatch emptyInventoryConfirmation = new Stopwatch();
         private readonly Stopwatch flareThrowArmedTime = new Stopwatch();
         private bool flareThrowArmed;
         private const int maxFlareThrowAnimWindowMs = 1500;
@@ -65,6 +68,7 @@ namespace LiveSplit.Subnautica
         private Pointer<IntPtr> knowntechPtr;
         private Pointer<IntPtr> pdaMappingPtr;
         private Pointer<IntPtr> goalsPtr;
+        private Pointer<IntPtr> playerPtr;
 
         public Pointer<int> PDATab;
         public Pointer<int> GameMode;
@@ -146,6 +150,9 @@ namespace LiveSplit.Subnautica
                     unityTask.Dispose();
                     unityTask = null;
                 }
+
+                trackedInventoryMain = IntPtr.Zero;
+                ResetInventoryChanges();
             };
 
             this.settings = settings;
@@ -287,6 +294,7 @@ namespace LiveSplit.Subnautica
             IsIntroCinematicActive = ptrFactory.Make<bool>(introCinematicPtr, off_cinematicModeActive);
             #endregion Intro Cinematic
             #region Is Animation Playing
+            playerPtr = ptrFactory.Make<IntPtr>("Player", "main");
             IsAnimationPlaying = ptrFactory.Make<bool>("Player", "main", "_cinematicModeActive");
             #endregion Is Animation Playing
             #region IsLoadingScreenShowing
@@ -629,10 +637,54 @@ namespace LiveSplit.Subnautica
         
         private void UpdateInventory()
         {
+            IntPtr inventoryMain = game.Read<IntPtr>(mono.GetStaticAddress(invStaticKlass) + invStaticOffset);
+            if (playerPtr.New == IntPtr.Zero
+                || inventoryMain == IntPtr.Zero
+                || IsLoadingScreenShowing.New)
+            {
+                trackedInventoryMain = IntPtr.Zero;
+                ResetInventoryChanges();
+                return;
+            }
+
+            Dictionary<TechType, int> inventory = ReadInventoryCounts(inventoryMain);
+            List<TechType> equipment = ReadEquipmentTypes(inventoryMain);
+
+            if (game.Read<IntPtr>(mono.GetStaticAddress(invStaticKlass) + invStaticOffset) != inventoryMain)
+            {
+                trackedInventoryMain = IntPtr.Zero;
+                ResetInventoryChanges();
+                return;
+            }
+
+            if (trackedInventoryMain != inventoryMain)
+            {
+                trackedInventoryMain = inventoryMain;
+                PlayerInventoryOld = inventory;
+                PlayerInventory = inventory;
+                PlayerEquipmentOld = equipment;
+                PlayerEquipment = equipment;
+                ResetInventoryChanges();
+                return;
+            }
+
+            bool inventoryBecameEmpty = inventory.Count == 0 && PlayerInventory.Count > 0;
+
+            if (inventoryBecameEmpty && emptyInventoryConfirmation.ElapsedMilliseconds < emptyInventoryConfirmationMs)
+            {
+                if (!emptyInventoryConfirmation.IsRunning)
+                    emptyInventoryConfirmation.Restart();
+
+                currentInventoryChanges.Clear();
+                return;
+            }
+
+            emptyInventoryConfirmation.Reset();
+
             PlayerInventoryOld = PlayerInventory;
-            PlayerInventory = ReadInventoryCounts();
+            PlayerInventory = inventory;
             PlayerEquipmentOld = PlayerEquipment;
-            PlayerEquipment = ReadEquipmentTypes();
+            PlayerEquipment = equipment;
 
             Dictionary<TechType, int> changedItems =
                 PlayerInventory.Keys
@@ -708,6 +760,17 @@ namespace LiveSplit.Subnautica
                     dict[key] = new InvChangeInfo(amount, Stopwatch.StartNew());
                 }
             }
+        }
+
+        private void ResetInventoryChanges()
+        {
+            currentInventoryChanges.Clear();
+            curPickUpCounts.Clear();
+            curDropCounts.Clear();
+            emptyInventoryConfirmation.Reset();
+
+            foreach (ItemSplit split in settings.Splits.OfType<ItemSplit>())
+                split.AlreadySplitInvChanging = false;
         }
 
         private bool HasPlayerItem(TechType techType) => PlayerInventory.ContainsKey(techType) || PlayerEquipment.Contains(techType);
@@ -812,12 +875,9 @@ namespace LiveSplit.Subnautica
             }
         }
 
-        List<TechType> ReadEquipmentTypes()
+        List<TechType> ReadEquipmentTypes(IntPtr invMain)
         {
             var result = new List<TechType>();
-
-            IntPtr invMain = game.Read<IntPtr>(mono.GetStaticAddress(invStaticKlass) + invStaticOffset);
-            if (invMain == IntPtr.Zero) return result;
 
             IntPtr equipment = game.Read<IntPtr>(invMain + off_equipment);
             if (equipment == IntPtr.Zero) return result;
@@ -916,12 +976,9 @@ namespace LiveSplit.Subnautica
             return result;
         }
 
-        Dictionary<TechType, int> ReadInventoryCounts()
+        Dictionary<TechType, int> ReadInventoryCounts(IntPtr invMain)
         {
             var result = new Dictionary<TechType, int>();
-
-            IntPtr invMain = game.Read<IntPtr>(mono.GetStaticAddress(invStaticKlass) + invStaticOffset);
-            if (invMain == IntPtr.Zero) return result;
 
             IntPtr container = game.Read<IntPtr>(invMain + off_container);
             if (container == IntPtr.Zero) return result;
