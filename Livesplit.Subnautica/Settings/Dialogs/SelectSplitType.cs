@@ -16,6 +16,7 @@ namespace LiveSplit.Subnautica.Settings
             {
                 items.Add(new SplitType { Text = "Prefabricated", Func = settings.CreatePrefabSplit });
                 items.Add(new SplitType { Text = "Craft", Func = settings.CreateCraftSplit });
+                items.Add(new SplitType { Text = "Build", Func = settings.CreateBuildSplit });
             }
 
             items.Add(new SplitType { Text = "Inventory", Func = settings.CreateItemSplit });
