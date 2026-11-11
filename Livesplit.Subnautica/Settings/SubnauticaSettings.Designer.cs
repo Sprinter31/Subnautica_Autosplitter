@@ -200,9 +200,7 @@
             this.chkSRCLoadtimes.Size = new System.Drawing.Size(99, 17);
             this.chkSRCLoadtimes.TabIndex = 1;
             this.chkSRCLoadtimes.Text = "SRC Loadtimes";
-            this.ToolTips.SetToolTip(this.chkSRCLoadtimes, "This will add time to the actual load times to match the IGT shown on Speedrun.co" +
-        "m (can be up to 0.1s inaccurate)\r\nUnchecking this will not turn off the load rem" +
-        "oval");
+            this.ToolTips.SetToolTip(this.chkSRCLoadtimes, "Adjusts portal load removal to match SRC timing. When the Subnautica Speedrunning Mod timer is active, its exact in-game time is used automatically.");
             this.chkSRCLoadtimes.UseVisualStyleBackColor = true;
             this.chkSRCLoadtimes.CheckedChanged += new System.EventHandler(this.ControlChanged);
             // 
